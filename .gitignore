@@ -1,0 +1,13 @@
+local.py
+__pycache__/
+db.sqlite*
+dump.rdb
+.venv
+media
+.env
+static
+*.swp
+*.log
+*.sqlite*
+iras_documents_document/
+.vscode/
