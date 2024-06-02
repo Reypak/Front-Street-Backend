@@ -46,9 +46,9 @@ Create Django App inside root directory
 
 </details>
 
-<!-- MIGRATIONS -->
-<details>
-<summary>Migrations</summary>
+## Start Django Server
+
+`python manage.py runserver`
 
 ## Run migrations for app
 
@@ -57,17 +57,6 @@ Create Django App inside root directory
 then run to apply:
 
 `python manage.py migrate`
-
-</details>
-
-<details>
-<summary>Run Server</summary>
-
-## Start Django Server
-
-`python manage.py runserver`
-
-</details>
 
 <!-- <details>
 <summary></summary>
@@ -155,3 +144,21 @@ class CreateCurrentUser(serializers.CurrentUserDefault):
 This defines a new class `CreateCurrentUser` that inherits from `serializers.CurrentUserDefault`.
 
 </details>
+
+<!-- FILTERS -->
+
+## Django Filters
+
+### Install package
+
+`pip install django-filter`
+
+### Installed apps
+
+Add to your `INSTALLED_APPS`
+
+```ruby
+INSTALLED_APPS = [
+    'django_filters',
+]
+```

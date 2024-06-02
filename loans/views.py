@@ -1,5 +1,7 @@
 from rest_framework import viewsets
-from utils.constants import CustomPagination
+from utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
+from utils.filters.filters import LoanFilterSet
+# from utils.constants import CustomPagination
 
 # Create your views here.
 # import local data
@@ -14,6 +16,10 @@ class LoanViewSet(viewsets.ModelViewSet):
 
     # specify serializer to be used
     serializer_class = LoanSerializer
+
+    # set data filters
+    filter_backends = DEFAULT_FILTER_BACKENDS
+    filterset_class = LoanFilterSet
 
     # for custom pagination
     # pagination_class = CustomPagination

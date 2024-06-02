@@ -1,4 +1,5 @@
 
+# Cloudinary imports
 import cloudinary.uploader
 import cloudinary.api
 import cloudinary
@@ -6,8 +7,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Cloudinary imports
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,6 +23,7 @@ ALLOWED_HOSTS = []
 LOCAL_APPS = [
     'fs_api',
     'loans',
+    'documents',
     'categories',
     'utils',
 ]
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary'
+    'cloudinary',
+    'django_filters'
 ] + LOCAL_APPS
 
 MIDDLEWARE = [

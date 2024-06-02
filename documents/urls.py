@@ -6,9 +6,9 @@ from .views import *
 router = SimpleRouter()
 
 # define the router path and viewset to be used
-router.register(r'', CategoryViewSet, basename="Categories")
+router.register(r'', DocumentViewSet, basename="Documents")
 
 # specify URL Path for rest_framework
 urlpatterns = [
-    path('categories/', include(router.urls)),
+    path('documents/', include(router.urls)),
 ]

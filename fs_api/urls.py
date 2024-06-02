@@ -21,6 +21,7 @@ from django.urls import path, include
 apiurls = [
     path('', include('loans.urls')),
     path('', include('categories.urls')),
+    path('', include('documents.urls')),
 ]
 
 urlpatterns = [

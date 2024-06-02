@@ -9,5 +9,6 @@ static
 *.swp
 *.log
 *.sqlite*
-iras_documents_document/
 .vscode/
+migrations
+__init__*
