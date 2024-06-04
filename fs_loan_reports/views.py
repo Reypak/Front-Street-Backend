@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-from utils.filters.filters import LoanReportFilterSet
+from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
+from fs_utils.filters.filters import LoanReportFilterSet
 from .serializers import LoanReportSerializer
 from .models import LoanReport
 

@@ -1,5 +1,5 @@
 from django.db import models
-from utils.models import BaseModel
+from fs_utils.models import BaseModel
 
 
 class LoanType(BaseModel):

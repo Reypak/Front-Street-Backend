@@ -1,6 +1,6 @@
 import django_filters
 from fs_loan_reports.models import LoanReport
-from loans.models import Loan
+from fs_loans.models import Loan
 
 ICONTAINS = "icontains"
 IEXACT = "iexact"

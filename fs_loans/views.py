@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-from utils.filters.filters import LoanFilterSet
+from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
+from fs_utils.filters.filters import LoanFilterSet
 # from utils.constants import CustomPagination
 
 # Create your views here.

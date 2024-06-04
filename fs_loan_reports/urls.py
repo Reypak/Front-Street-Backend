@@ -10,5 +10,5 @@ router.register(r'', LoanReportViewSet, basename="Loan Reports")
 
 # specify URL Path for rest_framework
 urlpatterns = [
-    path('loan_reports/', include(router.urls)),
+    path('loans/', include(router.urls)),
 ]

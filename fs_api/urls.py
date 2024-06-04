@@ -18,11 +18,17 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 
-apiurls = [
-    path('', include('loans.urls')),
-    path('', include('fs_loan_types.urls')),
-    path('', include('documents.urls')),
+# Reports
+reporturls = [
     path('', include('fs_loan_reports.urls',)),
+]
+
+# Main urls
+apiurls = [
+    path('', include('fs_loans.urls')),
+    path('', include('fs_loan_types.urls')),
+    path('', include('fs_documents.urls')),
+    path('reports/', include(reporturls)),
 ]
 
 urlpatterns = [

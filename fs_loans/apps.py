@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class LoansConfig(AppConfig):
+class FsLoansConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'loans'
+    name = 'fs_loans'

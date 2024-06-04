@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from utils.serializers import CreateCurrentUser, SimpleUser
+from fs_utils.serializers import CreateCurrentUser, SimpleUser
 from .models import LoanReport
 
 

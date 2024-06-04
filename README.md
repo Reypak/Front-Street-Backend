@@ -28,6 +28,10 @@ To create the REST API
 
 `pip install djangorestframework`
 
+## Create superuser
+
+`python manage.py createsuperuser`
+
 </details>
 
 <!-- PROJECT -->
@@ -94,7 +98,7 @@ Django pagination `rest_framework` must be installed and enabled.
 
 Add the configuration to the project app `settings.py`
 
-```ruby
+```python
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -116,7 +120,7 @@ Add to the view:
 
 ### The Custom Pagination Class
 
-```ruby
+```python
 from rest_framework.pagination import PageNumberPagination
 
 class CustomPagination(PageNumberPagination):
@@ -137,7 +141,7 @@ class CustomPagination(PageNumberPagination):
 
 ### Usage
 
-```ruby
+```python
 class CreateCurrentUser(serializers.CurrentUserDefault):
 ```
 
@@ -157,7 +161,7 @@ This defines a new class `CreateCurrentUser` that inherits from `serializers.Cur
 
 Add to your `INSTALLED_APPS`
 
-```ruby
+```python
 INSTALLED_APPS = [
     'django_filters',
 ]
@@ -171,7 +175,7 @@ Use Django signals to track create and update
 
 Ensure that the signals are registered when the application starts.
 
-```ruby
+```python
 # apps.py
 from django.apps import AppConfig
 
@@ -187,7 +191,15 @@ class YourAppConfig(AppConfig):
 
 Ensure the custom AppConfig is used in your application settings.
 
-```ruby
+```python
 # __init__.py in your_app
 default_app_config = 'your_app.apps.YourAppConfig'
 ```
+
+# Django Model Fields
+
+`blank=True` allows you to input nothing (i.e `""`, `None`) and keep it empty.
+
+`null=True` means the database row is allowed to be `NULL`.
+
+`default=None` sets the field to `None` if no other value is given.

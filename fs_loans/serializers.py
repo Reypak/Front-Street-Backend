@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from documents.helpers import save_attachments
-from documents.models import Document
-from documents.serializers import DocumentSerializer
+from fs_documents.helpers import save_attachments
+from fs_documents.models import Document
+from fs_documents.serializers import DocumentSerializer
 from .models import Loan
-from utils.serializers import CreateCurrentUser, SimpleUser
+from fs_utils.serializers import CreateCurrentUser, SimpleUser
 
 
 class LoanSerializer(serializers.ModelSerializer):

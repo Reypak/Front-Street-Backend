@@ -13,6 +13,13 @@ CREATED = "created"
 STATUS_PENDING = "pending"
 STATUS_APPROVED = "approved"
 STATUS_DECLINED = "declined"
+STATUS_DISBURSED = "disbursed"
+STATUS_CLOSED = "closed"
+
+OVERDUE = "overdue"
+PAID = "paid"
+PAST_DUE = "past_due"
+CURRENT = "current"
 
 # document types
 DOCUMENT_TYPE_OTHER = "other"
@@ -27,4 +34,13 @@ LOAN_STATUSES = (
     (STATUS_PENDING, 'Pending'),
     (STATUS_APPROVED, 'Approved'),
     (STATUS_DECLINED, 'Declined'),
+    (STATUS_DISBURSED, 'Disbursed'),
+    (STATUS_CLOSED, 'Closed')
+)
+
+INSTALLMENT_CHOICES = (
+    (PAID, 'Paid'),
+    (PAST_DUE, 'Past Due'),
+    (CURRENT, 'Current'),
+    (OVERDUE, 'Overdue')
 )

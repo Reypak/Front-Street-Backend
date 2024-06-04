@@ -1,5 +1,5 @@
 from django.db import models
-from utils.constants import DOCUMENT_TYPES
+from fs_utils.constants import DOCUMENT_TYPES
 from django.db import models
 from cloudinary.models import CloudinaryField
 
