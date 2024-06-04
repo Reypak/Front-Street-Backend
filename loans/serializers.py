@@ -13,9 +13,9 @@ class LoanSerializer(serializers.ModelSerializer):
         required=False, default=CreateCurrentUser(),
     )
 
-    # Get field name from category attribute
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
+    # Get field name from loan_type attribute
+    loan_type_name = serializers.CharField(
+        source="loan_type.name", read_only=True)
 
     attachments = DocumentSerializer(many=True)
 

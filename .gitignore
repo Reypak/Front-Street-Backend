@@ -11,4 +11,3 @@ static
 *.sqlite*
 .vscode/
 migrations
-__init__*

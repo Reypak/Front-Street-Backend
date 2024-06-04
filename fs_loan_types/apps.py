@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class CategoriesConfig(AppConfig):
+class FsLoanTypesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'categories'
+    name = 'fs_loan_types'

@@ -162,3 +162,32 @@ INSTALLED_APPS = [
     'django_filters',
 ]
 ```
+
+## Signals
+
+Use Django signals to track create and update
+
+### Register the Signals
+
+Ensure that the signals are registered when the application starts.
+
+```ruby
+# apps.py
+from django.apps import AppConfig
+
+class YourAppConfig(AppConfig):
+    name = 'your_app'
+
+    def ready(self):
+        import your_app.signals
+
+```
+
+### Add the AppConfig to Your App
+
+Ensure the custom AppConfig is used in your application settings.
+
+```ruby
+# __init__.py in your_app
+default_app_config = 'your_app.apps.YourAppConfig'
+```

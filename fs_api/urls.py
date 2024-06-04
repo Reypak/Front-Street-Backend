@@ -20,8 +20,9 @@ from django.urls import path, include
 
 apiurls = [
     path('', include('loans.urls')),
-    path('', include('categories.urls')),
+    path('', include('fs_loan_types.urls')),
     path('', include('documents.urls')),
+    path('', include('fs_loan_reports.urls',)),
 ]
 
 urlpatterns = [

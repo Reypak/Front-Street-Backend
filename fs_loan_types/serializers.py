@@ -1,16 +1,16 @@
 from rest_framework import serializers
-from .models import Category
+from .models import LoanType
 from utils.serializers import CreateCurrentUser, SimpleUser
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class LoanTypeSerializer(serializers.ModelSerializer):
 
     created_by = SimpleUser(
         required=False, default=CreateCurrentUser(),
     )
 
     class Meta:
-        model = Category
+        model = LoanType
         fields = '__all__'
 
         # read_only_fields = ['created_by']

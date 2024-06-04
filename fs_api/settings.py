@@ -22,9 +22,10 @@ ALLOWED_HOSTS = []
 
 LOCAL_APPS = [
     'fs_api',
+    'fs_loan_reports',
+    'fs_loan_types',
     'loans',
     'documents',
-    'categories',
     'utils',
 ]
 

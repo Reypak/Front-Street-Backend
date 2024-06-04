@@ -5,6 +5,10 @@ class CustomPagination(PageNumberPagination):
     page_size = 5
 
 
+# actions
+UPDATED = "updated"
+CREATED = "created"
+
 # statuses
 STATUS_PENDING = "pending"
 STATUS_APPROVED = "approved"
