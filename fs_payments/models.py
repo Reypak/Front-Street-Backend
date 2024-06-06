@@ -12,9 +12,11 @@ from fs_utils.utils import generate_unique_number
 class LoanPayment(BaseModel):
     payment_number = models.CharField(
         max_length=20, unique=True, editable=False)
-    loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
-    amount = models.IntegerField()
+    loan = models.ForeignKey(
+        Loan, related_name='payments', on_delete=models.DO_NOTHING)
+    amount_paid = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(max_length=1000, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.payment_number:
@@ -22,4 +24,4 @@ class LoanPayment(BaseModel):
         super(LoanPayment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.payment_number} - {self.amount}/='
+        return f'{self.payment_number} - {self.loan.application_number} - {self.amount_paid}/='

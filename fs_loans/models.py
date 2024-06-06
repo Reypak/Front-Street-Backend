@@ -9,7 +9,7 @@ class Loan(BaseModel):
     application_number = models.CharField(
         max_length=100, null=True, blank=True)
     loan_type = models.ForeignKey(
-        LoanType, on_delete=models.CASCADE)
+        LoanType, on_delete=models.DO_NOTHING)
     borrower_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=12)
     email = models.EmailField(null=True, blank=True)
@@ -23,7 +23,7 @@ class Loan(BaseModel):
     amount = models.IntegerField()
     status = models.CharField(
         max_length=50, default=STATUS_PENDING, choices=LOAN_STATUSES)
-    outstanding_balance = models.IntegerField(null=True, blank=True,)
+    # outstanding_balance = models.IntegerField(null=True, blank=True,)
     attachments = models.ManyToManyField(Document, related_name='documents')
 
     def __str__(self):

@@ -8,7 +8,7 @@ class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE)
+        User, on_delete=models.DO_NOTHING)
 
     class Meta:
         abstract = True  # Set this model as Abstract to allow inheritance

@@ -7,7 +7,7 @@ from fs_utils.constants import CURRENT, INSTALLMENT_CHOICES
 
 
 class Installment(models.Model):
-    loan = models.ForeignKey(Loan, on_delete=models.CASCADE)
+    loan = models.ForeignKey(Loan, on_delete=models.DO_NOTHING)
     due_date = models.DateField()
     amount = models.IntegerField()
     paid = models.BooleanField(default=False)

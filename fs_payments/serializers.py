@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from fs_utils.utils import generate_unique_number
-
 from .models import LoanPayment
 from fs_utils.serializers import BaseSerializer
 

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import models
 
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
@@ -8,6 +9,7 @@ from fs_utils.serializers import BaseSerializer
 
 
 class LoanSerializer(BaseSerializer):
+    outstanding_balance = serializers.IntegerField(read_only=True)
 
     # Get field name from loan_type attribute
     loan_type_name = serializers.CharField(
@@ -63,3 +65,12 @@ class LoanSerializer(BaseSerializer):
         save_attachments(instance, validated_data)
 
         return super(LoanSerializer, self).update(instance, validated_data)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Iterate through the payments
+        total_payments = instance.payments.aggregate(
+            total=models.Sum('amount_paid'))['total'] or 0
+
+        data['outstanding_balance'] = instance.amount - total_payments
+        return data
