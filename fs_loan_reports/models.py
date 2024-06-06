@@ -14,4 +14,4 @@ class LoanReport(models.Model):
         User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'Loan {self.loan.id} - {self.status} - {self.created_by.username}'
+        return f'Loan ({self.loan.id}) {self.action} - {self.status} - {self.created_by.username}'

@@ -24,6 +24,7 @@ LOCAL_APPS = [
     'fs_api',
     'fs_documents',
     'fs_installments',
+    'fs_payments',
     'fs_loan_reports',
     'fs_loan_types',
     'fs_loans',

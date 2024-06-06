@@ -20,3 +20,12 @@ class CreateCurrentUser(serializers.CurrentUserDefault):
 
     def set_context(self, serializer_field):
         self.is_update = serializer_field.parent and serializer_field.parent.instance is not None
+
+
+class BaseSerializer(serializers.ModelSerializer):
+    created_by = SimpleUser(
+        required=False, default=CreateCurrentUser(),
+    )
+
+    class Meta:
+        abstract = True

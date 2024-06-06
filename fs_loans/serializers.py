@@ -4,14 +4,10 @@ from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
 from .models import Loan
-from fs_utils.serializers import CreateCurrentUser, SimpleUser
+from fs_utils.serializers import BaseSerializer
 
 
-class LoanSerializer(serializers.ModelSerializer):
-
-    created_by = SimpleUser(
-        required=False, default=CreateCurrentUser(),
-    )
+class LoanSerializer(BaseSerializer):
 
     # Get field name from loan_type attribute
     loan_type_name = serializers.CharField(
@@ -40,6 +36,10 @@ class LoanSerializer(serializers.ModelSerializer):
         # Create the Loan object
         instance = super(LoanSerializer, self).create(validated_data)
 
+        # create application number
+        instance.application_number = f"FS/LOA/{instance.id}"
+        instance.save()
+
         # Create Document objects
         attachments = [Document.objects.create(
             **data) for data in attachments_data]
@@ -56,6 +56,9 @@ class LoanSerializer(serializers.ModelSerializer):
         # instance.amount = validated_data.get(
         #     'amount', instance.amount)
         # instance.save()
+
+        # get updating user
+        instance.updated_by = self.context['request'].user
 
         save_attachments(instance, validated_data)
 

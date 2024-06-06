@@ -6,7 +6,8 @@ from fs_loan_types.models import LoanType
 
 
 class Loan(BaseModel):
-
+    application_number = models.CharField(
+        max_length=100, null=True, blank=True)
     loan_type = models.ForeignKey(
         LoanType, on_delete=models.CASCADE)
     borrower_name = models.CharField(max_length=100)
@@ -22,7 +23,8 @@ class Loan(BaseModel):
     amount = models.IntegerField()
     status = models.CharField(
         max_length=50, default=STATUS_PENDING, choices=LOAN_STATUSES)
-    attachments = models.ManyToManyField(Document, related_name='items')
+    outstanding_balance = models.IntegerField(null=True, blank=True,)
+    attachments = models.ManyToManyField(Document, related_name='documents')
 
     def __str__(self):
-        return f'{self.borrower_name} - {self.amount} - {self.loan_type}'
+        return f'{self.application_number}: {self.amount}/='

@@ -203,3 +203,30 @@ default_app_config = 'your_app.apps.YourAppConfig'
 `null=True` means the database row is allowed to be `NULL`.
 
 `default=None` sets the field to `None` if no other value is given.
+
+# Saving to Object instance
+
+### Using Model
+
+Overriding the `save` method, and assign a `new value` to the `payment_number` field of the `Payment` object.
+
+```python
+# class LoanPayment(BaseModel):
+# ....
+ def save(self, *args, **kwargs):
+        if not self.payment_number:
+            self.payment_number = "pass any value"
+        super(LoanPayment, self).save(*args, **kwargs)
+```
+
+### Using Serializer
+
+Overriding the `create` method, get the field from `validated_data` and update it with a new value
+
+```python
+# class LoanPaymentSerializer(BaseSerializer):
+# ....
+ def create(self, validated_data):
+        validated_data['payment_number'] = "pass any value"
+        return super().create(validated_data)
+```

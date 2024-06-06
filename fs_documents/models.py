@@ -19,4 +19,4 @@ class Document(models.Model):
     )
 
     def __str__(self):
-        return self.caption + ' - '+self.document_type
+        return f'{self.caption} - {self.document_type}'

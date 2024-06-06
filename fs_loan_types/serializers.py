@@ -1,13 +1,11 @@
-from rest_framework import serializers
+from fs_documents.serializers import DocumentSerializer
 from .models import LoanType
-from fs_utils.serializers import CreateCurrentUser, SimpleUser
+from fs_utils.serializers import BaseSerializer
 
 
-class LoanTypeSerializer(serializers.ModelSerializer):
+class LoanTypeSerializer(BaseSerializer):
 
-    created_by = SimpleUser(
-        required=False, default=CreateCurrentUser(),
-    )
+    attachments = DocumentSerializer(many=True)
 
     class Meta:
         model = LoanType
