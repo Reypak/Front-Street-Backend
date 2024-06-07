@@ -25,6 +25,8 @@ apiurls = [
     path('', include('fs_documents.urls')),
     path('', include('fs_payments.urls')),
     path('', include('fs_reports.urls')),
+    path('', include('fs_installments.urls')),
+    path('', include('fs_utils.urls')),
 ]
 
 urlpatterns = [

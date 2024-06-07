@@ -16,4 +16,4 @@ class Installment(models.Model):
     payment_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f'Installment {self.id} for Loan {self.loan.id}'
+        return f'Installment {self.id} for {self.loan.application_number}'

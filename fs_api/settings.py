@@ -137,3 +137,12 @@ REST_FRAMEWORK = {
 cloudinary.config(cloud_name='deiutrhi7',
                   api_key='938321852779244',
                   api_secret='3IDX-d30TlkZ4nMvLWndrxry8zo')
+
+
+# EMAIL configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'eight8ug@gmail.com'
+EMAIL_HOST_PASSWORD = 'wlbsujdojnfbyxle'
