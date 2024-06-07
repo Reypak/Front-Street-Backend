@@ -8,9 +8,9 @@ from .views import *
 router = SimpleRouter()
 
 # define the router path and viewset to be used
-router.register(r'', LoanPaymentViewSet, basename="Loan Payments")
+router.register(r'loans', LoanPaymentViewSet, basename="Loan Payments")
 
 # specify URL Path for rest_framework
 urlpatterns = [
-    path('payments/loans/', include(router.urls)),
+    path('payments/', include(router.urls)),
 ]

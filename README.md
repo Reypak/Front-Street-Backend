@@ -50,6 +50,18 @@ Create Django App inside root directory
 
 </details>
 
+<!-- DATABASE -->
+<details>
+<summary>Database</summary>
+
+## Flush Database
+
+DESTROY all data currently in the database, and return each table to an empty state.
+
+`python manage.py flush `
+
+</details>
+
 ## Start Django Server
 
 `python manage.py runserver`
@@ -62,10 +74,12 @@ then run to apply:
 
 `python manage.py migrate`
 
-<!-- <details>
+<!--
+<details>
 <summary></summary>
 
-</details> -->
+</details>
+-->
 
 ##
 

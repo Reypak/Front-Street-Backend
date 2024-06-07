@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from fs_loan_reports.models import LoanReport
+from fs_reports.models import LoanReport
 from fs_loans.models import Loan
 from fs_utils.constants import CREATED, UPDATED
 

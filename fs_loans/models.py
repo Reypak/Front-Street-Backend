@@ -23,7 +23,6 @@ class Loan(BaseModel):
     amount = models.IntegerField()
     status = models.CharField(
         max_length=50, default=STATUS_PENDING, choices=LOAN_STATUSES)
-    # outstanding_balance = models.IntegerField(null=True, blank=True,)
     attachments = models.ManyToManyField(Document, related_name='documents')
 
     def __str__(self):

@@ -1,6 +1,6 @@
 import django_filters
 from fs_payments.models import LoanPayment
-from fs_loan_reports.models import LoanReport
+from fs_reports.models import LoanReport
 from fs_loans.models import Loan
 
 ICONTAINS = "icontains"
