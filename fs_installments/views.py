@@ -1,12 +1,21 @@
+from rest_framework import viewsets
 from datetime import date, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from fs_installments.models import Installment
+from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
+from fs_loans.serializers import LoanSerializer
 from fs_utils.utils import calculate_interest_rate
 
 # Create your views here.
+
+
+class InstallmentViewSet(viewsets.ModelViewSet):
+    queryset = Installment.objects.all()
+    serializer_class = InstallmentSerializer
 
 
 class CalculateInstallmentsView(APIView):
@@ -48,3 +57,17 @@ class CalculateInstallmentsView(APIView):
             'loan_term': loan_term,
             'installments': installments
         })
+
+
+class LoanInstallmentCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        installments = request.data
+        if not isinstance(installments, list):
+            return Response({"error": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # return Response(installments, status=status.HTTP_201_CREATED)
+        serializer = InstallmentSerializer(data=installments, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

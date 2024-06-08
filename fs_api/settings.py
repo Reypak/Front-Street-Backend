@@ -1,9 +1,14 @@
 
 # Cloudinary imports
+import os
 import cloudinary.uploader
 import cloudinary.api
 import cloudinary
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,7 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cloudinary',
-    'django_filters'
+    'django_filters',
+    'drf_yasg',
 ] + LOCAL_APPS
 
 MIDDLEWARE = [
@@ -134,15 +140,16 @@ REST_FRAMEWORK = {
 }
 
 # Cloudinary configuration
-cloudinary.config(cloud_name='deiutrhi7',
-                  api_key='938321852779244',
-                  api_secret='3IDX-d30TlkZ4nMvLWndrxry8zo')
+cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'),
+                  api_key=os.getenv('API_KEY'),
+                  api_secret=os.getenv('API_SECRET'),
+                  )
 
 
 # EMAIL configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'eight8ug@gmail.com'
-EMAIL_HOST_PASSWORD = 'wlbsujdojnfbyxle'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
