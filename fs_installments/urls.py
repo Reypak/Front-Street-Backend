@@ -8,13 +8,14 @@ from .views import *
 router = SimpleRouter()
 
 # define the router path and viewset to be used
-router.register(r'', InstallmentViewSet, basename="Installments")
+router.register(r'installments', InstallmentViewSet, basename="Installments")
 
 urlpatterns = [
-    path('installments/', include(router.urls)),
-    path('calculate_installments/', CalculateInstallmentsView.as_view(),
+    path('', include(router.urls)),
+    path('installments/loan/calculate/', CalculateInstallmentsView.as_view(),
          name='calculate_installments'),
-    path('create_installments/', LoanInstallmentCreateView.as_view(),
+    path('installments/loan/create/', LoanInstallmentCreateView.as_view(),
          name='loan_installment_create'),
-
+    path('installments/loan/<int:loan_id>/', LoanInstallmentList.as_view(),
+         name='loan_installment_list'),
 ]

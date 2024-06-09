@@ -7,8 +7,9 @@ from rest_framework import status
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
-from fs_loans.serializers import LoanSerializer
 from fs_utils.utils import calculate_interest_rate
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
 
 # Create your views here.
 
@@ -16,6 +17,7 @@ from fs_utils.utils import calculate_interest_rate
 class InstallmentViewSet(viewsets.ModelViewSet):
     queryset = Installment.objects.all()
     serializer_class = InstallmentSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CalculateInstallmentsView(APIView):
@@ -46,6 +48,7 @@ class CalculateInstallmentsView(APIView):
         for i in range(loan_term):
             due_date = disbursement_date + timedelta(days=30 * (i + 1))
             installments.append({
+                'loan': loan_id,
                 'due_date': due_date,
                 'amount': monthly_installment
             })
@@ -71,3 +74,14 @@ class LoanInstallmentCreateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Get loan installments
+
+
+class LoanInstallmentList(generics.ListAPIView):
+    serializer_class = InstallmentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        loan_id = self.kwargs['loan_id']
+        return Installment.objects.filter(loan=loan_id)

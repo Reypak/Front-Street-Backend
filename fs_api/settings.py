@@ -29,10 +29,11 @@ LOCAL_APPS = [
     'fs_api',
     'fs_documents',
     'fs_installments',
-    'fs_payments',
-    'fs_reports',
     'fs_loan_types',
     'fs_loans',
+    'fs_payments',
+    'fs_reports',
+    'fs_users',
     'fs_utils',
 ]
 
@@ -111,6 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# set custom user model:
+AUTH_USER_MODEL = 'fs_users.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

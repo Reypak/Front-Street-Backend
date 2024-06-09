@@ -5,7 +5,7 @@ from fs_utils.serializers import BaseSerializer
 
 class LoanTypeSerializer(BaseSerializer):
 
-    attachments = DocumentSerializer(many=True)
+    attachments = DocumentSerializer(many=True, required=False)
 
     class Meta:
         model = LoanType

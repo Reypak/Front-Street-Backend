@@ -7,7 +7,7 @@ from cloudinary.models import CloudinaryField
 
 
 class Document(models.Model):
-    caption = models.CharField(max_length=100, null=False, blank=False)
+    caption = models.CharField(max_length=100, null=True, blank=True)
     file = CloudinaryField(resource_type='raw', default=None,
                            null=True, blank=True, folder="media")
     document_type = models.CharField(

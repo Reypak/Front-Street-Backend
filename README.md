@@ -58,7 +58,7 @@ Create Django App inside root directory
 
 DESTROY all data currently in the database, and return each table to an empty state.
 
-`python manage.py flush `
+`python manage.py flush`
 
 </details>
 
@@ -243,4 +243,20 @@ Overriding the `create` method, get the field from `validated_data` and update i
  def create(self, validated_data):
         validated_data['payment_number'] = "pass any value"
         return super().create(validated_data)
+```
+
+## Overiding Serializer default class
+
+`get_serializer_class`: Returns the class that should be used for the serializer.
+
+```python
+# views.py
+
+# class LoanViewSet(viewsets.ModelViewSet):
+# ....
+ def get_serializer_class(self):
+        if self.action == 'list':
+            return LoanListSerializer
+
+        return LoanDetailsSerializer
 ```

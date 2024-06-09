@@ -5,9 +5,11 @@ from fs_loan_types.models import LoanType
 from fs_documents.models import Document
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
+from fs_users.models import CustomUser
 
 # Register your models here.
 admin.site.register(Loan)
+admin.site.register(CustomUser)
 admin.site.register(LoanType)
 admin.site.register(Document)
 admin.site.register(LoanReport)

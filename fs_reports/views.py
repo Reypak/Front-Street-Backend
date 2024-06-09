@@ -4,6 +4,7 @@ from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
 from fs_utils.filters.filters import LoanReportFilterSet
 from .serializers import LoanReportSerializer
 from .models import LoanReport
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -13,3 +14,4 @@ class LoanReportViewSet(viewsets.ModelViewSet):
     serializer_class = LoanReportSerializer
     filter_backends = DEFAULT_FILTER_BACKENDS
     filterset_class = LoanReportFilterSet
+    permission_classes = [IsAuthenticated]

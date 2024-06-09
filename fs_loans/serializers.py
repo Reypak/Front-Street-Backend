@@ -74,3 +74,10 @@ class LoanSerializer(BaseSerializer):
 
         data['outstanding_balance'] = instance.amount - total_payments
         return data
+
+
+class LoanListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Loan
+        fields = ('id', 'application_number', 'borrower_name',
+                  'amount', 'status', 'created_at')
