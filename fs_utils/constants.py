@@ -10,11 +10,11 @@ UPDATED = "updated"
 CREATED = "created"
 
 # statuses
-STATUS_PENDING = "pending"
-STATUS_APPROVED = "approved"
-STATUS_DECLINED = "declined"
-STATUS_DISBURSED = "disbursed"
-STATUS_CLOSED = "closed"
+PENDING = "pending"
+APPROVED = "approved"
+DECLINED = "declined"
+DISBURSED = "disbursed"
+CLOSED = "closed"
 
 OVERDUE = "overdue"
 PAID = "paid"
@@ -31,11 +31,11 @@ DOCUMENT_TYPES = (
 )
 
 LOAN_STATUSES = (
-    (STATUS_PENDING, 'Pending'),
-    (STATUS_APPROVED, 'Approved'),
-    (STATUS_DECLINED, 'Declined'),
-    (STATUS_DISBURSED, 'Disbursed'),
-    (STATUS_CLOSED, 'Closed')
+    (PENDING, 'Pending'),
+    (APPROVED, 'Approved'),
+    (DECLINED, 'Declined'),
+    (DISBURSED, 'Disbursed'),
+    (CLOSED, 'Closed')
 )
 
 INSTALLMENT_CHOICES = (

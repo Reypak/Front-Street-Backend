@@ -35,3 +35,6 @@ class LoanViewSet(viewsets.ModelViewSet):
 
     # def perform_create(self, serializer):
     #     return serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        return serializer.save(updated_by=self.request.user)

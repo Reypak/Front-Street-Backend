@@ -245,6 +245,24 @@ Overriding the `create` method, get the field from `validated_data` and update i
         return super().create(validated_data)
 ```
 
+### Using ViewSet
+
+Overriding the `perform_create` method
+
+```python
+# class LoanViewSet(viewsets.ModelViewSet):
+def perform_create(self, serializer):
+    return serializer.save(created_by=self.request.user)
+```
+
+Overriding the `perform_update` method
+
+```python
+# class LoanViewSet(viewsets.ModelViewSet):
+def perform_update(self, serializer):
+    return serializer.save(updated_by=self.request.user)
+```
+
 ## Overiding Serializer default class
 
 `get_serializer_class`: Returns the class that should be used for the serializer.

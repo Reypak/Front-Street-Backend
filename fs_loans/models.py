@@ -1,6 +1,6 @@
 from django.db import models
 from fs_documents.models import Document
-from fs_utils.constants import LOAN_STATUSES, STATUS_PENDING
+from fs_utils.constants import LOAN_STATUSES, PENDING
 from fs_utils.models import BaseModel
 from fs_loan_types.models import LoanType
 
@@ -22,8 +22,17 @@ class Loan(BaseModel):
         max_digits=5, decimal_places=2, default=0, null=True, blank=True)  # Annual interest rate
     amount = models.IntegerField()
     status = models.CharField(
-        max_length=50, default=STATUS_PENDING, choices=LOAN_STATUSES)
+        max_length=50, default=PENDING, choices=LOAN_STATUSES)
     attachments = models.ManyToManyField(Document, related_name='documents')
+
+    # def save(self, *args, **kwargs):
+    #     user = kwargs.pop('user', None)
+    #     print('created_by', user)
+    #     if user:
+    #         if not self.pk:
+    #             self.created_by = user
+    #         self.created_by = user
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.application_number}: {self.amount}/='

@@ -21,16 +21,6 @@ class LoanSerializer(BaseSerializer):
         model = Loan
         fields = '__all__'
 
-    # def create(self, validated_data):
-    #     loan = Loan.objects.create(**validated_data)
-
-    #     attachments_data = validated_data.pop('attachments')
-    #     for attachment_data in attachments_data:
-    #         attachment = Document.objects.create(**attachment_data)
-    #         loan.attachments.add(attachment)
-    #     return loan
-        # return super(LoanSerializer, self).create(instance, validated_data)
-
     def create(self, validated_data):
         # Extract and remove 'attachments' from validated_data
         attachments_data = validated_data.pop('attachments', [])
@@ -53,14 +43,8 @@ class LoanSerializer(BaseSerializer):
 
     def update(self, instance, validated_data):
 
-        # instance.borrower_name = validated_data.get(
-        #     'borrower_name', instance.borrower_name)
-        # instance.amount = validated_data.get(
-        #     'amount', instance.amount)
-        # instance.save()
-
         # get updating user
-        instance.updated_by = self.context['request'].user
+        # instance.updated_by = self.context['request'].user
 
         save_attachments(instance, validated_data)
 
@@ -71,7 +55,7 @@ class LoanSerializer(BaseSerializer):
         # Iterate through the payments
         total_payments = instance.payments.aggregate(
             total=models.Sum('amount_paid'))['total'] or 0
-
+        # set outstanding_balance
         data['outstanding_balance'] = instance.amount - total_payments
         return data
 

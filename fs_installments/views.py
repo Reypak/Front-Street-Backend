@@ -7,6 +7,7 @@ from rest_framework import status
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
+from fs_utils.constants import DISBURSED
 from fs_utils.utils import calculate_interest_rate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
@@ -21,6 +22,8 @@ class InstallmentViewSet(viewsets.ModelViewSet):
 
 
 class CalculateInstallmentsView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         loan_id = request.data.get('loan_id')
 
@@ -63,15 +66,24 @@ class CalculateInstallmentsView(APIView):
 
 
 class LoanInstallmentCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         installments = request.data
         if not isinstance(installments, list):
             return Response({"error": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # return Response(installments, status=status.HTTP_201_CREATED)
+        # Pass installments to serializer
         serializer = InstallmentSerializer(data=installments, many=True)
         if serializer.is_valid():
             serializer.save()
+
+            # Update loan status
+            loan_id = installments[0]['loan']  # Extract the loan_id
+            loan = Loan.objects.get(id=loan_id)
+            loan.status = DISBURSED
+            loan.save()
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

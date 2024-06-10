@@ -1,22 +1,17 @@
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.conf import settings
 
+# from django.http import HttpResponse
+# return HttpResponse('Email sent successfully')
 
-def send_email(request):
-    subject = 'Test Templated Email'
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = ['reypak.sweg@gmail.com']
 
-    context = {
-        'user': 'Matthew',
-        'message': 'This is a test email using an html templates.'
-    }
-    message = render_to_string('test.html', context)
+def send_templated_email(subject, template_name, context, recipient_list, from_email=None):
+    if from_email is None:
+        from_email = settings.EMAIL_HOST_USER
 
-    email = EmailMessage(subject, message, email_from, recipient_list)
-    email.content_subtype = "html"
+    message = render_to_string(template_name, context)
+
+    email = EmailMessage(subject, message, from_email, recipient_list)
+    email.content_subtype = "html"  # Indicate that the email content is HTML
     email.send()
-
-    return HttpResponse('Email sent successfully')
