@@ -6,6 +6,8 @@ from fs_documents.models import Document
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
 from fs_users.models import CustomUser
+from fs_roles.models import Role
+from django.contrib.auth.models import Permission
 
 # Register your models here.
 admin.site.register(Loan)
@@ -15,3 +17,5 @@ admin.site.register(Document)
 admin.site.register(LoanReport)
 admin.site.register(Installment)
 admin.site.register(LoanPayment)
+admin.site.register(Role)
+admin.site.register(Permission)

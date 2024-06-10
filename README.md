@@ -141,6 +141,12 @@ class CustomPagination(PageNumberPagination):
     page_size = 20
 ```
 
+### Disable pagination
+
+Disable pagination for the viewset
+
+` pagination_class = None`
+
 </details>
 
 </details>

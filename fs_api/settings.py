@@ -33,6 +33,7 @@ LOCAL_APPS = [
     'fs_loans',
     'fs_payments',
     'fs_reports',
+    'fs_roles',
     'fs_users',
     'fs_utils',
 ]
