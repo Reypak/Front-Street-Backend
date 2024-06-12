@@ -37,7 +37,7 @@ schema_view = get_schema_view(
 
 # Main urls
 apiurls = [
-    path('', include('fs_users.urls')),
+    path('', include('fs_auth.urls')),
     path('', include('fs_loans.urls')),
     path('', include('fs_loan_types.urls')),
     path('', include('fs_documents.urls')),
@@ -45,12 +45,15 @@ apiurls = [
     path('', include('fs_reports.urls')),
     path('', include('fs_roles.urls')),
     path('', include('fs_installments.urls')),
+    path('', include('fs_users.urls')),
     path('', include('fs_utils.urls')),
 ]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(apiurls)),
+
+    # Documentation
     path('swagger/', schema_view.with_ui('swagger',
          cache_timeout=0), name='schema-swagger-ui'),
     path('docs/', schema_view.with_ui('redoc',

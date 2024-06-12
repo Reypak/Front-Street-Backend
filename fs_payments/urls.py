@@ -13,4 +13,6 @@ router.register(r'loans', LoanPaymentViewSet, basename="Loan Payments")
 # specify URL Path for rest_framework
 urlpatterns = [
     path('payments/', include(router.urls)),
+    path('payments/loan/<int:loan_id>/', LoanPaymentsList.as_view(),
+         name='loan_payments_list'),
 ]
