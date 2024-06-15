@@ -1,5 +1,6 @@
 
 # Cloudinary imports
+from datetime import timedelta
 import os
 import cloudinary.uploader
 import cloudinary.api
@@ -28,6 +29,7 @@ ALLOWED_HOSTS = []
 LOCAL_APPS = [
     'fs_api',
     'fs_documents',
+    'fs_categories',
     'fs_installments',
     'fs_loan_types',
     'fs_loans',
@@ -53,6 +55,11 @@ INSTALLED_APPS = [
     'cloudinary',
     'drf_yasg',
 ] + LOCAL_APPS
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

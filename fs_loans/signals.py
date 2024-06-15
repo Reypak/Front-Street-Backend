@@ -49,6 +49,6 @@ def handle_loan(sender, instance, created, **kwargs):
         return send_templated_email(subject, 'loan_status.html', context, recipient_list)
 
     # List statuses to trigger email
-    if loan_status in [PENDING, APPROVED, DECLINED, DISBURSED]:
-        if email is not None:
-            return send_email()
+    # if loan_status in [PENDING, APPROVED, DECLINED, DISBURSED]:
+    #     if email is not None:
+    #         return send_email()

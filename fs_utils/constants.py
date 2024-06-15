@@ -21,6 +21,11 @@ PAID = "paid"
 PAST_DUE = "past_due"
 CURRENT = "current"
 
+# loan types
+DAILY = "daily"
+WEEKLY = "weekly"
+MONTHLY = "monthly"
+
 # document types
 DOCUMENT_TYPE_OTHER = "other"
 DOCUMENT_TYPE_ATTACHMENT = "attachment"
@@ -44,3 +49,10 @@ INSTALLMENT_CHOICES = (
     (CURRENT, 'Current'),
     (OVERDUE, 'Overdue')
 )
+
+# LOAN TYPES
+LOAN_TYPES = [
+    (DAILY, 'Daily'),
+    (WEEKLY, 'Weekly'),
+    (MONTHLY, 'Monthy'),
+]
