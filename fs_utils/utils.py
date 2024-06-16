@@ -38,4 +38,4 @@ def calculate_loan_interest_rate(loan):
         payment_amount = int(principal / loan_term) + monthly_interest_rate
 
     # round off to the nearest hundred
-    return int(round(payment_amount, ))
+    return int(round(payment_amount, -2))

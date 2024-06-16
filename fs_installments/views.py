@@ -39,7 +39,7 @@ class CalculateInstallmentsView(APIView):
         loan_type = loan.loan_type
         loan_term = loan.loan_term
         interest_rate = loan.interest_rate
-        disbursement_date = date.today()  # get current date
+        disbursement_date = date.today() + timedelta(days=30)  # get current date
 
         if loan_type == MONTHLY:
             if loan_term == 0:

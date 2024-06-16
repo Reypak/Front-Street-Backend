@@ -16,10 +16,12 @@ DECLINED = "declined"
 DISBURSED = "disbursed"
 CLOSED = "closed"
 
+# installment status
 OVERDUE = "overdue"
 PAID = "paid"
-PAST_DUE = "past_due"
-CURRENT = "current"
+NOT_PAID = "not_paid"
+PARTIALLY_PAID = "partially_paid"
+MISSED = "missed"
 
 # loan types
 DAILY = "daily"
@@ -45,9 +47,9 @@ LOAN_STATUSES = (
 
 INSTALLMENT_CHOICES = (
     (PAID, 'Paid'),
-    (PAST_DUE, 'Past Due'),
-    (CURRENT, 'Current'),
-    (OVERDUE, 'Overdue')
+    (NOT_PAID, 'Not Paid'),
+    (PARTIALLY_PAID, 'Partially Paid'),
+    (MISSED, 'Missed'),
 )
 
 # LOAN TYPES
