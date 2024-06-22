@@ -1,10 +1,31 @@
-from django.db.models.signals import post_save
+from django.utils import timezone
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
 from fs_utils.constants import APPROVED, CREATED, DECLINED, DISBURSED, PENDING, UPDATED
 from fs_utils.notifications.emails import send_templated_email
+
+
+@receiver(pre_save, sender=Loan)
+def pre_save_loan(sender, instance, **kwargs):
+    loan_status = instance.status
+
+    if instance.pk:  # Check if the object exists
+        old_status = Loan.objects.get(pk=instance.pk).status
+
+        if old_status != loan_status:
+            if loan_status == DISBURSED:
+                instance.disbursement_date = timezone.now()
+            elif loan_status == APPROVED:
+                instance.approved_date = timezone.now()
+
+    else:  # Create new object
+        if loan_status == DISBURSED:
+            instance.disbursement_date = timezone.now()
+        elif loan_status == APPROVED:
+            instance.approved_date = timezone.now()
 
 
 @receiver(post_save, sender=Loan)
@@ -50,5 +71,7 @@ def handle_loan(sender, instance, created, **kwargs):
 
     # List statuses to trigger email
     # if loan_status in [PENDING, APPROVED, DECLINED, DISBURSED]:
-    #     if email is not None:
+    #     # get old status
+    #     old_status = Loan.objects.get(pk=instance.pk).status
+    #     if old_status != loan_status and email is not None:
     #         return send_email()

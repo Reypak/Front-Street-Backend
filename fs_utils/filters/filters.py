@@ -1,4 +1,5 @@
 import django_filters
+from fs_loans.filters import BaseLoanFilterSet
 from fs_payments.models import LoanPayment
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
@@ -7,7 +8,7 @@ ICONTAINS = "icontains"
 IEXACT = "iexact"
 
 
-class LoanFilterSet(django_filters.FilterSet):
+class LoanFilterSet(BaseLoanFilterSet):
     application_number = django_filters.CharFilter(lookup_expr=IEXACT)
     borrower_name = django_filters.CharFilter(lookup_expr=ICONTAINS)
     category = django_filters.CharFilter(lookup_expr=IEXACT)

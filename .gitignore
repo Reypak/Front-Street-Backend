@@ -11,3 +11,4 @@ static
 *.sqlite*
 .vscode/
 migrations
+.DS_Store
