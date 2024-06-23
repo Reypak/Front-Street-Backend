@@ -1,9 +1,15 @@
 
 # Cloudinary imports
+from datetime import timedelta
+import os
 import cloudinary.uploader
 import cloudinary.api
 import cloudinary
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,10 +28,15 @@ ALLOWED_HOSTS = []
 
 LOCAL_APPS = [
     'fs_api',
-    'loans',
-    'documents',
-    'categories',
-    'utils',
+    'fs_documents',
+    'fs_categories',
+    'fs_installments',
+    'fs_loans',
+    'fs_payments',
+    'fs_reports',
+    'fs_roles',
+    'fs_users',
+    'fs_utils',
 ]
 
 # Application definition
@@ -38,9 +49,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'django_filters',
     'cloudinary',
-    'django_filters'
+    'drf_yasg',
 ] + LOCAL_APPS
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -102,6 +120,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# set custom user model:
+AUTH_USER_MODEL = 'fs_users.CustomUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -126,11 +146,28 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
 
 # Cloudinary configuration
-cloudinary.config(cloud_name='deiutrhi7',
-                  api_key='938321852779244',
-                  api_secret='3IDX-d30TlkZ4nMvLWndrxry8zo')
+cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'),
+                  api_key=os.getenv('API_KEY'),
+                  api_secret=os.getenv('API_SECRET'),
+                  )
+
+
+# EMAIL configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

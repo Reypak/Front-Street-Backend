@@ -11,4 +11,4 @@ static
 *.sqlite*
 .vscode/
 migrations
-__init__*
+.DS_Store

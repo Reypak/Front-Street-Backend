@@ -17,14 +17,46 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Front Street API",
+        default_version='v1',
+        description="API documentation",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@yourapi.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+# Main urls
 apiurls = [
-    path('', include('loans.urls')),
-    path('', include('categories.urls')),
-    path('', include('documents.urls')),
+    path('', include('fs_auth.urls')),
+    path('', include('fs_loans.urls')),
+    path('', include('fs_categories.urls')),
+    path('', include('fs_documents.urls')),
+    path('', include('fs_payments.urls')),
+    path('', include('fs_reports.urls')),
+    path('', include('fs_roles.urls')),
+    path('', include('fs_installments.urls')),
+    path('', include('fs_users.urls')),
+    path('', include('fs_utils.urls')),
 ]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(apiurls)),
+
+    # Documentation
+    path('swagger/', schema_view.with_ui('swagger',
+         cache_timeout=0), name='schema-swagger-ui'),
+    path('docs/', schema_view.with_ui('redoc',
+         cache_timeout=0), name='schema-redoc'),
+
 ]
