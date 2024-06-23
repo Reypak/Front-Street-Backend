@@ -22,6 +22,9 @@ class InstallmentViewSet(viewsets.ModelViewSet):
 
 
 class CalculateInstallmentsView(APIView):
+    """
+        Create preview list of all installments for a loan.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -86,6 +89,11 @@ class CalculateInstallmentsView(APIView):
 
 
 class LoanInstallmentCreateView(APIView):
+
+    """
+        Create multiple installments for a loan.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

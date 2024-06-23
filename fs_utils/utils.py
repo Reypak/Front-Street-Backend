@@ -11,6 +11,11 @@ def generate_unique_number(prefix):
     return f"{prefix}{date_str}{unique_str}"
 
 
+def generate_ref_number(prefix, id):
+    date_str = datetime.now().strftime("%Y%m%d")
+    return f"{prefix}{date_str}{id}"
+
+
 # calculate interest rate
 def calculate_interest_rate(principal, interest_rate, months):
     monthly_interest_rate = interest_rate / 12 / 100

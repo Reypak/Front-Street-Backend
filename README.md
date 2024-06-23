@@ -284,3 +284,19 @@ def perform_update(self, serializer):
 
         return LoanDetailsSerializer
 ```
+
+## Get object instance from inside serializer
+
+```python
+
+  def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # get loan instance
+        loan = Loan.objects.get(application=instance.id)
+        # serialize loan
+        loan_serializer = LoanSerializer(loan)
+        # set loan
+        data['loan'] = loan_serializer.data
+        return data
+
+```

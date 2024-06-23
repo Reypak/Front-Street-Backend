@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
-from fs_utils.constants import APPROVED, CREATED, DECLINED, DISBURSED, PENDING, UPDATED
+from fs_utils.constants import APPROVED, CANCELLED, CREATED, DECLINED, DISBURSED, PENDING, UPDATED
 from fs_utils.notifications.emails import send_templated_email
 
 
@@ -14,6 +14,8 @@ def pre_save_loan(sender, instance, **kwargs):
 
     if instance.pk:  # Check if the object exists
         old_status = Loan.objects.get(pk=instance.pk).status
+        # set the old status from pre_save
+        instance.old_status = old_status
 
         if old_status != loan_status:
             if loan_status == DISBURSED:
@@ -33,7 +35,9 @@ def handle_loan(sender, instance, created, **kwargs):
 
     created_by = None
     loan_status = instance.status
-    email = instance.email
+
+    # if hasattr(instance, 'email'):
+    email = instance.client.email
 
     if created:
         action = CREATED
@@ -62,16 +66,18 @@ def handle_loan(sender, instance, created, **kwargs):
         recipient_list = [email]
 
         context = {
-            'user': instance.borrower_name,
-            'application_number': instance.application_number,
+            'user': instance.client.first_name,
+            'application_number': instance.ref_number,
             'status': get_loan_status(),
         }
 
         return send_templated_email(subject, 'loan_status.html', context, recipient_list)
 
     # List statuses to trigger email
-    # if loan_status in [PENDING, APPROVED, DECLINED, DISBURSED]:
-    #     # get old status
-    #     old_status = Loan.objects.get(pk=instance.pk).status
-    #     if old_status != loan_status and email is not None:
-    #         return send_email()
+    if loan_status in [PENDING, APPROVED, CANCELLED, DISBURSED]:
+
+        # get old status from instance
+        old_status = instance.old_status
+
+        if old_status != loan_status and email is not None:
+            return send_email()

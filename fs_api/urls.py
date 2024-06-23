@@ -38,13 +38,16 @@ schema_view = get_schema_view(
 # Main urls
 apiurls = [
     path('', include('fs_auth.urls')),
-    path('', include('fs_loans.urls')),
+    path('', include('fs_applications.urls')),
     path('', include('fs_categories.urls')),
+    path('', include('fs_charges.urls')),
+    path('', include('fs_clients.urls')),
     path('', include('fs_documents.urls')),
+    path('', include('fs_installments.urls')),
+    path('', include('fs_loans.urls')),
     path('', include('fs_payments.urls')),
     path('', include('fs_reports.urls')),
     path('', include('fs_roles.urls')),
-    path('', include('fs_installments.urls')),
     path('', include('fs_users.urls')),
     path('', include('fs_utils.urls')),
 ]

@@ -8,6 +8,8 @@ from fs_utils.constants import INSTALLMENT_CHOICES, NOT_PAID
 
 class Installment(models.Model):
     loan = models.ForeignKey(Loan, on_delete=models.DO_NOTHING)
+    fees_amount = models.IntegerField(default=0)
+    penalty_amount = models.IntegerField(default=0)
     due_date = models.DateField()
     amount = models.IntegerField()
     paid_amount = models.IntegerField(default=0)

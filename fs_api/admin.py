@@ -1,5 +1,8 @@
 from django.contrib import admin
+from fs_applications.models import Application
 from fs_categories.models import Category
+from fs_charges.models import Charge
+from fs_clients.models import Client
 from fs_installments.models import Installment
 from fs_payments.models import LoanPayment
 from fs_documents.models import Document
@@ -19,3 +22,6 @@ admin.site.register(Installment)
 admin.site.register(LoanPayment)
 admin.site.register(Role)
 admin.site.register(Permission)
+admin.site.register(Application)
+admin.site.register(Charge)
+admin.site.register(Client)

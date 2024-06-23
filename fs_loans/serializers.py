@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db import models
-
+from fs_clients.serializers import ClientSerializer
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
@@ -15,7 +15,9 @@ class LoanSerializer(BaseSerializer):
     category_name = serializers.CharField(
         source="category.name", read_only=True)
 
-    attachments = DocumentSerializer(many=True)
+    attachments = DocumentSerializer(many=True, required=False)
+
+    client = ClientSerializer()
 
     class Meta:
         model = Loan
@@ -29,7 +31,7 @@ class LoanSerializer(BaseSerializer):
         instance = super(LoanSerializer, self).create(validated_data)
 
         # create application number
-        instance.application_number = f"FS/LOA/{instance.id}"
+        instance.ref_number = f"FS/LOA/{instance.id}"
         instance.save()
 
         # Create Document objects
@@ -61,7 +63,13 @@ class LoanSerializer(BaseSerializer):
 
 
 class LoanListSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(
+        source="category.name", read_only=True)
+
+    client = serializers.CharField(
+        source="client.first_name", read_only=True)
+
     class Meta:
         model = Loan
-        fields = ('id', 'application_number', 'borrower_name',
-                  'amount', 'status', 'created_at')
+        fields = ('id', 'ref_number',
+                  'amount', 'status', 'created_at', 'category_name', 'client')

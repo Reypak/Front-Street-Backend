@@ -3,9 +3,7 @@ from fs_loans.filters import BaseLoanFilterSet
 from fs_payments.models import LoanPayment
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
-
-ICONTAINS = "icontains"
-IEXACT = "iexact"
+from fs_utils.constants import ICONTAINS, IEXACT
 
 
 class LoanFilterSet(BaseLoanFilterSet):

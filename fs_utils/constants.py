@@ -5,6 +5,10 @@ class CustomPagination(PageNumberPagination):
     page_size = 5
 
 
+# filter expressions
+ICONTAINS = "icontains"
+IEXACT = "iexact"
+
 # actions
 UPDATED = "updated"
 CREATED = "created"
@@ -15,6 +19,8 @@ APPROVED = "approved"
 DECLINED = "declined"
 DISBURSED = "disbursed"
 CLOSED = "closed"
+CANCELLED = "cancelled"
+ACCEPTED = "accepted"
 
 # installment status
 OVERDUE = "overdue"
@@ -32,6 +38,12 @@ MONTHLY = "monthly"
 DOCUMENT_TYPE_OTHER = "other"
 DOCUMENT_TYPE_ATTACHMENT = "attachment"
 
+# repayment types
+FIXED_MONTHLY = "fixed_monthly"
+INTEREST_ONLY = "interest_only"
+
+
+# CHOICES
 DOCUMENT_TYPES = (
     (DOCUMENT_TYPE_OTHER, 'Other'),
     (DOCUMENT_TYPE_ATTACHMENT, 'Attachment'),
@@ -40,7 +52,7 @@ DOCUMENT_TYPES = (
 LOAN_STATUSES = (
     (PENDING, 'Pending'),
     (APPROVED, 'Approved'),
-    (DECLINED, 'Declined'),
+    (CANCELLED, 'Cancelled'),
     (DISBURSED, 'Disbursed'),
     (CLOSED, 'Closed')
 )
@@ -52,9 +64,23 @@ INSTALLMENT_CHOICES = (
     (MISSED, 'Missed'),
 )
 
-# LOAN TYPES
-LOAN_TYPES = [
+# PAYMENT FREQUENCY
+PAYMENT_FREQUENCY_CHOICES = [
     (DAILY, 'Daily'),
     (WEEKLY, 'Weekly'),
     (MONTHLY, 'Monthy'),
 ]
+
+# REPAYMENT TYPES
+REPAYMENT_TYPES = [
+    (FIXED_MONTHLY, 'Fixed Monthly Payments'),
+    (INTEREST_ONLY, 'Interest-Only Payments'),
+]
+
+# APPLICATION_STATUS
+APPLICATION_STATUS_CHOICES = (
+    (PENDING, 'Pending'),
+    (ACCEPTED, 'Accepted'),
+    (DECLINED, 'Declined'),
+    (CANCELLED, 'Cancelled'),
+)
