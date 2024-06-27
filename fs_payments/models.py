@@ -24,4 +24,4 @@ class LoanPayment(BaseModel):
         super(LoanPayment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.payment_number} - {self.loan.application_number} - {self.amount_paid}/='
+        return f'{self.payment_number} - {self.loan.ref_number} - {self.amount_paid}/='

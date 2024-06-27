@@ -73,8 +73,8 @@ PAYMENT_FREQUENCY_CHOICES = [
 
 # REPAYMENT TYPES
 REPAYMENT_TYPES = [
-    (FIXED_MONTHLY, 'Fixed Monthly Payments'),
-    (INTEREST_ONLY, 'Interest-Only Payments'),
+    (FIXED_MONTHLY, 'Fixed Monthly'),
+    (INTEREST_ONLY, 'Interest-Only'),
 ]
 
 # APPLICATION_STATUS

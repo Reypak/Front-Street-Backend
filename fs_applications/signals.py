@@ -11,8 +11,9 @@ from .models import Application
 def create_loan_on_acceptance(sender, instance, created, **kwargs):
     if not created:  # Check if this is an update
         if instance.status == ACCEPTED and not Loan.objects.filter(application=instance).exists():
-            Loan.objects.create(
+            loan = Loan.objects.create(
                 application=instance,
+                client=instance.client,
                 category=instance.category,
                 loan_term=instance.loan_term,
                 interest_rate=instance.interest_rate,
@@ -20,3 +21,5 @@ def create_loan_on_acceptance(sender, instance, created, **kwargs):
                 payment_frequency=instance.payment_frequency,
                 created_by=instance.updated_by
             )
+            # call to creat ref_number
+            loan.generate_ref_number()

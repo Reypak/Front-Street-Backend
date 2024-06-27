@@ -1,10 +1,12 @@
 from django.db import models
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_documents.models import Document
-from fs_utils.constants import LOAN_STATUSES, PENDING
+from fs_utils.constants import FIXED_MONTHLY, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
 
 
 class Loan(LoanApplicationBaseModel):
+    repayment_type = models.CharField(
+        max_length=50, default=FIXED_MONTHLY, choices=REPAYMENT_TYPES)
 
     # loan application instance
     application = models.OneToOneField(
@@ -28,6 +30,10 @@ class Loan(LoanApplicationBaseModel):
     #             self.created_by = user
     #         self.created_by = user
     #     super().save(*args, **kwargs)
+
+    def generate_ref_number(self):
+        self.ref_number = f"FS/LOA/{self.id}"
+        self.save()
 
     def __str__(self):
         return f'{self.ref_number}: {self.amount}/= : {self.client.first_name}'

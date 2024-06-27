@@ -6,11 +6,11 @@ from fs_utils.serializers import BaseSerializer
 
 class LoanPaymentSerializer(BaseSerializer):
 
-    application_number = serializers.CharField(
-        source="loan.application_number", read_only=True)
+    ref_number = serializers.CharField(
+        source="loan.ref_number", read_only=True)
 
-    borrower_name = serializers.CharField(
-        source="loan.borrower_name", read_only=True)
+    client_name = serializers.CharField(
+        source="loan.client.first_name", read_only=True)
 
     class Meta:
         model = LoanPayment

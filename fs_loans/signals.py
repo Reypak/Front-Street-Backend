@@ -74,10 +74,13 @@ def handle_loan(sender, instance, created, **kwargs):
         return send_templated_email(subject, 'loan_status.html', context, recipient_list)
 
     # List statuses to trigger email
-    if loan_status in [PENDING, APPROVED, CANCELLED, DISBURSED]:
+    # if loan_status in [PENDING, APPROVED, CANCELLED, DISBURSED]:
+    #     # get old status from instance
+    #     old_status = instance.old_status
 
-        # get old status from instance
-        old_status = instance.old_status
+    #     if old_status is None:
+    #         old_status = Loan.objects.get(pk=instance.pk).status
+    #         # old_status = None
 
-        if old_status != loan_status and email is not None:
-            return send_email()
+    #     if old_status != loan_status and email is not None:
+    #         return send_email()

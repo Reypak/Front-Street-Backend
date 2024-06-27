@@ -17,7 +17,7 @@ class LoanSerializer(BaseSerializer):
 
     attachments = DocumentSerializer(many=True, required=False)
 
-    client = ClientSerializer()
+    client_details = ClientSerializer(source="client", read_only=True)
 
     class Meta:
         model = Loan

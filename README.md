@@ -300,3 +300,19 @@ def perform_update(self, serializer):
         return data
 
 ```
+
+# SQL COMMANDS
+
+## Using SQLite Shell
+
+### Open SQLite shell:
+
+Execute the following command to open the SQLite shell and connect to your database file (usually named db.sqlite3):
+
+`sqlite3 db.sqlite3`
+
+Delete user by ID:
+
+```sql
+DELETE FROM fs_users_customuser WHERE id = 1;
+```
