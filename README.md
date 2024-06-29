@@ -273,6 +273,10 @@ def perform_update(self, serializer):
 
 `get_serializer_class`: Returns the class that should be used for the serializer.
 
+### Action Types
+
+'list' , 'create', 'retrieve'
+
 ```python
 # views.py
 
@@ -303,6 +307,10 @@ def perform_update(self, serializer):
 
 # SQL COMMANDS
 
+## Using db shell (Recommended)
+
+`python manage.py shell`
+
 ## Using SQLite Shell
 
 ### Open SQLite shell:
@@ -316,3 +324,20 @@ Delete user by ID:
 ```sql
 DELETE FROM fs_users_customuser WHERE id = 1;
 ```
+
+# HELPERS
+
+### Tracing
+
+To handle tracing
+
+```
+import pdb
+pdb.set_trace()
+```
+
+### Inspect DB
+
+To inspect the database structure
+
+`python manage.py inspectdb`

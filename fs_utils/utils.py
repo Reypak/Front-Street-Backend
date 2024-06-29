@@ -17,30 +17,31 @@ def generate_ref_number(prefix, id):
 
 
 # calculate interest rate
-def calculate_interest_rate(principal, interest_rate, months):
-    monthly_interest_rate = interest_rate / 12 / 100
-    if monthly_interest_rate > 0:
-        payment_amount = (principal * monthly_interest_rate) / \
-            (1 - (1 + monthly_interest_rate) ** -months)
-    else:
-        payment_amount = principal / months
+# def calculate_interest_rate(principal, interest_rate, months):
+#     monthly_interest_rate = interest_rate / 12 / 100
+#     if monthly_interest_rate > 0:
+#         payment_amount = (principal * monthly_interest_rate) / \
+#             (1 - (1 + monthly_interest_rate) ** -months)
+#     else:
+#         payment_amount = principal / months
 
-    # round off to the nearest hundred
-    return int(round(payment_amount, -2))
+#     # round off to the nearest hundred
+#     return int(round(payment_amount, -2))
 
 
 def calculate_loan_interest_rate(loan):
     principal = loan.amount
-    loan_type = loan.loan_type
+    payment_frequency = loan.payment_frequency
     loan_term = loan.loan_term
     interest_rate = loan.interest_rate
 
-    if loan_type == DAILY:
-        payment_amount = principal / 30
+    if payment_frequency == DAILY:
+        applied_interest_rate = int(interest_rate / 100 * principal / 30)
+        payment_amount = int(principal / 30) + applied_interest_rate
 
-    elif loan_type == MONTHLY:
-        monthly_interest_rate = interest_rate / 100 * principal
-        payment_amount = int(principal / loan_term) + monthly_interest_rate
+    elif payment_frequency == MONTHLY:
+        applied_interest_rate = interest_rate / 100 * principal / loan_term
+        payment_amount = int(principal / loan_term) + applied_interest_rate
 
     # round off to the nearest hundred
-    return int(round(payment_amount, -2))
+    return {'interest': int(round(applied_interest_rate, -2)), 'payment_amount': int(round(payment_amount, -2))}

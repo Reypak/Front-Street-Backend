@@ -1,6 +1,6 @@
 from rest_framework import viewsets
+from fs_loans.filters import LoanFilterSet
 from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-from fs_utils.filters.filters import LoanFilterSet
 # from utils.constants import CustomPagination
 
 # Create your views here.
@@ -27,6 +27,8 @@ class LoanViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return LoanListSerializer
+        if self.action == 'retrieve':
+            return LoanViewSerializer
 
         return LoanSerializer
 

@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
+from fs_users.models import CustomUser
+
 
 # Simple user class inheritable
 class SimpleUser(serializers.ModelSerializer):
@@ -28,3 +30,13 @@ class BaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         abstract = True
+
+
+class ClientSerializer(BaseSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            'id',
+            'display_name',
+            'email',
+            'phone_number',)

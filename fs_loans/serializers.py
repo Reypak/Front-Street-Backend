@@ -1,23 +1,13 @@
 from rest_framework import serializers
 from django.db import models
-from fs_clients.serializers import ClientSerializer
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
 from .models import Loan
-from fs_utils.serializers import BaseSerializer
+from fs_utils.serializers import BaseSerializer, ClientSerializer
 
 
 class LoanSerializer(BaseSerializer):
-    outstanding_balance = serializers.IntegerField(read_only=True)
-
-    # Get field name from category attribute
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
-
-    attachments = DocumentSerializer(many=True, required=False)
-
-    client_details = ClientSerializer(source="client", read_only=True)
 
     class Meta:
         model = Loan
@@ -52,15 +42,6 @@ class LoanSerializer(BaseSerializer):
 
         return super(LoanSerializer, self).update(instance, validated_data)
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        # Iterate through the payments
-        total_payments = instance.payments.aggregate(
-            total=models.Sum('amount_paid'))['total'] or 0
-        # set outstanding_balance
-        data['outstanding_balance'] = instance.amount - total_payments
-        return data
-
 
 class LoanListSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(
@@ -73,3 +54,29 @@ class LoanListSerializer(serializers.ModelSerializer):
         model = Loan
         fields = ('id', 'ref_number',
                   'amount', 'status', 'created_at', 'category_name', 'client')
+
+
+class LoanViewSerializer(serializers.ModelSerializer):
+
+    # Get field name from category attribute
+    category_name = serializers.CharField(
+        source="category.name", read_only=True)
+
+    attachments = DocumentSerializer(many=True, required=False)
+
+    client = ClientSerializer()
+
+    class Meta:
+        model = Loan
+        fields = '__all__'
+
+    outstanding_balance = serializers.IntegerField(read_only=True)
+
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     # Iterate through the payments
+    #     total_payments = instance.payments.aggregate(
+    #         total=models.Sum('amount_paid'))['total'] or 0
+    #     # set outstanding_balance
+    #     data['outstanding_balance'] = instance.amount - total_payments
+    #     return data

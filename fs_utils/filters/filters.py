@@ -1,27 +1,7 @@
 import django_filters
-from fs_loans.filters import BaseLoanFilterSet
 from fs_payments.models import LoanPayment
 from fs_reports.models import LoanReport
-from fs_loans.models import Loan
 from fs_utils.constants import ICONTAINS, IEXACT
-
-
-class LoanFilterSet(BaseLoanFilterSet):
-    application_number = django_filters.CharFilter(lookup_expr=IEXACT)
-    borrower_name = django_filters.CharFilter(lookup_expr=ICONTAINS)
-    category = django_filters.CharFilter(lookup_expr=IEXACT)
-    loan_type = django_filters.CharFilter(lookup_expr=IEXACT)
-    # field name
-    category_name = django_filters.CharFilter(
-        field_name="category__name", lookup_expr=ICONTAINS)
-
-    class Meta:
-        model = Loan
-        fields = ['borrower_name',
-                  'loan_type',
-                  'category',
-                  'category_name',
-                  'application_number']
 
 
 class LoanReportFilterSet(django_filters.FilterSet):

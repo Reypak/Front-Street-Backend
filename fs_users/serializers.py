@@ -4,9 +4,11 @@ from fs_users.models import CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
-    role = RoleSerializer()
+    # role_details = RoleSerializer(source="role", read_only=True)
+
+    role_name = serializers.CharField(source="role.name", read_only=True)
 
     class Meta:
         model = CustomUser
         fields = ['id', 'email', 'first_name',
-                  'last_name', 'phone_number', 'role']
+                  'last_name', 'phone_number', 'role_name']

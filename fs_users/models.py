@@ -42,5 +42,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
+    @property
+    def display_name(self):
+        return f'{self.first_name} {self.last_name}'
+
     def __str__(self):
         return self.email
