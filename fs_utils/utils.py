@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 
-from fs_utils.constants import DAILY, MONTHLY
+from fs_utils.constants import DAILY, MONTH_DAYS, MONTHLY
 
 
 def generate_unique_number(prefix):
@@ -36,8 +36,9 @@ def calculate_loan_interest_rate(loan):
     interest_rate = loan.interest_rate
 
     if payment_frequency == DAILY:
-        applied_interest_rate = int(interest_rate / 100 * principal / 30)
-        payment_amount = int(principal / 30) + applied_interest_rate
+        applied_interest_rate = int(
+            interest_rate / 100 * principal / MONTH_DAYS)
+        payment_amount = int(principal / MONTH_DAYS) + applied_interest_rate
 
     elif payment_frequency == MONTHLY:
         applied_interest_rate = interest_rate / 100 * principal / loan_term

@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 
 class InstallmentSerializer(serializers.ModelSerializer):
+    total_amount = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Installment

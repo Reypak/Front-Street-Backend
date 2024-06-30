@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.db import models
+from fs_categories.serializers import CategoryDetailsSerializer, CategorySerializer
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
@@ -56,7 +57,7 @@ class LoanListSerializer(serializers.ModelSerializer):
                   'amount', 'status', 'created_at', 'category_name', 'client')
 
 
-class LoanViewSerializer(serializers.ModelSerializer):
+class LoanViewSerializer(BaseSerializer):
 
     # Get field name from category attribute
     category_name = serializers.CharField(
@@ -70,7 +71,13 @@ class LoanViewSerializer(serializers.ModelSerializer):
         model = Loan
         fields = '__all__'
 
-    outstanding_balance = serializers.IntegerField(read_only=True)
+    outstanding_balance = serializers.IntegerField()
+
+    payment_amount = serializers.IntegerField()
+
+    amount_paid = serializers.IntegerField()
+
+    category = CategoryDetailsSerializer()
 
     # def to_representation(self, instance):
     #     data = super().to_representation(instance)

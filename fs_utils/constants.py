@@ -84,3 +84,6 @@ APPLICATION_STATUS_CHOICES = (
     (DECLINED, 'Declined'),
     (CANCELLED, 'Cancelled'),
 )
+
+# MONTH DAYS
+MONTH_DAYS = 30

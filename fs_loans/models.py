@@ -1,7 +1,7 @@
 from django.db import models
+from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_documents.models import Document
-from fs_users.models import CustomUser
 from fs_utils.constants import FIXED_MONTHLY, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
 
 
@@ -37,13 +37,30 @@ class Loan(LoanApplicationBaseModel):
         self.ref_number = f"FS/LOA/{self.id}"
         self.save()
 
+    # update loan due date
+    def save(self, *args, **kwargs):
+        last_installment = self.installments.order_by('-due_date').first()
+        if last_installment:
+            self.due_date = last_installment.due_date
+        super().save(*args, **kwargs)
+
     @property
-    def outstanding_balance(self):
+    def payment_amount(self):
+        total_installments = self.installments.aggregate(
+            total=Sum(F('amount') + F('penalty_amount') + F('fees_amount') + F('interest')))['total'] or 0
+        return total_installments
+
+    @property
+    def amount_paid(self):
         # Iterate through the payments
         total_payments = self.payments.aggregate(
             total=models.Sum('amount_paid'))['total'] or 0
+        return total_payments
+
+    @property
+    def outstanding_balance(self):
         # set outstanding_balance
-        return self.amount - total_payments
+        return self.payment_amount - self.amount_paid
 
     def __str__(self):
         return f'{self.ref_number}: {self.amount}/= : {self.client.first_name}'

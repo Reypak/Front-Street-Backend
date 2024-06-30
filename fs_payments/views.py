@@ -36,7 +36,7 @@ class LoanPaymentViewSet(viewsets.ModelViewSet):
                 break
 
             if installment.status in [MISSED, PARTIALLY_PAID]:
-                balance = installment.amount - installment.paid_amount
+                balance = installment.balance
 
                 if amount_paid >= balance:  # if payment covers full balance
                     amount_paid -= balance
