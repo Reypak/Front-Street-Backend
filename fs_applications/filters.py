@@ -5,6 +5,8 @@ from .models import Application
 
 
 class ApplicationFilterSet(django_filters.FilterSet):
+    status = django_filters.CharFilter(
+        lookup_expr=IEXACT,)
     # application_number = django_filters.CharFilter(
     #     lookup_expr=IEXACT,  field_name="loan__application_number")
 
@@ -12,4 +14,5 @@ class ApplicationFilterSet(django_filters.FilterSet):
         model = Application
         fields = [
             # 'application_number'
+            'status'
         ]

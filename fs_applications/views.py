@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
+    queryset = Application.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
     serializer_class = ApplicationSerializer
     filter_backends = DEFAULT_FILTER_BACKENDS

@@ -76,11 +76,11 @@ def handle_loan(sender, instance, created, **kwargs):
     # List statuses to trigger email
     if loan_status in [PENDING, APPROVED, CANCELLED, DISBURSED]:
         # get old status from instance
-        old_status = instance.old_status
+        if (hasattr(instance, 'old_status')):
+            old_status = instance.old_status
 
-        if old_status is None:
+        if instance.pk:
             old_status = Loan.objects.get(pk=instance.pk).status
-            # old_status = None
 
         if old_status != loan_status and email is not None:
             return send_email()

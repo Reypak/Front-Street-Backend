@@ -39,9 +39,10 @@ class Loan(LoanApplicationBaseModel):
 
     # update loan due date
     def save(self, *args, **kwargs):
-        last_installment = self.installments.order_by('-due_date').first()
-        if last_installment:
-            self.due_date = last_installment.due_date
+        if self.pk is not None:
+            last_installment = self.installments.order_by('-due_date').first()
+            if last_installment:
+                self.due_date = last_installment.due_date
         super().save(*args, **kwargs)
 
     @property

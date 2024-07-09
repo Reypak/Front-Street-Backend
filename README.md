@@ -341,3 +341,21 @@ pdb.set_trace()
 To inspect the database structure
 
 `python manage.py inspectdb`
+
+# PRODUCTION
+
+## CORS Headers
+
+Install django CORS Headers and add to installed apps.
+
+`pip install djangorestframework django-cors-headers`
+
+```python
+# Include in INSTALLED_APPS:
+'corsheaders',
+
+# Include this in MIDDLEWARE:
+'corsheaders.middleware.CorsMiddleware',
+
+CORS_ORIGIN_ALLOW_ALL = True
+```

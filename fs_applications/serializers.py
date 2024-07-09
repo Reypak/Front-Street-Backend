@@ -10,8 +10,11 @@ from rest_framework import serializers
 
 class ApplicationSerializer(BaseSerializer):
 
-    loan_category_name = serializers.CharField(
-        source="loan_category.name", read_only=True)
+    category_name = serializers.CharField(
+        source="category.name", read_only=True)
+
+    client_name = serializers.CharField(
+        source="client.display_name", read_only=True)
 
     attachments = DocumentSerializer(many=True)
 

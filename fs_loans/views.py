@@ -23,7 +23,7 @@ from rest_framework.permissions import IsAuthenticated
 
 class LoanViewSet(viewsets.ModelViewSet):
     # define queryset
-    queryset = Loan.objects.all()
+    queryset = Loan.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
 
     # specify serializer to be used

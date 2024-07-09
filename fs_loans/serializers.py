@@ -48,20 +48,20 @@ class LoanListSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(
         source="category.name", read_only=True)
 
-    client = serializers.CharField(
-        source="client.first_name", read_only=True)
+    client_name = serializers.CharField(
+        source="client.display_name", read_only=True)
 
     class Meta:
         model = Loan
         fields = ('id', 'ref_number',
-                  'amount', 'status', 'created_at', 'category_name', 'client')
+                  'amount', 'status', 'created_at', 'category_name', 'client_name')
 
 
 class LoanViewSerializer(BaseSerializer):
 
     # Get field name from category attribute
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
+    # category_name = serializers.CharField(
+    #     source="category.name", read_only=True)
 
     attachments = DocumentSerializer(many=True, required=False)
 

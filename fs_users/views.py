@@ -4,9 +4,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from fs_users.filters import UserFilterSet
 from fs_users.models import CustomUser
+from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
 from .serializers import UserSerializer
 
 from django.core.mail import send_mail
@@ -41,6 +43,8 @@ def create_user_and_send_password_email(email, first_name=None, last_name=None, 
 
 
 class CreateUserAPIView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -60,6 +64,8 @@ class UserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = DEFAULT_FILTER_BACKENDS
+    filterset_class = UserFilterSet
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
