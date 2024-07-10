@@ -5,7 +5,7 @@ from .models import CustomUser
 
 
 class UserFilterSet(django_filters.FilterSet):
-    status = django_filters.BooleanFilter(field_name="is_staff")
+    is_staff = django_filters.BooleanFilter()
 
     class Meta:
         model = CustomUser

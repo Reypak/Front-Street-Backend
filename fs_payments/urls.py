@@ -8,7 +8,7 @@ from .views import *
 router = SimpleRouter()
 
 # define the router path and viewset to be used
-router.register(r'loans', LoanPaymentViewSet, basename="Loan Payments")
+router.register(r'', LoanPaymentViewSet, basename="Payments")
 
 # specify URL Path for rest_framework
 urlpatterns = [

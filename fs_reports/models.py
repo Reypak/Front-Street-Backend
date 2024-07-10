@@ -15,4 +15,4 @@ class LoanReport(models.Model):
         CustomUser, on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return f'Loan ({self.loan.id}) {self.action} - {self.status} - {self.created_by.username}'
+        return f'Loan ({self.loan.id}) {self.action} - {self.status} - {self.created_by.display_name}'

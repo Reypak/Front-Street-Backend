@@ -10,7 +10,7 @@ class LoanPaymentSerializer(BaseSerializer):
         source="loan.ref_number", read_only=True)
 
     client_name = serializers.CharField(
-        source="loan.client.first_name", read_only=True)
+        source="loan.client.display_name", read_only=True)
 
     class Meta:
         model = LoanPayment
