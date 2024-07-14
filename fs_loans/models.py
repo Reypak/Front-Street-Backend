@@ -12,7 +12,7 @@ class Loan(LoanApplicationBaseModel):
 
     # loan application instance
     application = models.OneToOneField(
-        Application, on_delete=models.DO_NOTHING, null=True, blank=True)
+        Application, related_name="loan", on_delete=models.DO_NOTHING, null=True, blank=True)
 
     end_date = models.DateTimeField(null=True, blank=True)
     approved_date = models.DateTimeField(null=True, blank=True,)

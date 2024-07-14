@@ -11,6 +11,15 @@ from rest_framework import serializers
 
 class ApplicationSerializer(BaseSerializer):
 
+    date_accepted = serializers.CharField(
+        source="loan.created_at", default=None, read_only=True)
+
+    loan = serializers.CharField(
+        source="loan.id", default=None, read_only=True)
+
+    loan_ref_number = serializers.CharField(
+        source="loan.ref_number", default=None, read_only=True)
+
     category_details = CategoryDetailsSerializer(
         source="category", read_only=True)
 
