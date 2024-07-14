@@ -1,20 +1,21 @@
 
 
 from fs_applications.models import Application
+from fs_categories.serializers import CategoryDetailsSerializer
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
-from fs_utils.serializers import BaseSerializer
+from fs_utils.serializers import BaseSerializer, ClientSerializer
 from rest_framework import serializers
 
 
 class ApplicationSerializer(BaseSerializer):
 
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
+    category_details = CategoryDetailsSerializer(
+        source="category", read_only=True)
 
-    client_name = serializers.CharField(
-        source="client.display_name", read_only=True)
+    client_details = ClientSerializer(
+        source="client", read_only=True)
 
     attachments = DocumentSerializer(many=True)
 

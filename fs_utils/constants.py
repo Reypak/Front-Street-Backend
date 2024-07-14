@@ -18,9 +18,11 @@ PENDING = "pending"
 APPROVED = "approved"
 DECLINED = "declined"
 DISBURSED = "disbursed"
+ACTIVE = "active"
 CLOSED = "closed"
 CANCELLED = "cancelled"
 ACCEPTED = "accepted"
+REJECTED = "rejected"
 
 # installment status
 OVERDUE = "overdue"
@@ -81,7 +83,7 @@ REPAYMENT_TYPES = [
 APPLICATION_STATUS_CHOICES = (
     (PENDING, 'Pending'),
     (ACCEPTED, 'Accepted'),
-    (DECLINED, 'Declined'),
+    (REJECTED, 'Rejected'),
     (CANCELLED, 'Cancelled'),
 )
 

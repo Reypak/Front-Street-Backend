@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class RoleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = Role.objects.all()
+    queryset = Role.objects.all().order_by('-id')
     serializer_class = RoleSerializer
 
     def create(self, request, *args, **kwargs):

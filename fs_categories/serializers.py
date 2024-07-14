@@ -1,12 +1,9 @@
-from fs_documents.serializers import DocumentSerializer
 from .models import *
 from fs_utils.serializers import BaseSerializer
 from rest_framework import serializers
 
 
 class CategorySerializer(BaseSerializer):
-
-    attachments = DocumentSerializer(many=True, required=False)
 
     class Meta:
         model = Category

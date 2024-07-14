@@ -65,7 +65,7 @@ class LoanViewSerializer(BaseSerializer):
 
     attachments = DocumentSerializer(many=True, required=False)
 
-    client = ClientSerializer()
+    client_details = ClientSerializer(source="client")
 
     class Meta:
         model = Loan
@@ -77,7 +77,10 @@ class LoanViewSerializer(BaseSerializer):
 
     amount_paid = serializers.IntegerField()
 
-    category = CategoryDetailsSerializer()
+    category_details = CategoryDetailsSerializer(source="category")
+
+    # application details
+    application_number = serializers.CharField(source="application")
 
     # def to_representation(self, instance):
     #     data = super().to_representation(instance)
