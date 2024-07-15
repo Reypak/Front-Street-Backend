@@ -108,8 +108,9 @@ class PaymentScheduleView(APIView):
                 installments.append({
                     'loan': loan.id,
                     'due_date': current_date.date(),
-                    'principal': loan_interest['payment_amount'],
-                    'interest': loan_interest['interest']
+                    'principal': loan_interest['principal'],
+                    'interest': loan_interest['interest'],
+                    'total': loan_interest['total']
                 })
                 current_date += timedelta(days=1)
 
@@ -126,6 +127,7 @@ class PaymentScheduleView(APIView):
                             'due_date': due_date,
                             'interest': loan_interest['interest'],
                             'principal': principal,
+                            'total': loan_interest['interest'] + principal
                         }
                     else:
                         # Regular installments
@@ -134,6 +136,8 @@ class PaymentScheduleView(APIView):
                             'due_date': due_date,
                             'interest': loan_interest['interest'],
                             'principal': 0,
+                            'total': loan_interest['interest']
+
                         }
                 else:
                     # MONTHLY FIXED
@@ -141,7 +145,9 @@ class PaymentScheduleView(APIView):
                         'loan': loan_id,
                         'due_date': due_date,
                         'interest': loan_interest['interest'],
-                        'principal': loan_interest['payment_amount'],
+                        'principal': loan_interest['principal'],
+                        'total': loan_interest['total']
+
                     }
                 installments.append(installment)
 

@@ -34,11 +34,16 @@ def calculate_loan_interest_rate(principal, interest_rate, payment_frequency, lo
     if payment_frequency == DAILY:
         applied_interest_rate = int(
             interest_rate / 100 * principal / MONTH_DAYS)
-        payment_amount = int(principal / MONTH_DAYS)
+        principal = int(principal / MONTH_DAYS)
+        total = principal + applied_interest_rate
 
     elif payment_frequency == MONTHLY:
         applied_interest_rate = interest_rate / 100 * principal / loan_term
-        payment_amount = int(principal / loan_term)
+        principal = int(principal / loan_term)
+        total = principal + applied_interest_rate
 
     # round off to the nearest hundred
-    return {'interest': int(round(applied_interest_rate, -2)), 'payment_amount': int(round(payment_amount, -2))}
+    return {'interest': int(round(applied_interest_rate, -1)),
+            'principal': int(round(principal, -1)),
+            'total': int(round(total, -1)),
+            }
