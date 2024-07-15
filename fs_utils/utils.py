@@ -29,20 +29,16 @@ def generate_ref_number(prefix, id):
 #     return int(round(payment_amount, -2))
 
 
-def calculate_loan_interest_rate(loan):
-    principal = loan.amount
-    payment_frequency = loan.payment_frequency
-    loan_term = loan.loan_term
-    interest_rate = loan.interest_rate
+def calculate_loan_interest_rate(principal, interest_rate, payment_frequency, loan_term):
 
     if payment_frequency == DAILY:
         applied_interest_rate = int(
             interest_rate / 100 * principal / MONTH_DAYS)
-        payment_amount = int(principal / MONTH_DAYS) + applied_interest_rate
+        payment_amount = int(principal / MONTH_DAYS)
 
     elif payment_frequency == MONTHLY:
         applied_interest_rate = interest_rate / 100 * principal / loan_term
-        payment_amount = int(principal / loan_term) + applied_interest_rate
+        payment_amount = int(principal / loan_term)
 
     # round off to the nearest hundred
     return {'interest': int(round(applied_interest_rate, -2)), 'payment_amount': int(round(payment_amount, -2))}

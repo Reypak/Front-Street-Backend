@@ -12,10 +12,13 @@ router.register(r'installments', InstallmentViewSet, basename="Installments")
 
 urlpatterns = [
     path('', include(router.urls)),
-    #     path('installments/loan/schedule/', LoanScheduleView.as_view(),
-    #          name='loan_schedule'),
+
+    path('schedule/<int:loan_id>/',
+         PaymentScheduleView.as_view(), name='payment_schedule',),
+
     path('installments/loan/create/', LoanInstallmentCreateView.as_view(),
          name='loan_installment_create'),
+
     path('installments/loan/<int:loan_id>/', LoanInstallmentList.as_view(),
          name='loan_installment_list'),
 ]

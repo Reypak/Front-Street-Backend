@@ -11,6 +11,4 @@ router.register(r'loans', LoanViewSet, basename="Loans")
 # specify URL Path for rest_framework
 urlpatterns = [
     path('', include(router.urls)),
-    path('schedule/<int:loan_id>/',
-         LoanScheduleView.as_view(), name='loan_schedule', ),
 ]

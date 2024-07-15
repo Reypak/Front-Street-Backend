@@ -14,7 +14,7 @@ class ApplicationSerializer(BaseSerializer):
     date_accepted = serializers.CharField(
         source="loan.created_at", default=None, read_only=True)
 
-    loan = serializers.CharField(
+    loan = serializers.IntegerField(
         source="loan.id", default=None, read_only=True)
 
     loan_ref_number = serializers.CharField(
