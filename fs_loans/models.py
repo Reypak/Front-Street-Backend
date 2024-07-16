@@ -48,7 +48,7 @@ class Loan(LoanApplicationBaseModel):
     @property
     def payment_amount(self):
         total_installments = self.installments.aggregate(
-            total=Sum(F('amount') + F('penalty_amount') + F('fees_amount') + F('interest')))['total'] or 0
+            total=Sum(F('principal') + F('penalty') + F('fees') + F('interest')))['total'] or 0
         return total_installments
 
     @property

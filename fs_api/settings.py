@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-k-@d@qr+9-5lntm=dt!!mrs3tqa8@%%))lg+@311gvg&v8!rnq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "fsapi-32ygwzcnka-ue.a.run.app"]
 
 LOCAL_APPS = [
     'fs_api',
@@ -177,3 +177,5 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CSRF_TRUSTED_ORIGINS = ['https://fsapi-32ygwzcnka-ue.a.run.app']
