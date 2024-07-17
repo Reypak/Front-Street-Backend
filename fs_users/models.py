@@ -46,5 +46,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def display_name(self):
         return f'{self.first_name} {self.last_name}'
 
+    class Meta:
+        ordering = ['id']
+
     def __str__(self):
         return self.email

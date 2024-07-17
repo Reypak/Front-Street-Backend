@@ -41,7 +41,7 @@ class PaymentScheduleCreateView(APIView):
     def post(self, request, *args, **kwargs):
         installments = request.data.get('installments')
         if not isinstance(installments, list):
-            return Response({"error": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"installments": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Pass installments to serializer
         serializer = InstallmentSerializer(data=installments, many=True)

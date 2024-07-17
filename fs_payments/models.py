@@ -23,5 +23,8 @@ class LoanPayment(BaseModel):
             self.payment_number = generate_unique_number("PAY")
         super(LoanPayment, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.payment_number} - {self.loan.ref_number} - {self.amount_paid}/='

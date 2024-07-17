@@ -8,6 +8,7 @@ class CustomPagination(PageNumberPagination):
 # filter expressions
 ICONTAINS = "icontains"
 IEXACT = "iexact"
+EXACT = "exact"
 
 # actions
 UPDATED = "updated"

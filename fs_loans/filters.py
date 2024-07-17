@@ -24,9 +24,10 @@ class BaseLoanFilterSet(django_filters.FilterSet):
 class LoanFilterSet(BaseLoanFilterSet):
     ref_number = django_filters.CharFilter(lookup_expr=IEXACT)
     status = django_filters.CharFilter(lookup_expr=IEXACT)
-    client = django_filters.CharFilter(
-        field_name="client__first_name", lookup_expr=ICONTAINS)
+    # client = django_filters.CharFilter(
+    #     field_name="client__first_name", lookup_expr=ICONTAINS)
     category = django_filters.CharFilter(lookup_expr=IEXACT)
+    client = django_filters.CharFilter()
     # field name
     category_name = django_filters.CharFilter(
         field_name="category__name", lookup_expr=ICONTAINS)
