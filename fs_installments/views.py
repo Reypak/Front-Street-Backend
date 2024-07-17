@@ -32,16 +32,14 @@ class LoanInstallmentList(generics.ListAPIView):
         return Installment.objects.filter(loan=loan_id)
 
 
-class LoanInstallmentCreateView(APIView):
-
+class PaymentScheduleCreateView(APIView):
     """
         Create multiple installments for a loan.
     """
-
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        installments = request.data
+        installments = request.data.get('installments')
         if not isinstance(installments, list):
             return Response({"error": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -51,10 +49,10 @@ class LoanInstallmentCreateView(APIView):
             serializer.save()
 
             # Update loan status
-            loan_id = installments[0]['loan']  # Extract the loan_id
-            loan = Loan.objects.get(id=loan_id)
-            loan.status = DISBURSED
-            loan.save()
+            # loan_id = installments[0]['loan']  # Extract the loan_id
+            # loan = Loan.objects.get(id=loan_id)
+            # loan.status = DISBURSED
+            # loan.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -62,8 +60,9 @@ class LoanInstallmentCreateView(APIView):
 
 class PaymentScheduleView(APIView):
     """
-        Create preview list of all installments for a loan.
+        Create preview list of all installments for a loan. 
     """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -164,8 +163,8 @@ class PaymentScheduleView(APIView):
             'payment_frequency': payment_frequency,
             'loan_term': loan_term,
             'repayment_type': repayment_type,
+            'start_date': start_date,
             'installments': installments,
-            'start_date': start_date
         })
 
 

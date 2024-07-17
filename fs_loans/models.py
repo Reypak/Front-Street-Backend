@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_documents.models import Document
-from fs_utils.constants import FIXED_MONTHLY, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
+from fs_utils.constants import DISBURSED, FIXED_MONTHLY, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
 
 
 class Loan(LoanApplicationBaseModel):
@@ -61,7 +61,8 @@ class Loan(LoanApplicationBaseModel):
     @property
     def outstanding_balance(self):
         # set outstanding_balance
-        return self.payment_amount - self.amount_paid
+        if self.status == DISBURSED:
+            return self.payment_amount - self.amount_paid
 
     def __str__(self):
         return f'{self.ref_number}: {self.amount}/= : {self.client.first_name}'

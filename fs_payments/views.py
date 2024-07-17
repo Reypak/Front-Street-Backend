@@ -26,8 +26,10 @@ class LoanPaymentViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         amount_paid = serializer.data['amount_paid']
+        loan = serializer.data['loan']
         # filter installments by status
         installments = Installment.objects.filter(
+            loan=loan,
             status__in=[MISSED, PARTIALLY_PAID]).order_by('id')
 
         # allocate payment to missed and partial paid
@@ -40,7 +42,7 @@ class LoanPaymentViewSet(viewsets.ModelViewSet):
 
                 if amount_paid >= balance:  # if payment covers full balance
                     amount_paid -= balance
-                    installment.paid_amount = installment.amount
+                    installment.paid_amount = installment.total_amount
                     installment.status = PAID
 
                 else:  # for partially paid
@@ -55,14 +57,15 @@ class LoanPaymentViewSet(viewsets.ModelViewSet):
         # Handle remaining payment for current or future installments
         if amount_paid > 0:
             future_installments = Installment.objects.filter(
+                loan=loan,
                 status=NOT_PAID).order_by('id')
             for installment in future_installments:
                 if amount_paid <= 0:
                     break
 
-                if amount_paid >= installment.amount:
-                    amount_paid -= installment.amount
-                    installment.paid_amount = installment.amount
+                if amount_paid >= installment.total_amount:
+                    amount_paid -= installment.total_amount
+                    installment.paid_amount = installment.total_amount
                     installment.status = PAID
                 else:
                     installment.paid_amount += amount_paid
