@@ -7,7 +7,7 @@ from rest_framework import status
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
-from fs_utils.constants import DAILY, DISBURSED, INTEREST_ONLY, MONTH_DAYS, MONTHLY
+from fs_utils.constants import DAILY, INTEREST_ONLY, MONTH_DAYS, MONTHLY
 from fs_utils.utils import calculate_loan_interest_rate
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
@@ -44,7 +44,9 @@ class PaymentScheduleCreateView(APIView):
             return Response({"installments": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Pass installments to serializer
-        serializer = InstallmentSerializer(data=installments, many=True)
+        serializer = InstallmentSerializer(
+            data=installments, many=True, context={'request': request})
+
         if serializer.is_valid():
             serializer.save()
 

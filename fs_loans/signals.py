@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
-from fs_utils.constants import APPROVED, CANCELLED, CREATED, DECLINED, DISBURSED, PENDING, UPDATED
+from fs_utils.constants import APPROVED, CANCELLED, CREATED, ACTIVE, PENDING, UPDATED
 from fs_utils.notifications.emails import send_templated_email
 
 
@@ -18,15 +18,15 @@ def pre_save_loan(sender, instance, **kwargs):
         instance.old_status = old_status
 
         if old_status != loan_status:
-            if loan_status == DISBURSED:
+            if loan_status == ACTIVE:
                 instance.disbursement_date = timezone.now()
             elif loan_status == APPROVED:
                 instance.approved_date = timezone.now()
 
     else:  # Create new object
-        if loan_status == DISBURSED:
+        if loan_status == ACTIVE:
             instance.disbursement_date = timezone.now()
-        elif loan_status == APPROVED:
+        elif loan_status == ACTIVE:
             instance.approved_date = timezone.now()
 
 
@@ -42,6 +42,8 @@ def handle_loan(sender, instance, created, **kwargs):
     if created:
         action = CREATED
         created_by = instance.created_by
+        # set loan ref number
+        instance.ref_number = f"FS/LOA/{instance.id}"
     else:
         action = UPDATED
         if hasattr(instance, 'updated_by'):
@@ -58,6 +60,8 @@ def handle_loan(sender, instance, created, **kwargs):
     def get_loan_status():
         if loan_status == PENDING:
             return 'Created'
+        elif loan_status == ACTIVE:
+            return 'Disbursed'
         return loan_status.capitalize()
 
     # Send emails
@@ -74,13 +78,19 @@ def handle_loan(sender, instance, created, **kwargs):
         return send_templated_email(subject, 'loan_status.html', context, recipient_list)
 
     # List statuses to trigger email
-    if loan_status in [PENDING, APPROVED, CANCELLED, DISBURSED]:
+    if loan_status in [PENDING, APPROVED, CANCELLED, ACTIVE]:
         # get old status from instance
         if (hasattr(instance, 'old_status')):
             old_status = instance.old_status
 
-        if instance.pk:
-            old_status = Loan.objects.get(pk=instance.pk).status
+            if old_status != loan_status and email is not None:
+                return send_email()
+        else:
+            if loan_status and email is not None:
+                return send_email()
 
-        if old_status != loan_status and email is not None:
-            return send_email()
+        # if instance.pk:
+        #     old_status = Loan.objects.get(pk=instance.pk).status
+
+        # if old_status != loan_status and email is not None:
+        #     return send_email()

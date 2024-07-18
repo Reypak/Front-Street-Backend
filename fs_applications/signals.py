@@ -21,5 +21,5 @@ def create_loan_on_acceptance(sender, instance, created, **kwargs):
                 payment_frequency=instance.payment_frequency,
                 created_by=instance.updated_by
             )
-            # call to creat ref_number
+            # call to create ref_number
             loan.generate_ref_number()

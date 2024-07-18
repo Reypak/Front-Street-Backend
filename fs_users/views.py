@@ -8,12 +8,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from fs_users.filters import UserFilterSet
 from fs_users.models import CustomUser
+from fs_utils.constants import FROM_EMAIL
 from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
+from fs_utils.notifications.emails import send_templated_email
 from .serializers import UserSerializer
 
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 import random
 import string
 
@@ -24,20 +23,17 @@ def generate_random_password():
     return ''.join(random.choice(characters) for i in range(length))
 
 
-def create_user_and_send_password_email(email, first_name=None, last_name=None, phone_number=None):
+def create_user_and_send_password_email(email, first_name=None, last_name=None, phone_number=None, role=None):
     password = generate_random_password()
     user = CustomUser.objects.create_user(
-        email=email, password=password, first_name=first_name, last_name=last_name, phone_number=phone_number)
+        email=email, password=password, first_name=first_name, last_name=last_name, phone_number=phone_number, role=role)
 
     # Sending email
     subject = 'Your account details'
-    html_message = render_to_string(
-        'account_creation.html', {'user': user, 'password': password})
-    plain_message = strip_tags(html_message)
-    from_email = 'your_email@example.com'  # replace with your email
-    to = email
-    send_mail(subject, plain_message, from_email,
-              [to], html_message=html_message)
+    context = {'user': user, 'password': password}
+
+    send_templated_email(subject, 'account_creation.html',
+                         context, [email])
 
     return user
 
@@ -52,9 +48,10 @@ class CreateUserAPIView(APIView):
             first_name = serializer.validated_data.get('first_name')
             last_name = serializer.validated_data.get('last_name')
             phone_number = serializer.validated_data.get('phone_number')
+            role = serializer.validated_data.get('role')
 
             user = create_user_and_send_password_email(
-                email, first_name=first_name, last_name=last_name, phone_number=phone_number)
+                email, first_name=first_name, last_name=last_name, phone_number=phone_number, role=role)
 
             return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

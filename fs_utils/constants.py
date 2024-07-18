@@ -1,9 +1,13 @@
 from rest_framework.pagination import PageNumberPagination
+from django.conf import settings
 
 
 class CustomPagination(PageNumberPagination):
     page_size = 5
 
+
+# App name
+APP_NAME = 'Front Street Lender'
 
 # filter expressions
 ICONTAINS = "icontains"
@@ -42,7 +46,7 @@ DOCUMENT_TYPE_OTHER = "other"
 DOCUMENT_TYPE_ATTACHMENT = "attachment"
 
 # repayment types
-FIXED_MONTHLY = "fixed_monthly"
+FIXED_INTEREST = "fixed_interest"
 INTEREST_ONLY = "interest_only"
 
 
@@ -55,8 +59,8 @@ DOCUMENT_TYPES = (
 LOAN_STATUSES = (
     (PENDING, 'Pending'),
     (APPROVED, 'Approved'),
+    (ACTIVE, 'Active'),
     (CANCELLED, 'Cancelled'),
-    (DISBURSED, 'Disbursed'),
     (CLOSED, 'Closed')
 )
 
@@ -76,7 +80,7 @@ PAYMENT_FREQUENCY_CHOICES = [
 
 # REPAYMENT TYPES
 REPAYMENT_TYPES = [
-    (FIXED_MONTHLY, 'Fixed Monthly'),
+    (FIXED_INTEREST, 'Fixed Interest'),
     (INTEREST_ONLY, 'Interest-Only'),
 ]
 
@@ -90,3 +94,7 @@ APPLICATION_STATUS_CHOICES = (
 
 # MONTH DAYS
 MONTH_DAYS = 30
+
+SENDER_NAME = APP_NAME
+SENDER_EMAIL = settings.EMAIL_HOST_USER
+FROM_EMAIL = f"{SENDER_NAME} <{SENDER_EMAIL}>"

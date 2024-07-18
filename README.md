@@ -325,6 +325,12 @@ Delete user by ID:
 DELETE FROM fs_users_customuser WHERE id = 1;
 ```
 
+Update table records
+
+```sql
+UPDATE fs_loans_loan SET repayment_type = "fixed_interest" WHERE repayment_type = "fixed_monthly";
+```
+
 # HELPERS
 
 ### Tracing

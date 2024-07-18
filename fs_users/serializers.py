@@ -10,5 +10,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'first_name',
-                  'last_name', 'phone_number', 'role_name', 'is_staff', 'display_name', 'is_active', 'date_joined', 'last_login']
+        fields = ['id',
+                  'role',
+                  'email',
+                  'first_name',
+                  'last_name',
+                  'phone_number',
+                  'role_name',
+                  'is_staff',
+                  'display_name',
+                  'is_active',
+                  'date_joined',
+                  'last_login',
+                  #   'role_details'
+                  ]

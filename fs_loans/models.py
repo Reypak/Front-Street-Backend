@@ -2,13 +2,13 @@ from django.db import models
 from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_documents.models import Document
-from fs_utils.constants import DISBURSED, FIXED_MONTHLY, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
+from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
 
 
 class Loan(LoanApplicationBaseModel):
 
     repayment_type = models.CharField(
-        max_length=50, default=FIXED_MONTHLY, choices=REPAYMENT_TYPES)
+        max_length=50, default=FIXED_INTEREST, choices=REPAYMENT_TYPES)
 
     # loan application instance
     application = models.OneToOneField(
@@ -61,7 +61,7 @@ class Loan(LoanApplicationBaseModel):
     @property
     def outstanding_balance(self):
         # set outstanding_balance
-        if self.status == DISBURSED:
+        if self.status in [ACTIVE, CANCELLED]:
             return self.payment_amount - self.amount_paid
 
     def __str__(self):

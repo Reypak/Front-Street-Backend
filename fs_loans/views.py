@@ -1,13 +1,6 @@
 from rest_framework import viewsets
 from fs_loans.filters import LoanFilterSet
-from fs_utils.constants import DAILY, FIXED_MONTHLY, INTEREST_ONLY, MONTH_DAYS, MONTHLY
 from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from datetime import datetime, date, timedelta
-
-from fs_utils.utils import calculate_loan_interest_rate
 
 
 # from utils.constants import CustomPagination
