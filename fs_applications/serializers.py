@@ -2,6 +2,8 @@
 
 from fs_applications.models import Application
 from fs_categories.serializers import CategoryDetailsSerializer
+from fs_comments.models import Comment
+from fs_comments.serializers import create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
@@ -10,6 +12,7 @@ from rest_framework import serializers
 
 
 class ApplicationSerializer(BaseSerializer):
+    comment = serializers.CharField(write_only=True, required=False)
 
     date_accepted = serializers.CharField(
         source="loan.created_at", default=None, read_only=True)
@@ -53,6 +56,9 @@ class ApplicationSerializer(BaseSerializer):
         return instance
 
     def update(self, instance, validated_data):
+
+        # comments
+        create_comment(validated_data=validated_data, instance=instance)
 
         save_attachments(instance, validated_data)
 

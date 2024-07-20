@@ -31,6 +31,7 @@ LOCAL_APPS = [
     'fs_applications',
     'fs_categories',
     'fs_charges',
+    'fs_comments',
     'fs_documents',
     'fs_installments',
     'fs_loans',
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=100),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
+    'UPDATE_LAST_LOGIN': True,
 }
 
 MIDDLEWARE = [

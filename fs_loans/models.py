@@ -6,6 +6,7 @@ from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES,
 
 
 class Loan(LoanApplicationBaseModel):
+    # comments = GenericRelation(Comment)
 
     repayment_type = models.CharField(
         max_length=50, default=FIXED_INTEREST, choices=REPAYMENT_TYPES)
