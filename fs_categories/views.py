@@ -8,7 +8,7 @@ from .models import *
 
 class CategoryViewSet(viewsets.ModelViewSet):
     # define queryset
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('name')
 
     filter_backends = DEFAULT_FILTER_BACKENDS
     filterset_class = CategoryFilterSet

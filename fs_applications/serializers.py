@@ -58,7 +58,8 @@ class ApplicationSerializer(BaseSerializer):
     def update(self, instance, validated_data):
 
         # comments
-        create_comment(validated_data=validated_data, instance=instance)
+        create_comment(self=self, validated_data=validated_data,
+                       instance=instance)
 
         save_attachments(instance, validated_data)
 

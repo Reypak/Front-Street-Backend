@@ -27,7 +27,7 @@ class CommentSerializer(BaseSerializer):
         return super().create(validated_data)
 
 
-def create_comment(validated_data, instance):
+def create_comment(self, validated_data, instance):
     # get comment text
     comment = validated_data.pop('comment', None)
 
@@ -35,5 +35,6 @@ def create_comment(validated_data, instance):
     if comment is not None:
         Comment.objects.create(
             comment=comment,
-            content_object=instance
+            content_object=instance,
+            created_by=self.context['request'].user
         )

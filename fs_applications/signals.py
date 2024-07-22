@@ -1,16 +1,32 @@
 # signals.py
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from fs_loans.models import Loan
-from fs_utils.constants import ACCEPTED
+from fs_utils.constants import ACCEPTED, APP_NAME, CANCELLED, PENDING, REJECTED
+from fs_utils.notifications.emails import send_templated_email
 from .models import Application
+
+
+@receiver(pre_save, sender=Application)
+def on_pre_save(sender, instance, **kwargs):
+
+    if instance.pk:  # Check if the object exists
+        old_status = Application.objects.get(pk=instance.pk).status
+
+        # set the old status from pre_save
+        instance.old_status = old_status
 
 
 @receiver(post_save, sender=Application)
 def create_loan_on_acceptance(sender, instance, created, **kwargs):
-    if not created:  # Check if this is an update
-        if instance.status == ACCEPTED and not Loan.objects.filter(application=instance).exists():
+    email = instance.client.email
+    status = instance.status
+
+    if created:
+        instance.ref_number = f"FS/LOA/{instance.id}"
+    else:  # Check if this is an update
+        if status == ACCEPTED and not Loan.objects.filter(application=instance).exists():
             loan = Loan.objects.create(
                 application=instance,
                 client=instance.client,
@@ -23,3 +39,34 @@ def create_loan_on_acceptance(sender, instance, created, **kwargs):
             )
             # call to create ref_number
             loan.generate_ref_number()
+
+    # Format status
+    def get_status():
+        if status == PENDING:
+            return f'Created and recieved by {APP_NAME}'
+        return status.capitalize()
+
+    # Send emails
+    def send_email(type, status):
+        subject = f'{type.capitalize()} {status}'
+        recipient_list = [email]
+
+        context = {
+            'user': instance.client.first_name,
+            'ref_number': instance.ref_number,
+            'status': status,
+        }
+
+        return send_templated_email(subject, 'application_status.html', context, recipient_list)
+
+     # List statuses to trigger email
+    if status in [PENDING, CANCELLED, REJECTED]:
+        # get old status from instance
+        if (hasattr(instance, 'old_status')):
+            old_status = instance.old_status
+
+            if old_status != status and email is not None:
+                return send_email("application", get_status())
+        else:
+            if status and email is not None:
+                return send_email("application", get_status())

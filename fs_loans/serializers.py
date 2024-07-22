@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db import models
 from fs_categories.serializers import CategoryDetailsSerializer
+from fs_comments.serializers import CommentSerializer, create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
@@ -38,15 +39,10 @@ class LoanSerializer(BaseSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        # get comment text
-        comment = validated_data.pop('comment', None)
 
-        # create comment
-        if comment is not None:
-            Comment.objects.create(
-                text=comment,
-                content_object=instance
-            )
+        # handle comments
+        create_comment(self=self, validated_data=validated_data,
+                       instance=instance)
 
         # get updating user
         # instance.updated_by = self.context['request'].user

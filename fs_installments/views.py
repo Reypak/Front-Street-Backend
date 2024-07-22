@@ -91,7 +91,7 @@ class PaymentScheduleView(APIView):
         payment_frequency = request.GET.get(
             'payment_frequency', loan.payment_frequency)
 
-        interest_amount = interest_rate * principal / 100
+        interest_amount = interest_rate / 100 * principal
 
         if payment_frequency == MONTHLY:
             if loan_term == 0:
