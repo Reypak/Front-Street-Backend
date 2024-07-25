@@ -6,8 +6,8 @@ import cloudinary.uploader
 import cloudinary.api
 import cloudinary
 from pathlib import Path
-
 from dotenv import load_dotenv
+from google.oauth2 import service_account
 
 load_dotenv()  # take environment variables from .env.
 
@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-k-@d@qr+9-5lntm=dt!!mrs3tqa8@%%))lg+@311gvg&v8!rnq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "fsapi-32ygwzcnka-ue.a.run.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "fsapi-32ygwzcnka-ue.a.run.app"]
 
 LOCAL_APPS = [
     'fs_api',
@@ -182,3 +182,17 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_TRUSTED_ORIGINS = ['https://fsapi-32ygwzcnka-ue.a.run.app']
+
+# CLOUD STORAGE
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+# Google Cloud Storage for Static File Serve
+GS_PROJECT_ID = os.getenv('GS_PROJECT_ID')
+GS_BUCKET_NAME = os.getenv('GS_BUCKET_NAME')
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    'credentials.json')
+GS_AUTO_CREATE_BUCKET = True
+GS_DEFAULT_ACL = 'publicRead'
+
+STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
