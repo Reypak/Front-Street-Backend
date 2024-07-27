@@ -74,6 +74,14 @@ then run to apply:
 
 `python manage.py migrate`
 
+## Reverse migrations
+
+`python manage.py migrate <app_name> <migrations_number>`
+
+for example:
+
+`python manage.py migrate fs_roles 0002`
+
 <!--
 <details>
 <summary></summary>

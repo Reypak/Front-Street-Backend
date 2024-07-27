@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 
 from fs_loans.models import Loan
+from fs_utils.constants import CLOSED
 from fs_utils.models import BaseModel
 from fs_utils.utils import generate_unique_number
 
@@ -21,6 +22,13 @@ class LoanPayment(BaseModel):
     def save(self, *args, **kwargs):
         if not self.payment_number:
             self.payment_number = generate_unique_number("PAY")
+        # get balance after payment
+        outstanding_balance = self.loan.outstanding_balance
+        if outstanding_balance is not None:
+            if outstanding_balance - self.amount_paid <= 0:
+                self.loan.status = CLOSED
+                self.loan.save()
+                # Close loan
         super(LoanPayment, self).save(*args, **kwargs)
 
     class Meta:

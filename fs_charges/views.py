@@ -8,6 +8,6 @@ from fs_charges.serializers import ChargeSerializer
 
 
 class ChargeViewSet(viewsets.ModelViewSet):
-    queryset = Charge.objects.all()
+    queryset = Charge.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
     serializer_class = ChargeSerializer

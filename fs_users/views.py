@@ -11,6 +11,7 @@ from fs_users.models import CustomUser
 from fs_utils.constants import FROM_EMAIL
 from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
 from fs_utils.notifications.emails import send_templated_email
+from fs_utils.utils import get_public_user_role
 from .serializers import UserSerializer
 
 import random
@@ -48,7 +49,8 @@ class CreateUserAPIView(APIView):
             first_name = serializer.validated_data.get('first_name')
             last_name = serializer.validated_data.get('last_name')
             phone_number = serializer.validated_data.get('phone_number')
-            role = serializer.validated_data.get('role')
+            role = serializer.validated_data.get(
+                'role', get_public_user_role())
 
             user = create_user_and_send_password_email(
                 email, first_name=first_name, last_name=last_name, phone_number=phone_number, role=role)

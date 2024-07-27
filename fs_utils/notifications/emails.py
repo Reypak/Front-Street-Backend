@@ -15,6 +15,8 @@ def send_templated_email(subject, template_name, context, recipient_list):
     email.content_subtype = "html"  # Indicate that the email content is HTML
     email.send()
 
+    print("Sent email to:", recipient_list)
+
 
 def send_test_email(request):
     if request.method == 'GET' and request.GET.get('email'):

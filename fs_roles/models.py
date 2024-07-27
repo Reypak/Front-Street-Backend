@@ -15,5 +15,11 @@ class Role(models.Model):
     # created_by = models.ForeignKey(
     #     CustomUser, on_delete=models.DO_NOTHING)
 
+    class Meta:
+        permissions = (
+            ("can_admin", "Can public"),
+            ("can_public", "Can public"),
+        )
+
     def __str__(self):
         return self.name

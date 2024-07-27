@@ -16,7 +16,7 @@ from rest_framework import generics
 
 
 class InstallmentViewSet(viewsets.ModelViewSet):
-    queryset = Installment.objects.all()
+    queryset = Installment.objects.all().order_by('id')
     serializer_class = InstallmentSerializer
     permission_classes = [IsAuthenticated]
 

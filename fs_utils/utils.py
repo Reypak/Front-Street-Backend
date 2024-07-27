@@ -1,6 +1,7 @@
 from datetime import datetime
 import uuid
 
+from fs_roles.models import Role
 from fs_utils.constants import DAILY, MONTH_DAYS, MONTHLY
 
 
@@ -47,3 +48,8 @@ def calculate_loan_interest_rate(principal, interest_rate, payment_frequency, lo
             'principal': int(round(principal, -1)),
             'total': int(round(total, -1)),
             }
+
+
+def get_public_user_role():
+    role = Role.objects.get(name='Public User')
+    return role
