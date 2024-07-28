@@ -79,6 +79,8 @@ class LoanViewSerializer(BaseSerializer):
         model = Loan
         fields = '__all__'
 
+    overdue = serializers.IntegerField()
+
     outstanding_balance = serializers.IntegerField()
 
     payment_amount = serializers.IntegerField()

@@ -1,5 +1,9 @@
 from datetime import datetime
 import uuid
+import secrets
+import locale
+
+from django.http import HttpResponse
 
 from fs_roles.models import Role
 from fs_utils.constants import DAILY, MONTH_DAYS, MONTHLY
@@ -53,3 +57,16 @@ def calculate_loan_interest_rate(principal, interest_rate, payment_frequency, lo
 def get_public_user_role():
     role = Role.objects.get(name='Public User')
     return role
+
+# CREATE SECRET TOKEN
+
+
+def generate_secret_token(request):
+    """Generate a secret token"""
+    secret_token = secrets.token_urlsafe(32)
+    return HttpResponse(secret_token)
+
+
+def format_number(number):
+    locale.setlocale(locale.LC_ALL, '')  # Use system default locale
+    return locale.format_string("%d", number, grouping=True)

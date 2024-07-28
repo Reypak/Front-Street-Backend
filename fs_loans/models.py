@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_documents.models import Document
-from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, PENDING, REPAYMENT_TYPES
+from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, OVERDUE, PENDING, REPAYMENT_TYPES
 
 
 class Loan(LoanApplicationBaseModel):
@@ -64,6 +64,18 @@ class Loan(LoanApplicationBaseModel):
         # set outstanding_balance
         if self.status in [ACTIVE, CANCELLED]:
             return self.payment_amount - self.amount_paid
+
+    # overdue_amount
+    @property
+    def overdue(self):
+        if self.status in [ACTIVE]:
+            total_amount = F('principal') + F('penalty') + \
+                F('fees') + F('interest')
+            paid_amount = F('paid_amount')
+            overdue_amount = self.installments.filter(status=OVERDUE).aggregate(
+                # calculate the installment balance
+                total=Sum(total_amount - paid_amount))['total'] or 0
+            return overdue_amount
 
     def __str__(self):
         return f'{self.ref_number}: {self.amount}/= : {self.client.first_name}'

@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework import viewsets
 from datetime import datetime, date, timedelta
 from rest_framework.views import APIView
@@ -7,8 +8,9 @@ from rest_framework import status
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
-from fs_utils.constants import DAILY, INTEREST_ONLY, MONTH_DAYS, MONTHLY
-from fs_utils.utils import calculate_loan_interest_rate
+from fs_utils.constants import DAILY, INTEREST_ONLY, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, SECRET_TOKEN
+from fs_utils.notifications.emails import send_templated_email
+from fs_utils.utils import calculate_loan_interest_rate, format_number
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 
@@ -62,7 +64,7 @@ class PaymentScheduleCreateView(APIView):
 
 class PaymentScheduleView(APIView):
     """
-        Create preview list of all installments for a loan. 
+        Create preview list of all installments for a loan.
     """
 
     permission_classes = [IsAuthenticated]
@@ -187,3 +189,67 @@ def handle_date(request):
         start_date = date.today()
 
     return start_date
+
+
+def check_installments(request):
+    """
+        Check installment dates and update status accordingly
+    """
+    if request.method == 'GET':
+        auth_header = request.headers.get('Authorization')
+        if auth_header == f'Bearer {SECRET_TOKEN}':
+            today = date.today()
+            # OVERDUE
+            overdue_installments = Installment.objects.filter(
+                due_date=today, status__in=[NOT_PAID, PARTIALLY_PAID])
+            overdue_installments.update(status=OVERDUE)
+
+            # MISSED
+            missed_installments = Installment.objects.filter(
+                due_date__gt=today, status=OVERDUE)
+            missed_installments.update(status=MISSED)
+
+            return JsonResponse({'status': 'success'}, status=200)
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def send_reminders(request):
+    """
+        Check installment dates and send reminder notifications
+    """
+    if request.method == 'GET':
+        auth_header = request.headers.get('Authorization')
+        if auth_header == f'Bearer {SECRET_TOKEN}':
+            today = date.today()
+
+            # REMAINDER
+            reminder_period = today + timedelta(days=3)
+            # return JsonResponse({'status': format_number(10000)}, status=200)
+            not_paid_installments = Installment.objects.filter(
+                due_date=reminder_period, status=NOT_PAID)
+
+            for installment in not_paid_installments:
+                loan = installment.loan
+                client = loan.client
+                email = client.email
+                total_amount = installment.total_amount
+                due_date = installment.due_date
+
+                subject = 'Upcoming Payment Reminder'
+                recipient_list = [email]
+
+                context = {
+                    'name': client.first_name,
+                    'ref_number': loan.ref_number,
+                    'total': f'{format_number(total_amount)}/=',
+                    'due_date': due_date,
+                    'description': f'Installment payment for {loan.ref_number}',
+                }
+
+                send_templated_email(
+                    subject, 'payment_reminder.html', context, recipient_list)
+
+            return JsonResponse({'status': 'success'}, status=200)
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

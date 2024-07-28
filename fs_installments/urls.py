@@ -19,4 +19,8 @@ urlpatterns = [
 
     path('installments/loan/<int:loan_id>/', LoanInstallmentList.as_view(),
          name='loan_installment_list'),
+
+    path('check_installments/', check_installments, name='check_installments'),
+
+    path('send_reminders/', send_reminders, name='send_reminders'),
 ]

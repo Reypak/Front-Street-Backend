@@ -67,6 +67,7 @@ LOAN_STATUSES = (
 INSTALLMENT_CHOICES = (
     (PAID, 'Paid'),
     (NOT_PAID, 'Not Paid'),
+    (OVERDUE, 'Overdue'),
     (PARTIALLY_PAID, 'Partially Paid'),
     (MISSED, 'Missed'),
 )
@@ -98,3 +99,6 @@ MONTH_DAYS = 30
 SENDER_NAME = APP_NAME
 SENDER_EMAIL = settings.EMAIL_HOST_USER
 FROM_EMAIL = f"{SENDER_NAME} <{SENDER_EMAIL}>"
+
+# SECRET TOKEN
+SECRET_TOKEN = "c2yFLZan1gRC50wBlGLLYECDCmXgaX8fYg1nctTALa4"

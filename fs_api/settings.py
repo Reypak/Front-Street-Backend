@@ -107,19 +107,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mysql.connector.django',
-#         'NAME': 'u131382857_fs',
-#         'USER': 'u131382857_admin',
-#         'PASSWORD': 'Admin@6287',
-#         'HOST': 'srv1303.hstgr.io',  # 154.56.34.21
-#         'PORT': '3306',
-#         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", "use_pure": True},
-#     }
-# }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 

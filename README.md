@@ -373,3 +373,11 @@ Install django CORS Headers and add to installed apps.
 
 CORS_ORIGIN_ALLOW_ALL = True
 ```
+
+### QuerySet to List
+
+```python
+# call list() on the Queryset
+loans = Loan.objects.filter(due_date=today)
+loans_list = list(loans)
+```
