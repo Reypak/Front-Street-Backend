@@ -41,23 +41,10 @@ def create_loan_on_acceptance(sender, instance, created, **kwargs):
             loan.generate_ref_number()
 
     # Format status
-    def get_status():
+    def get_status(status):
         if status == PENDING:
-            return f'Created and recieved by {APP_NAME}'
+            return f'Received'
         return status.capitalize()
-
-    # Send emails
-    def send_email(type, status):
-        subject = f'{type.capitalize()} {status}'
-        recipient_list = [email]
-
-        context = {
-            'user': instance.client.first_name,
-            'ref_number': instance.ref_number,
-            'status': status,
-        }
-
-        return send_templated_email(subject, 'application_status.html', context, recipient_list)
 
      # List statuses to trigger email
     if status in [PENDING, CANCELLED, REJECTED]:
@@ -66,7 +53,24 @@ def create_loan_on_acceptance(sender, instance, created, **kwargs):
             old_status = instance.old_status
 
             if old_status != status and email is not None:
-                return send_email("application", get_status())
+                return send_email("application", email, instance, get_status(status))
+
         else:
             if status and email is not None:
-                return send_email("application", get_status())
+                return send_email("application", email, instance, get_status(status))
+
+ # Send emails
+
+
+def send_email(type, email, instance, status):
+    subject = f'{type.capitalize()} {status.capitalize()}'
+    recipient_list = [email]
+
+    context = {
+        'name': instance.client.first_name,
+        'ref_number': instance.ref_number,
+        'status': status,
+        'type': type
+    }
+
+    return send_templated_email(subject, 'status_update.html', context, recipient_list)

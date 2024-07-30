@@ -206,7 +206,7 @@ def check_installments(request):
 
             # MISSED
             missed_installments = Installment.objects.filter(
-                due_date__gt=today, status=OVERDUE)
+                due_date__gt=today, status__in=[OVERDUE])
             missed_installments.update(status=MISSED)
 
             return JsonResponse({'status': 'success'}, status=200)

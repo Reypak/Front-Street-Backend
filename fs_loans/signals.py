@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
+from fs_applications.signals import send_email
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
 from fs_utils.constants import APPROVED, CANCELLED, CREATED, ACTIVE, PENDING, UPDATED
@@ -57,25 +58,12 @@ def handle_loan(sender, instance, created, **kwargs):
         )
 
     # Format status
-    def get_loan_status():
+    def get_status():
         if loan_status == PENDING:
-            return 'Created'
+            return 'created'
         elif loan_status == ACTIVE:
-            return 'Disbursed'
-        return loan_status.capitalize()
-
-    # Send emails
-    def send_email():
-        subject = f'Loan {get_loan_status()}'
-        recipient_list = [email]
-
-        context = {
-            'user': instance.client.first_name,
-            'application_number': instance.ref_number,
-            'status': get_loan_status(),
-        }
-
-        return send_templated_email(subject, 'loan_status.html', context, recipient_list)
+            return 'disbursed'
+        return loan_status
 
     # List statuses to trigger email
     if loan_status in [PENDING, APPROVED, CANCELLED, ACTIVE]:
@@ -84,10 +72,11 @@ def handle_loan(sender, instance, created, **kwargs):
             old_status = instance.old_status
 
             if old_status != loan_status and email is not None:
-                return send_email()
+                return send_email("loan", email, instance, get_status())
+
         else:
             if loan_status and email is not None:
-                return send_email()
+                return send_email("loan", email, instance, get_status())
 
         # if instance.pk:
         #     old_status = Loan.objects.get(pk=instance.pk).status
