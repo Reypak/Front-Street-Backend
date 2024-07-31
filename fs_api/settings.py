@@ -38,6 +38,7 @@ LOCAL_APPS = [
     'fs_payments',
     'fs_reports',
     'fs_roles',
+    'fs_transactions',
     'fs_users',
     'fs_utils',
 ]

@@ -8,6 +8,7 @@ from fs_payments.models import LoanPayment
 from fs_documents.models import Document
 from fs_reports.models import LoanReport
 from fs_loans.models import Loan
+from fs_transactions.models import Transaction
 from fs_users.models import CustomUser
 from fs_roles.models import Role
 from django.contrib.auth.models import Permission
@@ -25,3 +26,4 @@ admin.site.register(Permission)
 admin.site.register(Application)
 admin.site.register(Charge)
 admin.site.register(Comment)
+admin.site.register(Transaction)

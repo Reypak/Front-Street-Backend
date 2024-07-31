@@ -35,11 +35,17 @@ PAID = "paid"
 NOT_PAID = "not_paid"
 PARTIALLY_PAID = "partially_paid"
 MISSED = "missed"
+WRITTEN_OFF = "written_off"
 
 # loan types
 DAILY = "daily"
 WEEKLY = "weekly"
 MONTHLY = "monthly"
+
+# TRANSACTION TYPES
+DISBURSEMENT = "disbursement"
+REPAYMENT = "repayment"
+
 
 # document types
 DOCUMENT_TYPE_OTHER = "other"
@@ -70,6 +76,13 @@ INSTALLMENT_CHOICES = (
     (OVERDUE, 'Overdue'),
     (PARTIALLY_PAID, 'Partially Paid'),
     (MISSED, 'Missed'),
+    (WRITTEN_OFF, 'Written Off'),
+)
+
+# TRANSACTION_CHOICES
+TRANSACTION_CHOICES = (
+    (DISBURSEMENT, 'Disbursement'),
+    (REPAYMENT, 'Repayment'),
 )
 
 # PAYMENT FREQUENCY

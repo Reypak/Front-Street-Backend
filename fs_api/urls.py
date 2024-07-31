@@ -48,6 +48,7 @@ apiurls = [
     path('', include('fs_payments.urls')),
     path('', include('fs_reports.urls')),
     path('', include('fs_roles.urls')),
+    path('', include('fs_transactions.urls')),
     path('', include('fs_users.urls')),
     path('', include('fs_utils.urls')),
 ]

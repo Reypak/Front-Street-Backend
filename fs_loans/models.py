@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_documents.models import Document
-from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, OVERDUE, PENDING, REPAYMENT_TYPES
+from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, OVERDUE, PENDING, REPAYMENT, REPAYMENT_TYPES
 
 
 class Loan(LoanApplicationBaseModel):
@@ -55,8 +55,8 @@ class Loan(LoanApplicationBaseModel):
     @property
     def amount_paid(self):
         # Iterate through the payments
-        total_payments = self.payments.aggregate(
-            total=models.Sum('amount_paid'))['total'] or 0
+        total_payments = self.transactions.filter(type=REPAYMENT).aggregate(
+            total=models.Sum('amount'))['total'] or 0
         return total_payments
 
     @property
