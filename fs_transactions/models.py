@@ -1,5 +1,7 @@
 from django.db import models
 
+from fs_audits.mixins import AuditTrailMixin
+from fs_audits.models import AuditTrail
 from fs_loans.models import Loan
 from fs_utils.constants import CLOSED, REPAYMENT, TRANSACTION_CHOICES
 from fs_utils.models import BaseModel
@@ -8,7 +10,7 @@ from fs_utils.utils import generate_unique_number
 # Create your models here.
 
 
-class Transaction(BaseModel):
+class Transaction(AuditTrailMixin, BaseModel):
     payment_number = models.CharField(
         max_length=20, unique=True, editable=False)
     loan = models.ForeignKey(
@@ -30,6 +32,16 @@ class Transaction(BaseModel):
                     self.loan.status = CLOSED
                     self.loan.save()
                     # Close loan
+
+        # Create Audit for transaction on loan
+        AuditTrail.objects.create(
+            action="transaction",
+            model_name="loan",
+            object_id=self.loan.pk,
+            actor=self.created_by,
+            changes={'transaction': self.payment_number}
+        )
+
         super(Transaction, self).save(*args, **kwargs)
 
     class Meta:

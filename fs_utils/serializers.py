@@ -25,6 +25,9 @@ class BaseSerializer(serializers.ModelSerializer):
     created_by = SimpleUser(
         required=False, default=CreateCurrentUser(),
     )
+    updated_by = SimpleUser(
+        required=False, default=CreateCurrentUser(),
+    )
 
     class Meta:
         abstract = True

@@ -11,6 +11,7 @@ class Category(BaseModel):
     max_amount = models.PositiveIntegerField(
         default=0, validators=[MinValueValidator(10000)])
     is_active = models.BooleanField(default=True)
+    document_fields = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return self.name

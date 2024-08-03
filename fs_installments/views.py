@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from fs_audits.models import AuditTrail
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
@@ -18,7 +19,7 @@ from rest_framework import generics
 
 
 class InstallmentViewSet(viewsets.ModelViewSet):
-    queryset = Installment.objects.all().order_by('id')
+    queryset = Installment.objects.all()
     serializer_class = InstallmentSerializer
     permission_classes = [IsAuthenticated]
 
@@ -57,6 +58,15 @@ class PaymentScheduleCreateView(APIView):
             # loan = Loan.objects.get(id=loan_id)
             # loan.status = DISBURSED
             # loan.save()
+
+            # AUDIT TRAIL
+            AuditTrail.objects.create(
+                action="update",
+                model_name="loan",
+                object_id=installments[0]['loan'],
+                actor=None,
+                changes={'schedule': 'created'}
+            )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -115,3 +115,10 @@ FROM_EMAIL = f"{SENDER_NAME} <{SENDER_EMAIL}>"
 
 # SECRET TOKEN
 SECRET_TOKEN = "c2yFLZan1gRC50wBlGLLYECDCmXgaX8fYg1nctTALa4"
+
+ACTION_CHOICES = [
+    ('create', 'Create'),
+    ('update', 'Update'),
+    ('delete', 'Delete'),
+    ('transaction', 'transaction'),
+]

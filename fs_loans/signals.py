@@ -34,28 +34,28 @@ def pre_save_loan(sender, instance, **kwargs):
 @receiver(post_save, sender=Loan)
 def handle_loan(sender, instance, created, **kwargs):
 
-    created_by = None
+    # created_by = None
     loan_status = instance.status
 
     # if hasattr(instance, 'email'):
     email = instance.client.email
 
     if created:
-        action = CREATED
-        created_by = instance.created_by
+        # action = CREATED
+        # created_by = instance.created_by
         # set loan ref number
         instance.ref_number = f"FS/LOA/{instance.id}"
-    else:
-        action = UPDATED
-        if hasattr(instance, 'updated_by'):
-            created_by = instance.updated_by
+    # else:
+        # action = UPDATED
+        # if hasattr(instance, 'updated_by'):
+        # created_by = instance.updated_by
 
     # create_loan_report
-    if created_by is not None:
-        LoanReport.objects.create(
-            loan=instance, action=action, status=instance.status,
-            created_by=created_by
-        )
+    # if created_by is not None:
+    #     LoanReport.objects.create(
+    #         loan=instance, action=action, status=instance.status,
+    #         created_by=created_by
+    #     )
 
     # Format status
     def get_status():

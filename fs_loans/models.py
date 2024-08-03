@@ -1,11 +1,12 @@
 from django.db import models
 from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
+from fs_audits.mixins import AuditTrailMixin
 from fs_documents.models import Document
 from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, OVERDUE, PENDING, REPAYMENT, REPAYMENT_TYPES
 
 
-class Loan(LoanApplicationBaseModel):
+class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     # comments = GenericRelation(Comment)
 
     repayment_type = models.CharField(

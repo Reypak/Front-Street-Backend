@@ -1,5 +1,6 @@
 from django.db import models
 
+from fs_audits.mixins import AuditTrailMixin
 from fs_loans.models import Loan
 from fs_utils.constants import INSTALLMENT_CHOICES, NOT_PAID
 from fs_utils.models import BaseModel
@@ -7,7 +8,7 @@ from fs_utils.models import BaseModel
 # Create your models here.
 
 
-class Installment(BaseModel):
+class Installment(AuditTrailMixin, BaseModel):
     loan = models.ForeignKey(
         Loan, on_delete=models.DO_NOTHING, related_name='installments')
     fees = models.IntegerField(default=0)
@@ -19,6 +20,9 @@ class Installment(BaseModel):
     status = models.CharField(
         max_length=20, choices=INSTALLMENT_CHOICES, default=NOT_PAID)
     payment_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['id']
 
     # update loan due date
     def save(self, *args, **kwargs):

@@ -2,9 +2,9 @@ from datetime import datetime
 from rest_framework import viewsets
 
 from fs_installments.models import Installment
+from fs_transactions.filters import TransactionFilterSet
 from fs_utils.constants import MISSED, NOT_PAID, PAID, PARTIALLY_PAID
 from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-from fs_utils.filters.filters import LoanPaymentFilterSet
 from .serializers import *
 from .models import *
 from rest_framework.permissions import IsAuthenticated
@@ -18,7 +18,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     filter_backends = DEFAULT_FILTER_BACKENDS
-    # filterset_class = LoanPaymentFilterSet
+    filterset_class = TransactionFilterSet
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
