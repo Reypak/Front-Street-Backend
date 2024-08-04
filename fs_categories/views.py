@@ -15,3 +15,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     # specify serializer to be used
     serializer_class = CategorySerializer
+
+    def perform_update(self, serializer):
+        # pass request user
+        return serializer.save(updated_by=self.request.user)

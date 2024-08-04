@@ -116,9 +116,18 @@ FROM_EMAIL = f"{SENDER_NAME} <{SENDER_EMAIL}>"
 # SECRET TOKEN
 SECRET_TOKEN = "c2yFLZan1gRC50wBlGLLYECDCmXgaX8fYg1nctTALa4"
 
+SCHEDULE = "schedule"
+REMINDER = "reminder"
+LOAN = "loan"
+
 ACTION_CHOICES = [
     ('create', 'Create'),
     ('update', 'Update'),
     ('delete', 'Delete'),
     ('transaction', 'transaction'),
+    (SCHEDULE, SCHEDULE),
+    (REMINDER, REMINDER),
 ]
+
+CORE = 'system-core'
+DATE_FORMAT = '%Y-%m-%d'

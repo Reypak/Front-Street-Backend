@@ -26,26 +26,21 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     attachments = models.ManyToManyField(
         Document, related_name='loan_attachments', blank=True)
 
-    # def save(self, *args, **kwargs):
-    #     user = kwargs.pop('user', None)
-    #     print('created_by', user)
-    #     if user:
-    #         if not self.pk:
-    #             self.created_by = user
-    #         self.created_by = user
-    #     super().save(*args, **kwargs)
-
     def generate_ref_number(self):
         self.ref_number = f"FS/LOA/{self.id}"
         self.save()
 
     # update loan due date
-    def save(self, *args, **kwargs):
+    def update_due_date(self):
         if self.pk is not None:
             last_installment = self.installments.order_by('-due_date').first()
             if last_installment:
                 self.end_date = last_installment.due_date
-        super().save(*args, **kwargs)
+                self.updated_by = None  # core update
+                self.save()
+
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
 
     @property
     def payment_amount(self):

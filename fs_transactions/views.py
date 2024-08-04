@@ -4,7 +4,6 @@ from rest_framework import viewsets
 from fs_installments.models import Installment
 from fs_transactions.filters import TransactionFilterSet
 from fs_utils.constants import MISSED, NOT_PAID, PAID, PARTIALLY_PAID
-from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
 from .serializers import *
 from .models import *
 from rest_framework.permissions import IsAuthenticated
@@ -17,7 +16,6 @@ from rest_framework.response import Response
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    filter_backends = DEFAULT_FILTER_BACKENDS
     filterset_class = TransactionFilterSet
     permission_classes = [IsAuthenticated]
 
@@ -54,7 +52,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                         installment.status = PARTIALLY_PAID
 
                     installment.payment_date = datetime.today()
-                    installment.save()
+                    installment.save(update_loan=False)
 
             # Handle remaining payment for current or future installments
             if amount > 0:
@@ -75,7 +73,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                         installment.status = PARTIALLY_PAID
 
                     installment.payment_date = datetime.today()
-                    installment.save()
+                    installment.save(update_loan=False)
 
         return Response(status=200)
 
@@ -83,6 +81,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 class TransactionList(generics.ListAPIView):
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = TransactionFilterSet
 
     def get_queryset(self):
         loan_id = self.kwargs['loan_id']

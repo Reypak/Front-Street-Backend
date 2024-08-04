@@ -25,9 +25,10 @@ class Installment(AuditTrailMixin, BaseModel):
         ordering = ['id']
 
     # update loan due date
-    def save(self, *args, **kwargs):
+    def save(self, *args, update_loan=True, **kwargs):
         super().save(*args, **kwargs)
-        self.loan.save()
+        if update_loan:
+            self.loan.update_due_date()
 
     @property
     def total_amount(self):

@@ -1,4 +1,5 @@
 from django.db import models
+from fs_audits.mixins import AuditTrailMixin
 from fs_categories.models import Category
 from fs_documents.models import Document
 from fs_users.models import CustomUser
@@ -36,7 +37,7 @@ class LoanApplicationBaseModel(BaseModel):
         abstract = True
 
 
-class Application(LoanApplicationBaseModel):
+class Application(AuditTrailMixin, LoanApplicationBaseModel):
 
     status = models.CharField(
         max_length=50, default=PENDING, choices=APPLICATION_STATUS_CHOICES)

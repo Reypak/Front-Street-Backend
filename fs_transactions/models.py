@@ -10,7 +10,7 @@ from fs_utils.utils import generate_unique_number
 # Create your models here.
 
 
-class Transaction(AuditTrailMixin, BaseModel):
+class Transaction(BaseModel):
     payment_number = models.CharField(
         max_length=20, unique=True, editable=False)
     loan = models.ForeignKey(
@@ -39,7 +39,8 @@ class Transaction(AuditTrailMixin, BaseModel):
             model_name="loan",
             object_id=self.loan.pk,
             actor=self.created_by,
-            changes={'transaction': self.payment_number}
+            changes={'payment_number': self.payment_number,
+                     'type': self.type, 'amount': self.amount},
         )
 
         super(Transaction, self).save(*args, **kwargs)

@@ -9,7 +9,7 @@ from fs_audits.models import AuditTrail
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
-from fs_utils.constants import DAILY, INTEREST_ONLY, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, SECRET_TOKEN
+from fs_utils.constants import DAILY, DATE_FORMAT, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import calculate_loan_interest_rate, format_number
 from rest_framework.permissions import IsAuthenticated
@@ -22,6 +22,11 @@ class InstallmentViewSet(viewsets.ModelViewSet):
     queryset = Installment.objects.all()
     serializer_class = InstallmentSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_update(self, serializer):
+        # pass request user
+        installment = serializer.save(updated_by=self.request.user)
+        return installment
 
 # Get loan installments
 
@@ -61,10 +66,10 @@ class PaymentScheduleCreateView(APIView):
 
             # AUDIT TRAIL
             AuditTrail.objects.create(
-                action="update",
+                action=SCHEDULE,
                 model_name="loan",
                 object_id=installments[0]['loan'],
-                actor=None,
+                actor=request.user,
                 changes={'schedule': 'created'}
             )
 
@@ -190,7 +195,7 @@ def handle_date(request):
         # If the parameter is provided, parse it
         try:
             start_date = datetime.strptime(
-                start_date_str, "%Y-%m-%d").date()
+                start_date_str, DATE_FORMAT).date()
         except ValueError:
             # Handle the case where the date format is incorrect
             start_date = date.today()
@@ -259,6 +264,16 @@ def send_reminders(request):
 
                 send_templated_email(
                     subject, 'payment_reminder.html', context, recipient_list)
+
+                # AUDIT TRAIL
+
+                AuditTrail.objects.create(
+                    action=REMINDER,
+                    model_name=LOAN,
+                    object_id=loan.pk,
+                    changes={'email': f'sent to {email}',
+                             'reminder_period': '3 days', 'due_date': due_date.strftime(DATE_FORMAT)},
+                )
 
             return JsonResponse({'status': 'success'}, status=200)
         return JsonResponse({'error': 'Unauthorized'}, status=401)
