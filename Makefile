@@ -10,3 +10,7 @@ deploy:
 	docker tag fs_api us-east1-docker.pkg.dev/front-street-ug/app/fs_api
 	docker push us-east1-docker.pkg.dev/front-street-ug/app/fs_api
 	gcloud run deploy fsapi --image us-east1-docker.pkg.dev/front-street-ug/app/fs_api:latest --region us-east1
+
+push:
+	docker push us-east1-docker.pkg.dev/front-street-ug/app/fs_api
+	gcloud run deploy fsapi --image us-east1-docker.pkg.dev/front-street-ug/app/fs_api:latest --region us-east1

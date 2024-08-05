@@ -18,7 +18,7 @@ class Role(models.Model):
 
     class Meta:
         permissions = (
-            ("can_admin", "Can public"),
+            ("can_admin", "Can admin"),
             ("can_public", "Can public"),
         )
 
