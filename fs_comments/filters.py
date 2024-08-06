@@ -1,6 +1,4 @@
 import django_filters
-
-from fs_utils.constants import ICONTAINS, IEXACT
 from .models import *
 
 

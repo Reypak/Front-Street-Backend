@@ -48,7 +48,7 @@ REPAYMENT = "repayment"
 
 
 # document types
-DOCUMENT_TYPE_OTHER = "other"
+OTHER = "other"
 DOCUMENT_TYPE_ATTACHMENT = "attachment"
 
 # repayment types
@@ -58,7 +58,7 @@ INTEREST_ONLY = "interest_only"
 
 # CHOICES
 DOCUMENT_TYPES = (
-    (DOCUMENT_TYPE_OTHER, 'Other'),
+    (OTHER, OTHER),
     (DOCUMENT_TYPE_ATTACHMENT, 'Attachment'),
 )
 
@@ -130,6 +130,17 @@ ACTION_CHOICES = [
     (SCHEDULE, SCHEDULE),
     (REMINDER, REMINDER),
     (COMMENT, COMMENT),
+]
+
+
+CHARGE = "charge"
+PENATLTY = "penalty"
+
+# CHARGE TYPES
+CHARGE_CHOICES = [
+    (CHARGE, CHARGE),
+    (PENATLTY, PENATLTY),
+    (OTHER, OTHER),
 ]
 
 CORE = 'system-core'

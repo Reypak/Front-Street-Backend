@@ -6,6 +6,8 @@ from .views import *
 router = SimpleRouter()
 
 # define the router path and viewset to be used
+router.register(r'charge-penalties', ChargePenaltyViewSet,
+                basename="Charge Penalties")
 router.register(r'charges', ChargeViewSet, basename="Charges")
 
 # specify URL Path for rest_framework

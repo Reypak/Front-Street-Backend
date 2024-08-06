@@ -44,9 +44,13 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
 
     @property
     def payment_amount(self):
+        # get all installments
         total_installments = self.installments.aggregate(
             total=Sum(F('principal') + F('penalty') + F('fees') + F('interest')))['total'] or 0
-        return total_installments
+        # get all charges
+        total_charges = self.charge_penalties.aggregate(total=Sum('amount'))[
+            'total'] or 0
+        return total_installments + total_charges
 
     @property
     def amount_paid(self):
