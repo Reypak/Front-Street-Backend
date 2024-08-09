@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from fs_roles.serializers import RoleSerializer
 from fs_users.models import CustomUser
 
 

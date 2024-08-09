@@ -5,10 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
 from fs_users.filters import UserFilterSet
 from fs_users.models import CustomUser
-from fs_utils.constants import FROM_EMAIL
 from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import get_public_user_role
