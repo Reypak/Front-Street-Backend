@@ -12,3 +12,4 @@ static
 .vscode/
 migrations
 .DS_Store
+credentials.json

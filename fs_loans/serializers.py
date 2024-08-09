@@ -1,21 +1,18 @@
 from rest_framework import serializers
 from django.db import models
-
+from fs_categories.serializers import CategoryDetailsSerializer
+from fs_comments.serializers import CommentSerializer, create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
+from fs_comments.models import Comment
 from .models import Loan
-from fs_utils.serializers import BaseSerializer
+from fs_utils.serializers import BaseSerializer, ClientSerializer
 
 
 class LoanSerializer(BaseSerializer):
-    outstanding_balance = serializers.IntegerField(read_only=True)
 
-    # Get field name from category attribute
-    category_name = serializers.CharField(
-        source="category.name", read_only=True)
-
-    attachments = DocumentSerializer(many=True)
+    comment = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Loan
@@ -29,7 +26,7 @@ class LoanSerializer(BaseSerializer):
         instance = super(LoanSerializer, self).create(validated_data)
 
         # create application number
-        instance.application_number = f"FS/LOA/{instance.id}"
+        instance.ref_number = f"FS/LOA/{instance.id}"
         instance.save()
 
         # Create Document objects
@@ -43,6 +40,10 @@ class LoanSerializer(BaseSerializer):
 
     def update(self, instance, validated_data):
 
+        # handle comments
+        create_comment(self=self, validated_data=validated_data,
+                       instance=instance)
+
         # get updating user
         # instance.updated_by = self.context['request'].user
 
@@ -50,18 +51,52 @@ class LoanSerializer(BaseSerializer):
 
         return super(LoanSerializer, self).update(instance, validated_data)
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        # Iterate through the payments
-        total_payments = instance.payments.aggregate(
-            total=models.Sum('amount_paid'))['total'] or 0
-        # set outstanding_balance
-        data['outstanding_balance'] = instance.amount - total_payments
-        return data
-
 
 class LoanListSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(
+        source="category.name", read_only=True)
+
+    client_name = serializers.CharField(
+        source="client.display_name", read_only=True)
+
     class Meta:
         model = Loan
-        fields = ('id', 'application_number', 'borrower_name',
-                  'amount', 'status', 'created_at')
+        fields = ('id', 'ref_number',
+                  'amount', 'status', 'created_at', 'category_name', 'client_name')
+
+
+class LoanViewSerializer(BaseSerializer):
+
+    # Get field name from category attribute
+    # category_name = serializers.CharField(
+    #     source="category.name", read_only=True)
+
+    attachments = DocumentSerializer(many=True, required=False)
+
+    client_details = ClientSerializer(source="client")
+
+    class Meta:
+        model = Loan
+        fields = '__all__'
+
+    overdue = serializers.IntegerField()
+
+    outstanding_balance = serializers.IntegerField()
+
+    payment_amount = serializers.IntegerField()
+
+    amount_paid = serializers.IntegerField()
+
+    category_details = CategoryDetailsSerializer(source="category")
+
+    # application details
+    application_number = serializers.CharField(source="application")
+
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     # Iterate through the payments
+    #     total_payments = instance.payments.aggregate(
+    #         total=models.Sum('amount_paid'))['total'] or 0
+    #     # set outstanding_balance
+    #     data['outstanding_balance'] = instance.amount - total_payments
+    #     return data

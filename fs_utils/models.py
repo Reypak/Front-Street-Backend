@@ -1,8 +1,5 @@
 from django.db import models
-# from django.contrib.auth.models import User
 from fs_users.models import CustomUser
-
-# Create your models here.
 
 
 class BaseModel(models.Model):
@@ -10,6 +7,8 @@ class BaseModel(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     created_by = models.ForeignKey(
         CustomUser, on_delete=models.DO_NOTHING)
+    updated_by = models.ForeignKey(
+        CustomUser, on_delete=models.DO_NOTHING, null=True, blank=True, related_name="%(class)s_updated_by")
 
     class Meta:
         abstract = True  # Set this model as Abstract to allow inheritance

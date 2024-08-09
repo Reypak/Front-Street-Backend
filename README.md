@@ -74,6 +74,14 @@ then run to apply:
 
 `python manage.py migrate`
 
+## Reverse migrations
+
+`python manage.py migrate <app_name> <migrations_number>`
+
+for example:
+
+`python manage.py migrate fs_roles 0002`
+
 <!--
 <details>
 <summary></summary>
@@ -273,6 +281,10 @@ def perform_update(self, serializer):
 
 `get_serializer_class`: Returns the class that should be used for the serializer.
 
+### Action Types
+
+'list' , 'create', 'retrieve'
+
 ```python
 # views.py
 
@@ -283,4 +295,89 @@ def perform_update(self, serializer):
             return LoanListSerializer
 
         return LoanDetailsSerializer
+```
+
+## Get object instance from inside serializer
+
+```python
+
+  def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # get loan instance
+        loan = Loan.objects.get(application=instance.id)
+        # serialize loan
+        loan_serializer = LoanSerializer(loan)
+        # set loan
+        data['loan'] = loan_serializer.data
+        return data
+
+```
+
+# SQL COMMANDS
+
+## Using db shell (Recommended)
+
+`python manage.py shell`
+
+## Using SQLite Shell
+
+### Open SQLite shell:
+
+Execute the following command to open the SQLite shell and connect to your database file (usually named db.sqlite3):
+
+`sqlite3 db.sqlite3`
+
+Delete user by ID:
+
+```sql
+DELETE FROM fs_users_customuser WHERE id = 1;
+```
+
+Update table records
+
+```sql
+UPDATE fs_loans_loan SET repayment_type = "fixed_interest" WHERE repayment_type = "fixed_monthly";
+```
+
+# HELPERS
+
+### Tracing
+
+To handle tracing
+
+```
+import pdb
+pdb.set_trace()
+```
+
+### Inspect DB
+
+To inspect the database structure
+
+`python manage.py inspectdb`
+
+# PRODUCTION
+
+## CORS Headers
+
+Install django CORS Headers and add to installed apps.
+
+`pip install djangorestframework django-cors-headers`
+
+```python
+# Include in INSTALLED_APPS:
+'corsheaders',
+
+# Include this in MIDDLEWARE:
+'corsheaders.middleware.CorsMiddleware',
+
+CORS_ORIGIN_ALLOW_ALL = True
+```
+
+### QuerySet to List
+
+```python
+# call list() on the Queryset
+loans = Loan.objects.filter(due_date=today)
+loans_list = list(loans)
 ```

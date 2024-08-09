@@ -1,39 +1,80 @@
 from django.db import models
-from fs_categories.models import Category
+from django.db.models import Sum, F
+from fs_applications.models import Application, LoanApplicationBaseModel
+from fs_audits.mixins import AuditTrailMixin
 from fs_documents.models import Document
-from fs_utils.constants import LOAN_STATUSES, LOAN_TYPES, PENDING
-from fs_utils.models import BaseModel
+from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, OVERDUE, PENDING, REPAYMENT, REPAYMENT_TYPES
 
 
-class Loan(BaseModel):
-    application_number = models.CharField(
-        max_length=100, null=True, blank=True)
-    loan_type = models.CharField(max_length=50, choices=LOAN_TYPES)
-    category = models.ForeignKey(
-        Category, on_delete=models.DO_NOTHING)
-    borrower_name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=12)
-    email = models.EmailField(null=True, blank=True)
-    # Number of months for repayment
-    loan_term = models.PositiveIntegerField(null=True, blank=True, default=0)
-    due_date = models.DateTimeField(null=True, blank=True)
+class Loan(AuditTrailMixin, LoanApplicationBaseModel):
+    # comments = GenericRelation(Comment)
+
+    repayment_type = models.CharField(
+        max_length=50, default=FIXED_INTEREST, choices=REPAYMENT_TYPES)
+
+    # loan application instance
+    application = models.OneToOneField(
+        Application, related_name="loan", on_delete=models.DO_NOTHING, null=True, blank=True)
+
+    end_date = models.DateField(null=True, blank=True)
     approved_date = models.DateTimeField(null=True, blank=True,)
     disbursement_date = models.DateTimeField(null=True, blank=True,)
-    interest_rate = models.DecimalField(
-        max_digits=5, decimal_places=2, default=0, null=True, blank=True)  # Annual interest rate
-    amount = models.IntegerField()
+
     status = models.CharField(
         max_length=50, default=PENDING, choices=LOAN_STATUSES)
-    attachments = models.ManyToManyField(Document, related_name='documents')
+
+    attachments = models.ManyToManyField(
+        Document, related_name='loan_attachments', blank=True)
+
+    def generate_ref_number(self):
+        self.ref_number = f"FS/LOA/{self.id}"
+        self.save()
+
+    # update loan due date
+    def update_due_date(self):
+        if self.pk is not None:
+            last_installment = self.installments.order_by('-due_date').first()
+            if last_installment:
+                self.end_date = last_installment.due_date
+                self.updated_by = None  # core update
+                self.save()
 
     # def save(self, *args, **kwargs):
-    #     user = kwargs.pop('user', None)
-    #     print('created_by', user)
-    #     if user:
-    #         if not self.pk:
-    #             self.created_by = user
-    #         self.created_by = user
     #     super().save(*args, **kwargs)
 
+    @property
+    def payment_amount(self):
+        # get all installments
+        total_installments = self.installments.aggregate(
+            total=Sum(F('principal') + F('interest')))['total'] or 0
+        # get all charges
+        total_charges = self.charge_penalties.aggregate(total=Sum('amount'))[
+            'total'] or 0
+        return total_installments + total_charges
+
+    @property
+    def amount_paid(self):
+        # Iterate through the payments
+        total_payments = self.transactions.filter(type=REPAYMENT).aggregate(
+            total=models.Sum('amount'))['total'] or 0
+        return total_payments
+
+    @property
+    def outstanding_balance(self):
+        # set outstanding_balance
+        if self.status in [ACTIVE, CANCELLED]:
+            return self.payment_amount - self.amount_paid
+
+    # overdue_amount
+    @property
+    def overdue(self):
+        if self.status in [ACTIVE]:
+            total_amount = F('principal') + F('interest')
+            paid_amount = F('paid_amount')
+            overdue_amount = self.installments.filter(status=OVERDUE).aggregate(
+                # calculate the installment balance
+                total=Sum(total_amount - paid_amount))['total'] or 0
+            return overdue_amount
+
     def __str__(self):
-        return f'{self.application_number}: {self.amount}/='
+        return f'{self.ref_number} - {self.amount}'

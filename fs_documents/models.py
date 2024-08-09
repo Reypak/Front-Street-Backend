@@ -1,5 +1,5 @@
 from django.db import models
-from fs_utils.constants import DOCUMENT_TYPES
+from fs_utils.constants import DOCUMENT_TYPE_ATTACHMENT, DOCUMENT_TYPES
 from django.db import models
 from cloudinary.models import CloudinaryField
 
@@ -13,7 +13,7 @@ class Document(models.Model):
     document_type = models.CharField(
         max_length=100,
         choices=DOCUMENT_TYPES,
-        default="attachment",
+        default=DOCUMENT_TYPE_ATTACHMENT,
         null=False,
         blank=False
     )

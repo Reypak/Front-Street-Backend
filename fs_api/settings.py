@@ -6,8 +6,8 @@ import cloudinary.uploader
 import cloudinary.api
 import cloudinary
 from pathlib import Path
-
 from dotenv import load_dotenv
+from google.oauth2 import service_account
 
 load_dotenv()  # take environment variables from .env.
 
@@ -24,17 +24,21 @@ SECRET_KEY = 'django-insecure-k-@d@qr+9-5lntm=dt!!mrs3tqa8@%%))lg+@311gvg&v8!rnq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "fsapi-32ygwzcnka-ue.a.run.app"]
 
 LOCAL_APPS = [
     'fs_api',
-    'fs_documents',
+    'fs_applications',
+    'fs_audits',
     'fs_categories',
+    'fs_charges',
+    'fs_comments',
+    'fs_documents',
     'fs_installments',
     'fs_loans',
-    'fs_payments',
     'fs_reports',
     'fs_roles',
+    'fs_transactions',
     'fs_users',
     'fs_utils',
 ]
@@ -53,11 +57,13 @@ INSTALLED_APPS = [
     'django_filters',
     'cloudinary',
     'drf_yasg',
+    'corsheaders',
 ] + LOCAL_APPS
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=100),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
+    'UPDATE_LAST_LOGIN': True,
 }
 
 MIDDLEWARE = [
@@ -68,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'fs_api.urls'
@@ -101,6 +108,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': os.getenv('DATABASE_NAME'),
+#         'USER': os.getenv('DATABASE_USER'),
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+#         'HOST': os.getenv('DATABASE_HOST'),
+#         'PORT': os.getenv('DATABASE_PORT'),
+#         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", "use_pure": True},
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -153,6 +171,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        # 'rest_framework.filters.SearchFilter'
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
@@ -167,7 +189,26 @@ cloudinary.config(cloud_name=os.getenv('CLOUD_NAME'),
 # EMAIL configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
+
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CSRF_TRUSTED_ORIGINS = ['https://fsapi-32ygwzcnka-ue.a.run.app']
+
+# CLOUD STORAGE
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+# Google Cloud Storage for Static File Serve
+GS_PROJECT_ID = os.getenv('GS_PROJECT_ID')
+GS_BUCKET_NAME = os.getenv('GS_BUCKET_NAME')
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    'credentials.json')
+GS_AUTO_CREATE_BUCKET = True
+GS_DEFAULT_ACL = 'publicRead'
+
+STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'

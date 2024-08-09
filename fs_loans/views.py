@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-from fs_utils.filters.filters import LoanFilterSet
+from fs_loans.filters import LoanFilterSet
+
 # from utils.constants import CustomPagination
 
 # Create your views here.
@@ -14,19 +14,20 @@ from rest_framework.permissions import IsAuthenticated
 
 class LoanViewSet(viewsets.ModelViewSet):
     # define queryset
-    queryset = Loan.objects.all()
+    queryset = Loan.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
 
     # specify serializer to be used
     # serializer_class = LoanSerializer
 
     # set data filters
-    filter_backends = DEFAULT_FILTER_BACKENDS
     filterset_class = LoanFilterSet
 
     def get_serializer_class(self):
         if self.action == 'list':
             return LoanListSerializer
+        if self.action == 'retrieve':
+            return LoanViewSerializer
 
         return LoanSerializer
 
