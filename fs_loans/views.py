@@ -1,7 +1,5 @@
 from rest_framework import viewsets
 from fs_loans.filters import LoanFilterSet
-from fs_utils.filters.filter_backends import DEFAULT_FILTER_BACKENDS
-
 
 # from utils.constants import CustomPagination
 
@@ -23,7 +21,6 @@ class LoanViewSet(viewsets.ModelViewSet):
     # serializer_class = LoanSerializer
 
     # set data filters
-    filter_backends = DEFAULT_FILTER_BACKENDS
     filterset_class = LoanFilterSet
 
     def get_serializer_class(self):

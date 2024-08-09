@@ -11,6 +11,8 @@ class ChargeSerializer(BaseSerializer):
 
 
 class ChargePenaltySerializer(BaseSerializer):
+    balance = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = ChargePenalty
         fields = '__all__'

@@ -46,7 +46,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     def payment_amount(self):
         # get all installments
         total_installments = self.installments.aggregate(
-            total=Sum(F('principal') + F('penalty') + F('fees') + F('interest')))['total'] or 0
+            total=Sum(F('principal') + F('interest')))['total'] or 0
         # get all charges
         total_charges = self.charge_penalties.aggregate(total=Sum('amount'))[
             'total'] or 0
@@ -69,8 +69,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     @property
     def overdue(self):
         if self.status in [ACTIVE]:
-            total_amount = F('principal') + F('penalty') + \
-                F('fees') + F('interest')
+            total_amount = F('principal') + F('interest')
             paid_amount = F('paid_amount')
             overdue_amount = self.installments.filter(status=OVERDUE).aggregate(
                 # calculate the installment balance
@@ -78,4 +77,4 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
             return overdue_amount
 
     def __str__(self):
-        return f'{self.ref_number}: {self.amount}/= : {self.client.first_name}'
+        return f'{self.ref_number} - {self.amount}'

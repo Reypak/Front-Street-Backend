@@ -9,7 +9,7 @@ from fs_audits.models import AuditTrail
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
-from fs_utils.constants import DAILY, DATE_FORMAT, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
+from fs_utils.constants import ACTIVE, DAILY, DATE_FORMAT, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import calculate_loan_interest_rate, format_number
 from rest_framework.permissions import IsAuthenticated
@@ -67,7 +67,7 @@ class PaymentScheduleCreateView(APIView):
             # AUDIT TRAIL
             AuditTrail.objects.create(
                 action=SCHEDULE,
-                model_name="loan",
+                model_name=LOAN,
                 object_id=installments[0]['loan'],
                 actor=request.user,
                 changes={'schedule': 'created'}
@@ -242,7 +242,10 @@ def send_reminders(request):
             reminder_period = today + timedelta(days=3)
             # return JsonResponse({'status': format_number(10000)}, status=200)
             not_paid_installments = Installment.objects.filter(
-                due_date=reminder_period, status=NOT_PAID)
+                due_date=reminder_period,
+                status=NOT_PAID,
+                loan__status=ACTIVE
+            )
 
             for installment in not_paid_installments:
                 loan = installment.loan

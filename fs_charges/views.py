@@ -16,7 +16,7 @@ class ChargeViewSet(viewsets.ModelViewSet):
 
 
 class ChargePenaltyViewSet(viewsets.ModelViewSet):
-    queryset = ChargePenalty.objects.all().order_by('-created_at')
+    queryset = ChargePenalty.objects.all().order_by('id')
     permission_classes = [IsAuthenticated]
     serializer_class = ChargePenaltySerializer
     filterset_class = ChargePenaltyFilterSet

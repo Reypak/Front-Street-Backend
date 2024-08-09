@@ -79,6 +79,13 @@ INSTALLMENT_CHOICES = (
     (WRITTEN_OFF, 'Written Off'),
 )
 
+
+CHARGE_CHOICES = (
+    (PAID, PAID),
+    (NOT_PAID, NOT_PAID),
+    (PARTIALLY_PAID, PARTIALLY_PAID),
+)
+
 # TRANSACTION_CHOICES
 TRANSACTION_CHOICES = (
     (DISBURSEMENT, 'Disbursement'),
@@ -122,25 +129,34 @@ REMINDER = "reminder"
 COMMENT = "comment"
 LOAN = "loan"
 
+CHARGE = "charge"
+PENATLTY = "penalty"
+
 ACTION_CHOICES = [
     ('create', 'Create'),
     ('update', 'Update'),
     ('delete', 'Delete'),
+    (REPAYMENT, REPAYMENT),
     (TRANSACTION, TRANSACTION),
     (SCHEDULE, SCHEDULE),
     (REMINDER, REMINDER),
     (COMMENT, COMMENT),
+    (CHARGE, CHARGE),
 ]
 
-
-CHARGE = "charge"
-PENATLTY = "penalty"
 
 # CHARGE TYPES
 CHARGE_CHOICES = [
     (CHARGE, CHARGE),
     (PENATLTY, PENATLTY),
     (OTHER, OTHER),
+]
+
+# CHARGE_PENALTY_CHOICES
+CHARGE_PENALTY_CHOICES = [
+    (NOT_PAID, NOT_PAID),
+    (PARTIALLY_PAID, PARTIALLY_PAID),
+    (PAID, PAID),
 ]
 
 CORE = 'system-core'

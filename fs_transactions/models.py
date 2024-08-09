@@ -3,7 +3,7 @@ from django.db import models
 from fs_audits.mixins import AuditTrailMixin
 from fs_audits.models import AuditTrail
 from fs_loans.models import Loan
-from fs_utils.constants import CLOSED, REPAYMENT, TRANSACTION_CHOICES
+from fs_utils.constants import CLOSED, LOAN, REPAYMENT, TRANSACTION, TRANSACTION_CHOICES
 from fs_utils.models import BaseModel
 from fs_utils.utils import generate_unique_number
 
@@ -24,6 +24,16 @@ class Transaction(BaseModel):
         if not self.payment_number:
             self.payment_number = generate_unique_number("PAY")
 
+        # Create Audit for transaction on loan
+        AuditTrail.objects.create(
+            action=TRANSACTION,
+            model_name=LOAN,
+            object_id=self.loan.pk,
+            actor=self.created_by,
+            changes={'payment_number': self.payment_number,
+                     'type': self.type, 'amount': self.amount},
+        )
+
         if self.type == REPAYMENT:
             # get balance after payment
             outstanding_balance = self.loan.outstanding_balance
@@ -32,16 +42,6 @@ class Transaction(BaseModel):
                     self.loan.status = CLOSED
                     self.loan.save()
                     # Close loan
-
-        # Create Audit for transaction on loan
-        AuditTrail.objects.create(
-            action="transaction",
-            model_name="loan",
-            object_id=self.loan.pk,
-            actor=self.created_by,
-            changes={'payment_number': self.payment_number,
-                     'type': self.type, 'amount': self.amount},
-        )
 
         super(Transaction, self).save(*args, **kwargs)
 

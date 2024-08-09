@@ -1,6 +1,7 @@
 from django.db import models
+from fs_audits.models import AuditTrail
 from fs_loans.models import Loan
-from fs_utils.constants import CHARGE_CHOICES
+from fs_utils.constants import CHARGE, CHARGE_CHOICES, CHARGE_PENALTY_CHOICES, LOAN, NOT_PAID
 from fs_utils.models import BaseModel
 
 
@@ -20,6 +21,33 @@ class ChargePenalty(BaseModel):
     type = models.CharField(max_length=10, choices=CHARGE_CHOICES)
     amount = models.PositiveIntegerField()
     comment = models.TextField(max_length=1000, null=True, blank=True)
+    paid_amount = models.IntegerField(default=0)
+    status = models.CharField(
+        max_length=20, choices=CHARGE_PENALTY_CHOICES, default=NOT_PAID)
+    payment_date = models.DateField(blank=True, null=True)
+
+    def save(self, *args, is_update=False, **kwargs):
+        super().save(*args, **kwargs)
+
+        changes = {'type': self.type,
+                   'amount': self.amount, 'status': self.status}
+
+        if is_update:
+            changes = {'type': self.type, 'amount': self.amount,
+                       'paid_amount': self.paid_amount, 'status': self.status}
+
+        # Create Audit for transaction on loan
+        AuditTrail.objects.create(
+            action=CHARGE,
+            model_name=LOAN,
+            object_id=self.loan.pk,
+            actor=self.created_by,
+            changes=changes,
+        )
+
+    @property
+    def balance(self):
+        return self.amount - self.paid_amount
 
     def __str__(self):
-        return f'{self.type} ({self.amount}) on {self.loan.ref_number}'
+        return f'{self.loan.ref_number} - {self.type} - {self.amount}  - Balance: {self.balance}'
