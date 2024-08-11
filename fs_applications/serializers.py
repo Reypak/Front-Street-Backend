@@ -2,13 +2,24 @@
 
 from fs_applications.models import Application
 from fs_categories.serializers import CategoryDetailsSerializer
-from fs_comments.models import Comment
 from fs_comments.serializers import create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
 from fs_utils.serializers import BaseSerializer, ClientSerializer
 from rest_framework import serializers
+
+
+class ApplicationListSerializer(BaseSerializer):
+    category = serializers.CharField(
+        source="category.name")
+    client = serializers.CharField(
+        source="client.display_name")
+
+    class Meta:
+        model = Application
+        fields = ['created_at', 'category',
+                  'client', 'amount', 'ref_number', 'id', 'status']
 
 
 class ApplicationSerializer(BaseSerializer):

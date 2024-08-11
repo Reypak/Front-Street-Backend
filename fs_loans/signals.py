@@ -3,10 +3,8 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from fs_applications.signals import send_email
-from fs_reports.models import LoanReport
 from fs_loans.models import Loan
-from fs_utils.constants import APPROVED, CANCELLED, CREATED, ACTIVE, PENDING, UPDATED
-from fs_utils.notifications.emails import send_templated_email
+from fs_utils.constants import APPROVED, CANCELLED, ACTIVE, PENDING
 
 
 @receiver(pre_save, sender=Loan)

@@ -32,10 +32,12 @@ def send_test_email(request):
 
         recipient_list = [email]
 
-        # return HttpResponse(settings.EMAIL_PORT)
-
         send_mail(subject, message,
                   f"{sender_name} <{sender_email}>", recipient_list)
+
+        # send_templated_email(
+        #     subject, 'password_reset.html', {'name': 'Matt'}, recipient_list)
+
         return HttpResponse(f'Email sent successfully to: {email}')
 
     else:

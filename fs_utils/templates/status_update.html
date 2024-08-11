@@ -109,37 +109,6 @@
       }
       /* Buttons ------------------------------ */
 
-      .button {
-        background-color: #3869d4;
-        border-top: 10px solid #3869d4;
-        border-right: 18px solid #3869d4;
-        border-bottom: 10px solid #3869d4;
-        border-left: 18px solid #3869d4;
-        display: inline-block;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 3px;
-        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
-        -webkit-text-size-adjust: none;
-        box-sizing: border-box;
-      }
-
-      .button--green {
-        background-color: #22bc66;
-        border-top: 10px solid #22bc66;
-        border-right: 18px solid #22bc66;
-        border-bottom: 10px solid #22bc66;
-        border-left: 18px solid #22bc66;
-      }
-
-      .button--red {
-        background-color: #ff6136;
-        border-top: 10px solid #ff6136;
-        border-right: 18px solid #ff6136;
-        border-bottom: 10px solid #ff6136;
-        border-left: 18px solid #ff6136;
-      }
-
       @media only screen and (max-width: 500px) {
         .button {
           width: 100% !important;
@@ -319,7 +288,7 @@
       }
 
       .email-masthead_logo {
-        width: 94px;
+        width: 65px;
       }
 
       .email-masthead_name {
@@ -481,6 +450,13 @@
                   <tr>
                     <td class="content-cell">
                       <div class="f-fallback">
+                        <!-- LOGO -->
+                        <div class="email-masthead">
+                          <img
+                            class="email-masthead_logo"
+                            src="https://front-street-ug.web.app/favicon.png"
+                          />
+                        </div>
                         <h1>Hi {{name}},</h1>
                         <p>
                           Your {{type}} with reference number

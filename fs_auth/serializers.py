@@ -20,7 +20,8 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_decode
 
 from fs_users.models import CustomUser
-from fs_utils.constants import FROM_EMAIL
+from fs_utils.constants import FROM_EMAIL, SITE_URL
+from fs_utils.notifications.emails import send_templated_email
 
 
 class PasswordResetSerializer(serializers.Serializer):
@@ -38,14 +39,17 @@ class PasswordResetSerializer(serializers.Serializer):
         user = self.user
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_link = f"{self.context['request'].build_absolute_uri('/reset-password/')}{uid}/{token}/"
+        reset_link = f"{SITE_URL}{'reset-password/'}{uid}/{token}/"
 
         # Send the email
         subject = "Password Reset Requested"
-        email_body = f"Password Reset Link: {reset_link}"
 
-        send_mail(subject, email_body,
-                  FROM_EMAIL, [user.email])
+        context = {
+            'name': user.first_name,
+            'reset_link': reset_link
+        }
+
+        return send_templated_email(subject, 'password_reset.html', context, [user.email])
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):

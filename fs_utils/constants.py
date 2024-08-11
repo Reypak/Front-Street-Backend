@@ -161,3 +161,4 @@ CHARGE_PENALTY_CHOICES = [
 
 CORE = 'system-core'
 DATE_FORMAT = '%Y-%m-%d'
+SITE_URL = 'http://localhost:3200/'

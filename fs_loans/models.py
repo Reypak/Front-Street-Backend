@@ -53,6 +53,14 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
         return total_installments + total_charges
 
     @property
+    def interest_amount(self):
+        # get all interest
+        total_interest = self.installments.aggregate(total=Sum('interest'))[
+            'total'] or 0
+        total_interest = int(round(total_interest, -2))
+        return total_interest
+
+    @property
     def amount_paid(self):
         # Iterate through the payments
         total_payments = self.transactions.filter(type=REPAYMENT).aggregate(

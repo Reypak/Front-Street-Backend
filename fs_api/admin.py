@@ -6,7 +6,6 @@ from fs_charges.models import Charge, ChargePenalty
 from fs_comments.models import Comment
 from fs_installments.models import Installment
 from fs_documents.models import Document
-from fs_reports.models import LoanReport
 from fs_loans.models import Loan
 from fs_transactions.models import Transaction
 from fs_users.models import CustomUser
@@ -18,7 +17,6 @@ admin.site.register(Loan)
 admin.site.register(CustomUser)
 admin.site.register(Category)
 admin.site.register(Document)
-admin.site.register(LoanReport)
 admin.site.register(Installment)
 admin.site.register(Role)
 admin.site.register(Permission)

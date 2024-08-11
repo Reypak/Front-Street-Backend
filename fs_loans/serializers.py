@@ -1,11 +1,9 @@
 from rest_framework import serializers
-from django.db import models
 from fs_categories.serializers import CategoryDetailsSerializer
-from fs_comments.serializers import CommentSerializer, create_comment
+from fs_comments.serializers import create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
-from fs_comments.models import Comment
 from .models import Loan
 from fs_utils.serializers import BaseSerializer, ClientSerializer
 
@@ -80,6 +78,8 @@ class LoanViewSerializer(BaseSerializer):
         fields = '__all__'
 
     overdue = serializers.IntegerField()
+
+    interest_amount = serializers.IntegerField()
 
     outstanding_balance = serializers.IntegerField()
 

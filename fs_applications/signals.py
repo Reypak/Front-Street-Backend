@@ -3,7 +3,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from fs_loans.models import Loan
-from fs_utils.constants import ACCEPTED, APP_NAME, CANCELLED, PENDING, REJECTED
+from fs_utils.constants import ACCEPTED, CANCELLED, PENDING, REJECTED
 from fs_utils.notifications.emails import send_templated_email
 from .models import Application
 
