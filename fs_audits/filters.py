@@ -13,11 +13,15 @@ class AuditTrailFilterSet(django_filters.FilterSet):
 
     changes = django_filters.CharFilter(
         lookup_expr=ICONTAINS)
+    ref_number = django_filters.CharFilter(field_name="object_id",
+                                           lookup_expr=ICONTAINS)
 
     # reperesents the object_id , id of the object in the module
     id = django_filters.CharFilter(
         field_name="object_id", lookup_expr=IEXACT)
 
+    action = django_filters.CharFilter()
+
     class Meta:
         model = AuditTrail
-        fields = ['module', 'id', 'actor_email', 'changes']
+        fields = ['module', 'id', 'actor_email', 'changes', 'action']

@@ -7,6 +7,7 @@ from fs_comments.models import Comment
 from fs_installments.models import Installment
 from fs_documents.models import Document
 from fs_loans.models import Loan
+from fs_profiles.models import Profile
 from fs_transactions.models import Transaction
 from fs_users.models import CustomUser
 from fs_roles.models import Role
@@ -26,3 +27,4 @@ admin.site.register(ChargePenalty)
 admin.site.register(Comment)
 admin.site.register(Transaction)
 admin.site.register(AuditTrail)
+admin.site.register(Profile)

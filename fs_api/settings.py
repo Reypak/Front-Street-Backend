@@ -36,6 +36,7 @@ LOCAL_APPS = [
     'fs_documents',
     'fs_installments',
     'fs_loans',
+    'fs_profiles',
     'fs_reports',
     'fs_roles',
     'fs_transactions',
