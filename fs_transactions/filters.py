@@ -10,10 +10,11 @@ class TransactionFilterSet(django_filters.FilterSet):
     client_name = django_filters.CharFilter(
         method="advanced_filter", lookup_expr=ICONTAINS)
     type = django_filters.CharFilter()
+    created_at = django_filters.DateFromToRangeFilter()
 
     class Meta:
         model = Transaction
-        fields = ['client_name', 'ref_number', 'type']
+        fields = ['client_name', 'ref_number', 'type', 'created_at']
 
     def advanced_filter(self, queryset, name, value):
         return queryset.filter(

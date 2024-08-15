@@ -84,5 +84,10 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
                 total=Sum(total_amount - paid_amount))['total'] or 0
             return overdue_amount
 
+    class Meta:
+        permissions = (
+            ("can_change_loan_status", "Can change loan status"),
+        )
+
     def __str__(self):
         return f'{self.ref_number} - {self.amount}'

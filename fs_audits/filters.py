@@ -1,12 +1,12 @@
 import django_filters
-
+from django.db.models import Q
 from fs_audits.models import AuditTrail
 from fs_utils.constants import ICONTAINS, IEXACT
 
 
 class AuditTrailFilterSet(django_filters.FilterSet):
-    actor_email = django_filters.CharFilter(
-        field_name="actor__email", lookup_expr=ICONTAINS)
+    actor_name = django_filters.CharFilter(
+        method='advanced_filter', lookup_expr=ICONTAINS)
 
     module = django_filters.CharFilter(
         field_name="model_name", lookup_expr=IEXACT)
@@ -22,6 +22,15 @@ class AuditTrailFilterSet(django_filters.FilterSet):
 
     action = django_filters.CharFilter()
 
+    created_at = django_filters.DateFromToRangeFilter()
+
     class Meta:
         model = AuditTrail
-        fields = ['module', 'id', 'actor_email', 'changes', 'action']
+        fields = ['module', 'id', 'actor_name',
+                  'changes', 'action', 'created_at']
+
+    def advanced_filter(self, queryset, name, value):
+        return queryset.filter(
+            Q(actor__first_name__icontains=value) |
+            Q(actor__last_name__icontains=value)
+        )

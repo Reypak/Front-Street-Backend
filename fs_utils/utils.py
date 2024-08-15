@@ -2,9 +2,8 @@ from datetime import datetime
 import uuid
 import secrets
 import locale
-
 from django.http import HttpResponse
-
+from django.contrib.auth.models import Permission
 from fs_roles.models import Role
 from fs_utils.constants import DAILY, MONTH_DAYS, MONTHLY
 
@@ -55,7 +54,19 @@ def calculate_loan_interest_rate(principal, interest_rate, payment_frequency, lo
 
 
 def get_public_user_role():
-    role = Role.objects.get(name='Public User')
+    """
+    Get public user role, if it exists else create new role and assign permission  
+    """
+
+    # role = Role.objects.get(name='Public User')
+    # return role
+    role, created = Role.objects.get_or_create(name='Public User')
+
+    if created:
+        permission, _ = Permission.objects.get_or_create(
+            codename='can_public', name='Can Public')
+        role.permissions.add(permission)
+
     return role
 
 # CREATE SECRET TOKEN

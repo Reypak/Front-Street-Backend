@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from fs_loans.filters import LoanFilterSet
+from fs_loans.permissions import LoanPermission
 
 # from utils.constants import CustomPagination
 
@@ -15,7 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 class LoanViewSet(viewsets.ModelViewSet):
     # define queryset
     queryset = Loan.objects.all().order_by('-created_at')
-    permission_classes = [IsAuthenticated]
+    permission_classes = [LoanPermission]
 
     # specify serializer to be used
     # serializer_class = LoanSerializer
