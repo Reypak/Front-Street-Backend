@@ -4,7 +4,6 @@ from datetime import datetime, date, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
 from fs_audits.models import AuditTrail
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
@@ -216,12 +215,16 @@ def check_installments(request):
             today = date.today()
             # OVERDUE
             overdue_installments = Installment.objects.filter(
-                due_date=today, status__in=[NOT_PAID, PARTIALLY_PAID])
+                due_date=today,
+                status__in=[NOT_PAID, PARTIALLY_PAID],
+                loan__status=ACTIVE)
             overdue_installments.update(status=OVERDUE)
 
             # MISSED
             missed_installments = Installment.objects.filter(
-                due_date__gt=today, status__in=[OVERDUE])
+                due_date__lt=today,
+                status__in=[OVERDUE],
+                loan__status=ACTIVE)
             missed_installments.update(status=MISSED)
 
             return JsonResponse({'status': 'success'}, status=200)
@@ -240,13 +243,23 @@ def send_reminders(request):
 
             # REMAINDER
             reminder_period = today + timedelta(days=3)
-            # return JsonResponse({'status': format_number(10000)}, status=200)
             not_paid_installments = Installment.objects.filter(
                 due_date=reminder_period,
                 status=NOT_PAID,
                 loan__status=ACTIVE
             )
 
+            # DUE PAYEMENTS
+            due_installments = Installment.objects.filter(
+                due_date=today,
+                status__in=[NOT_PAID, OVERDUE],
+                loan__status=ACTIVE
+            )
+
+            # email_list = []  # mailing list
+            # emails = []  # addresses
+
+            # REMINDERS
             for installment in not_paid_installments:
                 loan = installment.loan
                 client = loan.client
@@ -268,6 +281,12 @@ def send_reminders(request):
                 send_templated_email(
                     subject, 'payment_reminder.html', context, recipient_list)
 
+                # email_tuple = prepare_templated_email(
+                #     subject, 'payment_reminder.html', context, recipient_list)
+                # Accumulate Emails in a List
+                # email_list.append(email_tuple)
+                # emails.append(context)
+
                 # AUDIT TRAIL
 
                 AuditTrail.objects.create(
@@ -277,6 +296,52 @@ def send_reminders(request):
                     changes={'email': f'sent to {email}',
                              'reminder_period': '3 days', 'due_date': due_date.strftime(DATE_FORMAT)},
                 )
+
+            # DUE PAYEMENTS
+            for installment in due_installments:
+                loan = installment.loan
+                client = loan.client
+                email = client.email
+                total_amount = installment.total_amount
+                due_date = installment.due_date
+
+                subject = 'Due Payment Reminder'
+                recipient_list = [email]
+
+                context = {
+                    'name': client.first_name,
+                    'ref_number': loan.ref_number,
+                    'total': f'{format_number(total_amount)}/=',
+                    'due_date': due_date,
+                    'period': ' (Today)',
+                    'description': f'Installment payment for {loan.ref_number}',
+                }
+
+                send_templated_email(
+                    subject, 'payment_reminder.html', context, recipient_list)
+
+                # email_tuple = prepare_templated_email(
+                #     subject, 'payment_reminder.html', context, recipient_list)
+                # Accumulate Emails in a List
+                # email_list.append(email_tuple)
+                # emails.append(context)
+
+                # AUDIT TRAIL
+
+                AuditTrail.objects.create(
+                    action=REMINDER,
+                    model_name=LOAN,
+                    object_id=loan.pk,
+                    changes={'email': f'sent to {email}',
+                             'status': 'Payment due', 'due_date': due_date.strftime(DATE_FORMAT)},
+                )
+
+            # print('SENDING MASS MAIL', emails)
+
+            # return JsonResponse({'status': emails}, status=200)
+
+            # Send all the emails at once
+            # send_mass_mail(email_list)
 
             return JsonResponse({'status': 'success'}, status=200)
         return JsonResponse({'error': 'Unauthorized'}, status=401)

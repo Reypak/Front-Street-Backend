@@ -79,7 +79,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
         if self.status in [ACTIVE]:
             total_amount = F('principal') + F('interest')
             paid_amount = F('paid_amount')
-            overdue_amount = self.installments.filter(status=OVERDUE).aggregate(
+            overdue_amount = self.installments.filter(status__in=[OVERDUE, MISSED]).aggregate(
                 # calculate the installment balance
                 total=Sum(total_amount - paid_amount))['total'] or 0
             return overdue_amount

@@ -18,6 +18,11 @@ def send_templated_email(subject, template_name, context, recipient_list):
     print("Sent email to:", recipient_list)
 
 
+# def prepare_templated_email(subject, template_name, context, recipient_list):
+#     message = render_to_string(template_name, context)
+#     return (subject, message, FROM_EMAIL, recipient_list)
+
+
 def send_test_email(request):
     if request.method == 'GET' and request.GET.get('email'):
         email = request.GET.get('email')
