@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
+from fs_profiles.serializer import ProfileSerializer
 from fs_users.models import CustomUser
 
 
@@ -34,10 +35,13 @@ class BaseSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(BaseSerializer):
+    profile = ProfileSerializer()
+
     class Meta:
         model = CustomUser
         fields = (
             'id',
+            'profile',
             'display_name',
             'email',
             'phone_number',)

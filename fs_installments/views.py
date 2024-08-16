@@ -246,14 +246,16 @@ def send_reminders(request):
             not_paid_installments = Installment.objects.filter(
                 due_date=reminder_period,
                 status=NOT_PAID,
-                loan__status=ACTIVE
+                loan__status=ACTIVE,
+                loan__payment_frequency=MONTHLY,
             )
 
             # DUE PAYEMENTS
             due_installments = Installment.objects.filter(
                 due_date=today,
                 status__in=[NOT_PAID, OVERDUE],
-                loan__status=ACTIVE
+                loan__status=ACTIVE,
+                loan__payment_frequency=MONTHLY,
             )
 
             # email_list = []  # mailing list

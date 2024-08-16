@@ -22,5 +22,5 @@ urlpatterns = [
 
     path('check_installments/', check_installments, name='check_installments'),
 
-    path('send_reminders/', send_reminders, name='send_reminders'),
+    path('send-reminders/', send_reminders, name='send-reminders'),
 ]
