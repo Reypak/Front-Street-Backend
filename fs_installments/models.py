@@ -35,6 +35,7 @@ class Installment(BaseModel):
                      'paid_amount': self.paid_amount, 'status': self.status, 'due_date': self.due_date.strftime(DATE_FORMAT)}
         )
         super().save(*args, **kwargs)
+        # update loan due date
         if update_loan:
             self.loan.update_due_date()
 

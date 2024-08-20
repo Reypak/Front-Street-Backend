@@ -26,6 +26,9 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     attachments = models.ManyToManyField(
         Document, related_name='loan_attachments', blank=True)
 
+    # Flags
+    is_overdue = models.BooleanField(default=False)
+
     def generate_ref_number(self):
         self.ref_number = f"FS/LOA/{self.id}"
         self.save()
@@ -37,6 +40,13 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
             if last_installment:
                 self.end_date = last_installment.due_date
                 self.updated_by = None  # core update
+                self.save()
+
+    # update flag status
+    def update_flags(self):
+        if self.is_overdue == True:
+            if self.overdue <= 0:
+                self.is_overdue = False
                 self.save()
 
     # def save(self, *args, **kwargs):

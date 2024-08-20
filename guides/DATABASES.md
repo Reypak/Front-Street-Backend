@@ -63,3 +63,7 @@ For improved performance, consider using a connection pooler like django-db-conn
 ```python
 INSTALLED_APPS += ['django_db_connection_pool']
 ```
+
+## Check Database Connection
+
+`python manage.py check --database default`

@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from rest_framework import viewsets
+from django.utils import timezone
 from datetime import datetime, date, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -212,18 +213,26 @@ def check_installments(request):
     if request.method == 'GET':
         auth_header = request.headers.get('Authorization')
         if auth_header == f'Bearer {SECRET_TOKEN}':
-            today = date.today()
+            today = timezone.now().date().today()
+
             # OVERDUE
             overdue_installments = Installment.objects.filter(
                 due_date=today,
                 status__in=[NOT_PAID, PARTIALLY_PAID],
                 loan__status=ACTIVE)
+
+            loans = Loan.objects.filter(
+                id__in=overdue_installments.values_list('loan_id', flat=True)
+            )
+            # Update the related loans
+            loans.update(is_overdue=True)
+            # Update installment status to OVERDUE
             overdue_installments.update(status=OVERDUE)
 
             # MISSED
             missed_installments = Installment.objects.filter(
                 due_date__lt=today,
-                status__in=[OVERDUE],
+                status__in=[NOT_PAID, OVERDUE],
                 loan__status=ACTIVE)
             missed_installments.update(status=MISSED)
 

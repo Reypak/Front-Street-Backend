@@ -82,6 +82,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
                         installment.payment_date = datetime.today()
                         installment.save(update_loan=False)
+                # update flag status
+                if installments:
+                    installments[0].loan.update_flags()
 
                 # Handle remaining payment for current or future installments
                 if amount > 0:
@@ -103,6 +106,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
                         installment.payment_date = datetime.today()
                         installment.save(update_loan=False)
+                    # update flag status
+                    if future_installments:
+                        future_installments[0].loan.update_flags()
 
         return Response(status=200)
 
