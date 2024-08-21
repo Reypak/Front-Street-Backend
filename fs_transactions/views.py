@@ -53,7 +53,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                     amount = 0
                     charge.status = PARTIALLY_PAID
                 # save the charge update
-                charge.payment_date = datetime.today()
+                charge.payment_date = datetime.now()
                 charge.save(is_update=True)
 
             if amount > 0:
@@ -80,7 +80,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                             installment.paid_amount += amount
                             amount = 0
 
-                        installment.payment_date = datetime.today()
+                        installment.payment_date = datetime.now()
                         installment.save(update_loan=False)
                 # update flag status
                 if installments:
@@ -104,7 +104,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                             amount = 0
                             installment.status = PARTIALLY_PAID
 
-                        installment.payment_date = datetime.today()
+                        installment.payment_date = datetime.now()
                         installment.save(update_loan=False)
                     # update flag status
                     if future_installments:

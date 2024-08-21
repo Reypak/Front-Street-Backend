@@ -16,12 +16,12 @@ class Installment(BaseModel):
     paid_amount = models.IntegerField(default=0)
     status = models.CharField(
         max_length=20, choices=INSTALLMENT_CHOICES, default=NOT_PAID)
-    payment_date = models.DateField(blank=True, null=True)
+    payment_date = models.DateTimeField(blank=True, null=True)
     # fees = models.IntegerField(default=0)
     # penalty = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ['id']
+        ordering = ['due_date']
 
     # update loan due date
     def save(self, *args, update_loan=True, **kwargs):

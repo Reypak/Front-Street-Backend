@@ -24,7 +24,7 @@ class ChargePenalty(BaseModel):
     paid_amount = models.IntegerField(default=0)
     status = models.CharField(
         max_length=20, choices=CHARGE_PENALTY_CHOICES, default=NOT_PAID)
-    payment_date = models.DateField(blank=True, null=True)
+    payment_date = models.DateTimeField(blank=True, null=True)
 
     def save(self, *args, is_update=False, **kwargs):
         super().save(*args, **kwargs)

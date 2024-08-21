@@ -17,8 +17,8 @@ urlpatterns = [
     path('schedule/<int:loan_id>/',
          PaymentScheduleView.as_view(), name='payment_schedule'),
 
-    path('installments/loan/<int:loan_id>/', LoanInstallmentList.as_view(),
-         name='loan_installment_list'),
+    #     path('installments/loan/<int:loan_id>/', LoanInstallmentList.as_view(),
+    #          name='loan_installment_list'),
 
     path('check_installments/', check_installments, name='check_installments'),
 

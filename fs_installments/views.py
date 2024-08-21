@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from fs_audits.models import AuditTrail
+from fs_installments.filters import InstallmentFilterSet
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer
 from fs_loans.models import Loan
@@ -22,22 +23,22 @@ class InstallmentViewSet(viewsets.ModelViewSet):
     queryset = Installment.objects.all()
     serializer_class = InstallmentSerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = InstallmentFilterSet
 
     def perform_update(self, serializer):
         # pass request user
         installment = serializer.save(updated_by=self.request.user)
         return installment
 
+
 # Get loan installments
+# class LoanInstallmentList(generics.ListAPIView):
+#     serializer_class = InstallmentSerializer
+#     permission_classes = [IsAuthenticated]
 
-
-class LoanInstallmentList(generics.ListAPIView):
-    serializer_class = InstallmentSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        loan_id = self.kwargs['loan_id']
-        return Installment.objects.filter(loan=loan_id)
+#     def get_queryset(self):
+#         loan_id = self.kwargs['loan_id']
+#         return Installment.objects.filter(loan=loan_id)
 
 
 class PaymentScheduleCreateView(APIView):
