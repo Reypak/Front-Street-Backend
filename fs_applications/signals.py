@@ -1,7 +1,7 @@
 # signals.py
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
+from django.utils import timezone
 from fs_loans.models import Loan
 from fs_utils.constants import ACCEPTED, CANCELLED, PENDING, REJECTED
 from fs_utils.notifications.emails import send_templated_email
@@ -16,6 +16,10 @@ def on_pre_save(sender, instance, **kwargs):
 
         # set the old status from pre_save
         instance.old_status = old_status
+
+        if old_status != instance.status:
+            if instance.status == ACCEPTED:
+                instance.approved_date = timezone.now()
 
 
 @receiver(post_save, sender=Application)

@@ -5,7 +5,8 @@ from django.utils.dateparse import parse_date
 from fs_applications.models import Application
 from fs_loans.models import Loan
 from fs_transactions.models import Transaction
-from fs_utils.constants import ACCEPTED, ACTIVE, APPROVED, CANCELLED, CLOSED, DISBURSEMENT, MISSED, OVERDUE, PENDING, REJECTED, REPAYMENT
+from fs_users.models import CustomUser
+from fs_utils.constants import ACCEPTED, ACTIVE, APPROVED, CANCELLED, CLOSED, DISBURSED, DISBURSEMENT, MISSED, OVERDUE, PENDING, REJECTED, REPAYMENT
 
 
 def get_overdue():
@@ -54,28 +55,29 @@ def get_loan_counts(start_date, end_date):
 
     # Date filters
     date_filters = {
-        ACTIVE: Q(),
+        DISBURSED: Q(),
         APPROVED: Q(),
         PENDING: Q()
     }
 
     if start_date:
         parsed_start_date = parse_date(start_date)
-        date_filters[ACTIVE] &= Q(
+        date_filters[DISBURSED] &= Q(
             disbursement_date__gte=parsed_start_date)
         date_filters[APPROVED] &= Q(approved_date__gte=parsed_start_date)
         date_filters[PENDING] &= Q(created_at__gte=parsed_start_date)
 
     if end_date:
         parsed_end_date = parse_date(end_date)
-        date_filters[ACTIVE] &= Q(disbursement_date__lte=parsed_end_date)
+        date_filters[DISBURSED] &= Q(disbursement_date__lte=parsed_end_date)
         date_filters[APPROVED] &= Q(approved_date__lte=parsed_end_date)
         date_filters[PENDING] &= Q(created_at__lte=parsed_end_date)
 
         # Perform a single query to get the counts
     loan_counts = Loan.objects.aggregate(
-        active=Count(
-            'id', filter=date_filters[ACTIVE] & Q(status=ACTIVE)),
+        active=Count('id', filter=Q(status=ACTIVE)),
+        disbursed=Count(
+            'id', filter=date_filters[DISBURSED] & Q(status=ACTIVE)),
         approved=Count(
             'id', filter=date_filters[APPROVED] & Q(status=APPROVED)),
         pending=Count(
@@ -101,10 +103,12 @@ def get_application_counts(start_date, end_date):
     if start_date:
         parsed_start_date = parse_date(start_date)
         date_filters[PENDING] &= Q(created_at__gte=parsed_start_date)
+        date_filters[ACCEPTED] &= Q(loan__created_at__gte=parsed_start_date)
 
     if end_date:
         parsed_end_date = parse_date(end_date)
         date_filters[PENDING] &= Q(created_at__lte=parsed_end_date)
+        date_filters[ACCEPTED] &= Q(loan__created_at__lte=parsed_end_date)
 
         # Perform a single query to get the counts
     counts = Application.objects.aggregate(
@@ -119,11 +123,61 @@ def get_application_counts(start_date, end_date):
     return counts
 
 
+def get_application_amounts(start_date, end_date):
+    """Returns application amounts"""
+
+    date_filters = {
+        PENDING: Q(),
+        ACCEPTED: Q(),
+    }
+
+    if start_date:
+        parsed_start_date = parse_date(start_date)
+        date_filters[PENDING] &= Q(created_at__gte=parsed_start_date)
+        date_filters[ACCEPTED] &= Q(loan__created_at__gte=parsed_start_date)
+
+    if end_date:
+        parsed_end_date = parse_date(end_date)
+        date_filters[PENDING] &= Q(created_at__lte=parsed_end_date)
+        date_filters[ACCEPTED] &= Q(loan__created_at__lte=parsed_end_date)
+
+    amounts = Application.objects.aggregate(
+        total_requested=Sum(
+            'amount', filter=date_filters[PENDING] & Q(status=PENDING)),
+        total_approved=Sum(
+            'amount', filter=date_filters[ACCEPTED] & Q(status=ACCEPTED)),
+    )
+
+    return amounts
+
+
 def get_loan_categories():
     """Returns the list of all loan categories an total count"""
     loan_categories = Loan.objects.values(
         name=F('category__name')).annotate(total=Count('id'))
     return loan_categories
+
+
+def get_users(start_date, end_date):
+    """Returns the list of all loan categories an total count"""
+
+    date_filters = Q()
+
+    if start_date:
+        parsed_start_date = parse_date(start_date)
+        date_filters &= Q(date_joined__gte=parsed_start_date)
+    if end_date:
+        parsed_end_date = parse_date(end_date)
+        date_filters &= Q(date_joined__lte=parsed_end_date)
+
+    counts = CustomUser.objects.aggregate(
+        clients=Count(
+            'id', filter=date_filters & Q(is_staff=False)),
+        staff=Count(
+            'id', filter=date_filters & Q(is_staff=True)),
+        total=Count('id')
+    )
+    return counts
 
 
 class ReportSummary(APIView):
@@ -133,9 +187,14 @@ class ReportSummary(APIView):
         end_date = request.query_params.get('end_date')
 
         return Response({
-            'applications': get_application_counts(start_date, end_date),
-            'loans': get_loan_counts(start_date, end_date),
-            'categories': get_loan_categories(),
+            'applications': {
+                'counts': get_application_counts(start_date, end_date),
+                'amounts': get_application_amounts(start_date, end_date)
+            },
+            'loans': {'counts': get_loan_counts(start_date, end_date),
+                      'categories': get_loan_categories(),
+                      },
             'overdue': get_overdue(),
             'transactions': get_transactions(start_date, end_date),
+            'users': get_users(start_date, end_date)
         })

@@ -31,6 +31,7 @@ class LoanFilterSet(BaseLoanFilterSet):
     # field name
     category_name = django_filters.CharFilter(
         field_name="category__name", lookup_expr=ICONTAINS)
+    is_overdue = django_filters.BooleanFilter()
 
     class Meta:
         model = Loan
@@ -38,4 +39,5 @@ class LoanFilterSet(BaseLoanFilterSet):
                   'status',
                   'category',
                   'category_name',
+                  'is_overdue',
                   'ref_number']

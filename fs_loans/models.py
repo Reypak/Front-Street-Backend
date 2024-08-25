@@ -17,7 +17,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
         Application, related_name="loan", on_delete=models.DO_NOTHING, null=True, blank=True)
 
     end_date = models.DateField(null=True, blank=True)
-    approved_date = models.DateTimeField(null=True, blank=True,)
+    approved_date = models.DateTimeField(null=True, blank=True)
     disbursement_date = models.DateTimeField(null=True, blank=True,)
 
     status = models.CharField(
