@@ -57,10 +57,21 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
         # get all installments
         total_installments = self.installments.aggregate(
             total=Sum(F('principal') + F('interest')))['total'] or 0
+        return total_installments + self.charges
+
+    @property
+    def charges(self):
         # get all charges
         total_charges = self.charge_penalties.aggregate(total=Sum('amount'))[
             'total'] or 0
-        return total_installments + total_charges
+        return total_charges
+
+    # @property
+    # def charges(self):
+    #     # get all charges
+    #     charges_balance = self.charge_penalties.aggregate(total=Sum(F('amount') - F('paid_amount')))[
+    #         'total'] or 0
+    #     return charges_balance
 
     @property
     def interest_amount(self):
@@ -98,6 +109,16 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
         permissions = (
             ("can_change_loan_status", "Can change loan status"),
         )
+
+    def get_field_mapping(self):
+        return {
+            # 'client': 'client',
+            'category': 'category',
+            'loan_term': 'loan_term',
+            'interest_rate': 'interest_rate',
+            'amount': 'amount',
+            'payment_frequency': 'payment_frequency',
+        }
 
     def __str__(self):
         return f'{self.ref_number} - {self.amount}'

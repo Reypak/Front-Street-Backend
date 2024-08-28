@@ -11,6 +11,14 @@ class Charge(BaseModel):
     type = models.CharField(max_length=10, choices=CHARGE_CHOICES)
     description = models.TextField(max_length=250, null=True, blank=True)
 
+    def get_field_mapping(self):
+        return {
+            'name': 'name',
+            'amount': 'amount',
+            'type': 'type',
+            'description': 'description',
+        }
+
     def __str__(self):
         return f'{self.name} ({self.amount})'
 

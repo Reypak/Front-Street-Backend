@@ -70,27 +70,19 @@ class LoanViewSerializer(BaseSerializer):
     #     source="category.name", read_only=True)
 
     attachments = DocumentSerializer(many=True, required=False)
-
     client_details = ClientSerializer(source="client")
+    overdue = serializers.IntegerField()
+    interest_amount = serializers.IntegerField()
+    outstanding_balance = serializers.IntegerField()
+    payment_amount = serializers.IntegerField()
+    amount_paid = serializers.IntegerField()
+    charges = serializers.IntegerField()
+    category_details = CategoryDetailsSerializer(source="category")
+    application_number = serializers.CharField(source="application")
 
     class Meta:
         model = Loan
         fields = '__all__'
-
-    overdue = serializers.IntegerField()
-
-    interest_amount = serializers.IntegerField()
-
-    outstanding_balance = serializers.IntegerField()
-
-    payment_amount = serializers.IntegerField()
-
-    amount_paid = serializers.IntegerField()
-
-    category_details = CategoryDetailsSerializer(source="category")
-
-    # application details
-    application_number = serializers.CharField(source="application")
 
     # def to_representation(self, instance):
     #     data = super().to_representation(instance)
