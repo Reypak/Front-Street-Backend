@@ -3,12 +3,14 @@ from openpyxl.utils import get_column_letter
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse
-from datetime import date
+from datetime import datetime
 from fs_installments.serializers import *
 from fs_loans.serializers import *
 from fs_transactions.serializers import TransactionSerializer
 from fs_users.serializers import UserSerializer
 from django.apps import apps
+
+from fs_utils.constants import DATETIME_FORMAT
 
 
 SERIALIZER_MAPPING = {
@@ -25,16 +27,26 @@ SERIALIZER_MAPPING = {
     ]},
     'loan': {'serializer': LoanViewSerializer, 'fields': [
         'ref_number',
+        'status',
         'application_number',
         'category_details.name',
         'amount',
+        'payment_frequency',
+        'loan_term',
+        'interest_rate',
         'interest_amount',
+        'repayment_type',
         'payment_amount',
         'amount_paid',
         'outstanding_balance',
         'charges',
         'overdue',
         'client_details.display_name',
+        'end_date',
+        'approved_date',
+        'disbursement_date',
+        'created_by.display_name',
+        'created_at',
     ]},
     'user': {'serializer': UserSerializer, 'fields': [
         'role_name',
@@ -131,7 +143,7 @@ class ExportDataView(APIView):
             worksheet.column_dimensions[column_letter].width = adjusted_width
 
         # Generate filename
-        filename = f'{model_name}-export-{date.today()}.xlsx'
+        filename = f'{model_name}s-export-{datetime.today().strftime(DATETIME_FORMAT)}.xlsx'
 
         # Prepare response
         response = HttpResponse(

@@ -23,4 +23,7 @@ urlpatterns = [
     path('check_installments/', check_installments, name='check_installments'),
 
     path('send-reminders/', send_reminders, name='send-reminders'),
+
+    path('reschedule/', RescheduleInstallmentView.as_view(),
+         name='reschedule-installment'),
 ]

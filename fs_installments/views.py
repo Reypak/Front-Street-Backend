@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from django.utils import timezone
 from datetime import datetime, date, timedelta
@@ -8,7 +9,7 @@ from rest_framework import status
 from fs_audits.models import AuditTrail
 from fs_installments.filters import InstallmentFilterSet
 from fs_installments.models import Installment
-from fs_installments.serializers import InstallmentSerializer
+from fs_installments.serializers import InstallmentSerializer, RescheduleSerializer
 from fs_loans.models import Loan
 from fs_utils.constants import ACTIVE, DAILY, DATE_FORMAT, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
 from fs_utils.notifications.emails import send_templated_email
@@ -140,7 +141,7 @@ class PaymentScheduleView(APIView):
         # MONTHLY LOAN
         elif payment_frequency == MONTHLY:
             for i in range(loan_term):
-                due_date = start_date + timedelta(days=30 * (i + 1))
+                due_date = start_date + timedelta(days=MONTH_DAYS * (i + 1))
                 # handle repayment type
                 if repayment_type == INTEREST_ONLY:
                     if i == loan_term - 1:
@@ -186,6 +187,61 @@ class PaymentScheduleView(APIView):
             'start_date': start_date,
             'installments': installments,
         })
+
+
+class RescheduleInstallmentView(APIView):
+    def post(self, request):
+        # Validate the request data
+        serializer = RescheduleSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Extract validated data
+        loan_id = serializer.validated_data['loan']
+        loan_term = serializer.validated_data['loan_term']
+        start_date = serializer.validated_data['start_date']
+        # interest_rate = serializer.validated_data['interest_rate']
+        amount = serializer.validated_data['amount']
+
+        # Fetch the loan object
+        loan = get_object_or_404(Loan, id=loan_id)
+
+        # Rescheduling logic
+        # loan.update_remaining_balance()
+        # remaining_balance = loan.remaining_balance
+
+        # Remove existing unpaid installments
+        loan.installments.filter(status=NOT_PAID).delete()
+
+        # Calculate the new installment amount
+        new_installment_amount = amount / loan_term
+        # current_date = timezone.now().date()
+
+        # Create new installments
+        new_installments = []
+        for i in range(loan_term):
+            # Assume each month is roughly 30 days
+            due_date = start_date + timedelta(days=(i * MONTH_DAYS))
+            new_installment = {
+                'loan': loan.id,
+                'due_date': due_date,
+                'principal': new_installment_amount,
+            }
+            new_installments.append(new_installment)
+
+        serializer = InstallmentSerializer(
+            data=new_installments, many=True, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+
+        # Assign the new installments to the loan
+        # loan.installments.add(*new_installments)
+        # loan.duration_in_months = new_duration_in_months
+        # loan.num_of_installments = new_duration_in_months
+        # loan.save()
+
+        return Response({"message": "Loan installments have been rescheduled successfully."}, status=status.HTTP_200_OK)
 
 
 def handle_date(request):
