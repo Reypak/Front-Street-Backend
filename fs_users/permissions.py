@@ -1,6 +1,8 @@
 # from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission
 
+from fs_utils.constants import CAN_ADMIN
+
 # class CustomPermission(BasePermission):
 #     def has_permission(self, request, view):
 
@@ -23,7 +25,7 @@ class IsStaffOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         # Allow any request if user is staff
         can_admin = request.user.role.permissions.filter(
-            codename='can_admin').exists()
+            codename=CAN_ADMIN).exists()
         if request.user and can_admin:
             return True
 
@@ -33,7 +35,7 @@ class IsStaffOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         # Allow any request if user is staff
         can_admin = request.user.role.permissions.filter(
-            codename='can_admin').exists()
+            codename=CAN_ADMIN).exists()
         if request.user and can_admin:
             return True
 

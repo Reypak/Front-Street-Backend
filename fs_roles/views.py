@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Role
-from .serializers import PermissionSerializer, RoleSerializer
+from .serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -11,7 +11,12 @@ from django.contrib.contenttypes.models import ContentType
 class RoleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Role.objects.all().order_by('-id')
-    serializer_class = RoleSerializer
+    # serializer_class = RoleSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return RoleListSerializer
+        return RoleSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

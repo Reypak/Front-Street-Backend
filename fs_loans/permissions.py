@@ -1,5 +1,7 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+from fs_utils.constants import CAN_ADMIN
+
 
 class LoanPermission(BasePermission):
     """
@@ -25,7 +27,7 @@ class LoanPermission(BasePermission):
             return True
 
         # List of permission codenames required to change the status field
-        required_permissions = ['can_admin', 'can_change_loan_status']
+        required_permissions = [CAN_ADMIN, 'can_change_loan_status']
 
         # Check if the user has the specific permission to update the status field
         has_permissions = request.user.role.permissions.filter(

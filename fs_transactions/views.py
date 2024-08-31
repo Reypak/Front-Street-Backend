@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from fs_charges.models import ChargePenalty
 from fs_installments.models import Installment
 from fs_transactions.filters import TransactionFilterSet
+from fs_transactions.permissions import TransactionPermission
 from fs_utils.constants import MISSED, NOT_PAID, OVERDUE, PAID, PARTIALLY_PAID
 from .serializers import *
 from .models import *
@@ -18,7 +19,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     filterset_class = TransactionFilterSet
-    permission_classes = [IsAuthenticated]
+    permission_classes = [TransactionPermission]
 
     def perform_create(self, serializer):
         # save transaction instance

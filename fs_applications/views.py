@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticated]
-    serializer_class = ApplicationSerializer
+    # serializer_class = ApplicationSerializer
     filterset_class = ApplicationFilterSet
 
     def get_serializer_class(self):

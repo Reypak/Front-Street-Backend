@@ -8,7 +8,7 @@ from fs_users.models import CustomUser
 from fs_users.permissions import IsStaffOrReadOnly
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import get_public_user_role
-from .serializers import UserSerializer
+from .serializers import *
 
 import random
 import string
@@ -57,7 +57,7 @@ class CreateUserAPIView(APIView):
 
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserListSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = UserFilterSet
 

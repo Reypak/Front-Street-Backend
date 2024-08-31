@@ -26,3 +26,9 @@ class RoleSerializer(BaseSerializer):
         model = Role
         fields = ['id', 'name', 'permissions',
                   'permission_ids', 'created_at', 'updated_at', 'created_by', 'updated_by']
+
+
+class RoleListSerializer(BaseSerializer):
+    class Meta:
+        model = Role
+        fields = ['id', 'name', 'created_at',]

@@ -42,3 +42,12 @@ class UserSerializer(serializers.ModelSerializer):
     def get_permissions(self, obj):
         # get permissions from role
         return list(obj.role.permissions.values_list('codename', flat=True))
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    role_name = serializers.CharField(source="role.name", read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'display_name',
+                  'phone_number', 'role_name', 'is_active',]
