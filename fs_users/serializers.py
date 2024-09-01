@@ -6,7 +6,7 @@ from fs_users.models import CustomUser
 class UserSerializer(serializers.ModelSerializer):
     permissions = serializers.SerializerMethodField()
     role_name = serializers.CharField(source="role.name", read_only=True)
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(required=False)
 
     class Meta:
         model = CustomUser

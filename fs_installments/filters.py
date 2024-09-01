@@ -26,7 +26,6 @@ class InstallmentFilterSet(django_filters.FilterSet):
         elif value == 'current_week':
             # Calculate the start of the current week (assuming week starts on Monday)
             week_start = today - timedelta(days=(today.weekday() + 1) % 7)
-            print(week_start)
             # Calculate the end of the current week (Sunday)
             week_end = week_start + timedelta(days=6)
             # Filter installments due within the current week

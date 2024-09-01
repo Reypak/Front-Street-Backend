@@ -12,6 +12,8 @@ class LoanSerializer(BaseSerializer):
 
     comment = serializers.CharField(write_only=True, required=False)
 
+    attachments = DocumentSerializer(many=True)
+
     class Meta:
         model = Loan
         fields = '__all__'
@@ -44,6 +46,7 @@ class LoanSerializer(BaseSerializer):
 
         # get updating user
         # instance.updated_by = self.context['request'].user
+        print(validated_data['attachments'])
 
         save_attachments(instance, validated_data)
 
