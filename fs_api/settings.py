@@ -39,6 +39,7 @@ LOCAL_APPS = [
     'fs_profiles',
     'fs_reports',
     'fs_roles',
+    'fs_tasks',
     'fs_transactions',
     'fs_users',
     'fs_utils',

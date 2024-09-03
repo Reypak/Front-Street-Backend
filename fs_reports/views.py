@@ -1,3 +1,5 @@
+import calendar
+from django.db.models.functions import TruncMonth
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.models import Count, Sum, Q, F
@@ -180,6 +182,38 @@ def get_users(start_date, end_date):
     return counts
 
 
+def get_transactions_by_month():
+    # Aggregate transactions by month
+    monthly_performance = (
+        Transaction.objects
+        .annotate(month=TruncMonth('created_at'))
+        .values('month')
+        .annotate(
+            total_disbursed=Sum('amount', filter=Q(type=DISBURSEMENT)),
+            total_repaid=Sum('amount', filter=Q(type=REPAYMENT))
+        )
+        .order_by('month')
+    )
+
+    # Prepare the response data with month label
+    data = []
+    for record in monthly_performance:
+        month = record['month']
+
+        # Get the month name and year
+        month_name = f"{calendar.month_name[month.month]}"
+        year = f"{month.year}"
+
+        data.append({
+            "month": month_name,
+            "year": year,
+            "total_disbursed": record['total_disbursed'] or 0,
+            "total_repaid": record['total_repaid'] or 0,
+        })
+
+    return data
+
+
 class ReportSummary(APIView):
     def get(self, request):
         # Parse the query parameters
@@ -196,5 +230,6 @@ class ReportSummary(APIView):
                       },
             'overdue': get_overdue(),
             'transactions': get_transactions(start_date, end_date),
+            'transactions_by_month': get_transactions_by_month(),
             'users': get_users(start_date, end_date)
         })

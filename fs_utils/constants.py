@@ -168,3 +168,12 @@ SITE_URL = 'http://localhost:3200/'
 CAN_ADMIN = 'can_admin'
 CAN_VIEW_TRANSACTION = 'view_transaction'
 CAN_ADD_TRANSACTION = 'add_transaction'
+
+COMPLETED = 'completed'
+
+# TASK CHOICES
+TASK_STATUS_CHOICES = [
+    (PENDING, PENDING),
+    (COMPLETED, COMPLETED),
+    (CLOSED, CLOSED),
+]
