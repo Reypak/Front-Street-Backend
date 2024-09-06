@@ -46,8 +46,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(serializers.ModelSerializer):
     role_name = serializers.CharField(source="role.name", read_only=True)
+    address = serializers.CharField(source="profile.address", read_only=True)
 
     class Meta:
         model = CustomUser
         fields = ['id', 'email', 'display_name',
-                  'phone_number', 'role_name', 'is_active',]
+                  'first_name',
+                  'last_name',
+                  'phone_number',
+                  'role_name',
+                  'is_active',
+                  'address',
+                  ]

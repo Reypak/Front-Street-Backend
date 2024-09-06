@@ -170,10 +170,12 @@ CAN_VIEW_TRANSACTION = 'view_transaction'
 CAN_ADD_TRANSACTION = 'add_transaction'
 
 COMPLETED = 'completed'
+IN_PROGRESS = 'in_progress'
 
 # TASK CHOICES
 TASK_STATUS_CHOICES = [
     (PENDING, PENDING),
+    (IN_PROGRESS, IN_PROGRESS),
     (COMPLETED, COMPLETED),
     (CLOSED, CLOSED),
 ]

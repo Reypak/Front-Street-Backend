@@ -278,11 +278,13 @@ def check_installments(request):
                 status__in=[NOT_PAID, PARTIALLY_PAID],
                 loan__status=ACTIVE)
 
-            loans = Loan.objects.filter(
+            # Get the related loans
+            overdue_loans = Loan.objects.filter(
                 id__in=overdue_installments.values_list('loan_id', flat=True)
             )
             # Update the related loans
-            loans.update(is_overdue=True)
+            overdue_loans.update(is_overdue=True)
+
             # Update installment status to OVERDUE
             overdue_installments.update(status=OVERDUE)
 
@@ -292,6 +294,13 @@ def check_installments(request):
                 status__in=[NOT_PAID, OVERDUE],
                 loan__status=ACTIVE)
             missed_installments.update(status=MISSED)
+
+            # Get the related loans
+            missed_loans = Loan.objects.filter(
+                id__in=missed_installments.values_list('loan_id', flat=True)
+            )
+            # Update the related loans
+            missed_loans.update(is_overdue=True)
 
             return JsonResponse({'status': 'success'}, status=200)
         return JsonResponse({'error': 'Unauthorized'}, status=401)

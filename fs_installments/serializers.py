@@ -8,6 +8,8 @@ class InstallmentSerializer(BaseSerializer):
     balance = serializers.IntegerField(read_only=True)
     ref_number = serializers.CharField(
         source='loan.ref_number', read_only=True)
+    loan_status = serializers.CharField(
+        source='loan.status', read_only=True)
 
     class Meta:
         model = Installment

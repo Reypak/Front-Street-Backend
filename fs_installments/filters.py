@@ -7,6 +7,7 @@ from datetime import date, timedelta
 class InstallmentFilterSet(django_filters.FilterSet):
     due_date = django_filters.DateFromToRangeFilter()
     period = django_filters.CharFilter(method='filter_by_period')
+    loan_status = django_filters.CharFilter(field_name='loan__status')
 
     class Meta:
         model = Installment
