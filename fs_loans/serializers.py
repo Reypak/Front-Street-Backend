@@ -63,7 +63,7 @@ class LoanListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Loan
         fields = ('id', 'ref_number',
-                  'amount', 'status', 'created_at', 'category_name', 'client_name')
+                  'amount', 'status', 'created_at', 'category_name', 'client_name', 'is_overdue')
 
 
 class LoanViewSerializer(BaseSerializer):

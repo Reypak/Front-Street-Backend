@@ -7,10 +7,13 @@ from .serializers import TaskSerializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all().order_by('-created_at')
+    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = TaskFilterSet
+
+    def perform_update(self, serializer):
+        return serializer.save(updated_by=self.request.user)
 
     # def get_queryset(self):
     #     id = self.request.query_params.get('id')
@@ -18,3 +21,14 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     #     if id is not None:
     #         return Task.objects.filter(fields__icontains=f'"{model}": {id}')
+
+    def get_queryset(self):
+        model = self.request.query_params.get('type')
+
+        # get all tasks for loan
+        if model is not None:
+            queryset = Task.objects.all()
+        else:
+            # get all tasks for the user
+            queryset = Task.objects.filter(assignees=self.request.user)
+        return queryset.order_by('-created_at')
