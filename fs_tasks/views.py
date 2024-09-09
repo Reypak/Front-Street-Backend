@@ -31,4 +31,9 @@ class TaskViewSet(viewsets.ModelViewSet):
         else:
             # get all tasks for the user
             queryset = Task.objects.filter(assignees=self.request.user)
+
+        # Allow all users to retrieve any task
+        if self.action == 'retrieve':
+            return Task.objects.all()
+
         return queryset.order_by('-created_at')

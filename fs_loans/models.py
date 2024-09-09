@@ -110,6 +110,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
             ("can_change_loan_status", "Can change loan status"),
         )
 
+    # mapping for the importer
     def get_field_mapping(self):
         return {
             # 'client': 'client',

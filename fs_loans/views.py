@@ -8,7 +8,7 @@ from fs_loans.permissions import LoanPermission
 # import local data
 from .serializers import *
 from .models import Loan
-from rest_framework.permissions import IsAuthenticated
+# from rest_framework.permissions import IsAuthenticated
 
 # create a viewset
 

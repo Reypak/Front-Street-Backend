@@ -26,11 +26,9 @@ class InstallmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filterset_class = InstallmentFilterSet
 
+    # pass request user
     def perform_update(self, serializer):
-        # pass request user
-        installment = serializer.save(updated_by=self.request.user)
-        return installment
-
+        return serializer.save(updated_by=self.request.user)
 
 # Get loan installments
 # class LoanInstallmentList(generics.ListAPIView):
@@ -102,7 +100,7 @@ class PaymentScheduleView(APIView):
         interest_rate = loan.interest_rate
 
         start_date = handle_date(request)  # get start date
-#
+
         repayment_type = request.GET.get('repayment_type', loan.repayment_type)
 
         loan_term = int(request.GET.get('loan_term', loan.loan_term))
@@ -124,7 +122,7 @@ class PaymentScheduleView(APIView):
 
         # DAILY LOAN
         if payment_frequency == DAILY:
-            current_date = start_date + timedelta(days=1)
+            current_date = start_date
             for _ in range(MONTH_DAYS):
                 # Find the next working day
                 while current_date.weekday() >= 5:  # 5 = Saturday, 6 = Sunday
@@ -141,7 +139,7 @@ class PaymentScheduleView(APIView):
         # MONTHLY LOAN
         elif payment_frequency == MONTHLY:
             for i in range(loan_term):
-                due_date = start_date + timedelta(days=MONTH_DAYS * (i + 1))
+                due_date = start_date + timedelta(days=MONTH_DAYS * i)
                 # handle repayment type
                 if repayment_type == INTEREST_ONLY:
                     if i == loan_term - 1:

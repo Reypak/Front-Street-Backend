@@ -4,6 +4,7 @@ from fs_comments.serializers import create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
+from fs_transactions.serializers import create_transaction
 from .models import Loan
 from fs_utils.serializers import BaseSerializer, ClientSerializer
 
@@ -11,6 +12,9 @@ from fs_utils.serializers import BaseSerializer, ClientSerializer
 class LoanSerializer(BaseSerializer):
 
     comment = serializers.CharField(write_only=True, required=False)
+    # used when disbursing loan
+    transaction_type = serializers.CharField(
+        write_only=True, required=False)
 
     attachments = DocumentSerializer(many=True)
 
@@ -41,12 +45,14 @@ class LoanSerializer(BaseSerializer):
     def update(self, instance, validated_data):
 
         # handle comments
-        create_comment(self=self, validated_data=validated_data,
-                       instance=instance)
+        create_comment(self, validated_data, instance)
+
+        # handle transaction
+        create_transaction(self, validated_data, instance)
 
         # get updating user
         # instance.updated_by = self.context['request'].user
-        print(validated_data['attachments'])
+        # print(validated_data['attachments'])
 
         save_attachments(instance, validated_data)
 

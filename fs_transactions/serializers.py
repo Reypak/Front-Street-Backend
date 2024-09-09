@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from fs_utils.constants import DISBURSEMENT
+
 from .models import *
 from fs_utils.serializers import BaseSerializer
 
@@ -15,3 +17,18 @@ class TransactionSerializer(BaseSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+
+
+def create_transaction(self, validated_data, instance):
+    # get transaction type
+    transaction_type = validated_data.pop('transaction_type', None)
+
+    # create transaction
+    if transaction_type == DISBURSEMENT:
+        Transaction.objects.create(
+            loan=instance,
+            amount=instance.amount,
+            type=DISBURSEMENT,
+            comment="System generated transaction",
+            created_by=self.context['request'].user
+        )
