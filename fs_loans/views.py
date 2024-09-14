@@ -15,7 +15,7 @@ from .models import Loan
 
 class LoanViewSet(viewsets.ModelViewSet):
     # define queryset
-    queryset = Loan.objects.all().order_by('-created_at')
+    queryset = Loan.objects.all()
     permission_classes = [LoanPermission]
 
     # specify serializer to be used
@@ -23,6 +23,16 @@ class LoanViewSet(viewsets.ModelViewSet):
 
     # set data filters
     filterset_class = LoanFilterSet
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff is True:
+            # show all for staff
+            queryset = Loan.objects.all()
+        else:
+            # only for user
+            queryset = Loan.objects.filter(client=user)
+        return queryset
 
     def get_serializer_class(self):
         if self.action == 'list':

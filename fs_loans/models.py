@@ -3,7 +3,8 @@ from django.db.models import Sum, F
 from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_audits.mixins import AuditTrailMixin
 from fs_documents.models import Document
-from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, OVERDUE, PENDING, REPAYMENT, REPAYMENT_TYPES
+from django.utils.timezone import now
+from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, NOT_PAID, OVERDUE, PARTIALLY_PAID, PENDING, REPAYMENT, REPAYMENT_TYPES
 
 
 class Loan(AuditTrailMixin, LoanApplicationBaseModel):
@@ -105,12 +106,25 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
                 total=Sum(total_amount - paid_amount))['total'] or 0
             return overdue_amount
 
-    class Meta:
-        permissions = (
-            ("can_change_loan_status", "Can change loan status"),
-        )
+    @property
+    def progress(self):
+        if self.amount_paid and self.payment_amount:
+            completion = self.amount_paid / self.payment_amount * 100
+            return int(completion)
+
+    @property
+    def next_payment_date(self):
+        # Filter installments to get those that are pending or not paid
+        next_installment = self.installments.filter(
+            # Adjust status field names as per your model
+            status__in=[NOT_PAID, PARTIALLY_PAID],
+            due_date__gt=now()  # Filter installments with due dates in the future
+        ).order_by('due_date').first()
+
+        return next_installment.due_date if next_installment else None
 
     # mapping for the importer
+
     def get_field_mapping(self):
         return {
             # 'client': 'client',
@@ -120,6 +134,12 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
             'amount': 'amount',
             'payment_frequency': 'payment_frequency',
         }
+
+    class Meta:
+        ordering = ['-created_at']
+        permissions = (
+            ("can_change_loan_status", "Can change loan status"),
+        )
 
     def __str__(self):
         return f'{self.ref_number} - {self.amount}'

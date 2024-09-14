@@ -22,6 +22,10 @@ class LoanPermission(BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
+        # Allow all read-only methods (e.g., GET, OPTIONS)
+        if request.method in SAFE_METHODS:
+            return True
+
         # Staff can edit any field except 'status'
         if request.user.is_staff and 'status' not in request.data:
             return True

@@ -88,6 +88,8 @@ class LoanViewSerializer(BaseSerializer):
     charges = serializers.IntegerField()
     category_details = CategoryDetailsSerializer(source="category")
     application_number = serializers.CharField(source="application")
+    progress = serializers.IntegerField()
+    next_payment_date = serializers.DateField()
 
     class Meta:
         model = Loan

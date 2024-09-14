@@ -45,5 +45,8 @@ class Application(AuditTrailMixin, LoanApplicationBaseModel):
     attachments = models.ManyToManyField(
         Document, related_name='application_attachments')
 
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         return f'{self.ref_number}'
