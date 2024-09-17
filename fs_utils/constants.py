@@ -31,6 +31,7 @@ REJECTED = "rejected"
 
 # installment status
 OVERDUE = "overdue"
+DUE_TODAY = "due_today"
 PAID = "paid"
 NOT_PAID = "not_paid"
 PARTIALLY_PAID = "partially_paid"
@@ -74,6 +75,7 @@ INSTALLMENT_CHOICES = (
     (PAID, 'Paid'),
     (NOT_PAID, 'Not Paid'),
     (OVERDUE, 'Overdue'),
+    (DUE_TODAY, DUE_TODAY),
     (PARTIALLY_PAID, 'Partially Paid'),
     (MISSED, 'Missed'),
     (WRITTEN_OFF, 'Written Off'),

@@ -4,7 +4,7 @@ from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_audits.mixins import AuditTrailMixin
 from fs_documents.models import Document
 from django.utils.timezone import now
-from fs_utils.constants import ACTIVE, CANCELLED, FIXED_INTEREST, LOAN_STATUSES, MISSED, NOT_PAID, OVERDUE, PARTIALLY_PAID, PENDING, REPAYMENT, REPAYMENT_TYPES
+from fs_utils.constants import ACTIVE, CANCELLED, DUE_TODAY, FIXED_INTEREST, LOAN_STATUSES, MISSED, NOT_PAID, OVERDUE, PARTIALLY_PAID, PENDING, REPAYMENT, REPAYMENT_TYPES
 
 
 class Loan(AuditTrailMixin, LoanApplicationBaseModel):
@@ -29,6 +29,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
 
     # Flags
     is_overdue = models.BooleanField(default=False)
+    is_due_today = models.BooleanField(default=False)
 
     def generate_ref_number(self):
         self.ref_number = f"FS/LOA/{self.id}"
@@ -45,9 +46,15 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
 
     # update flag status
     def update_flags(self):
+        # OVERDUE
         if self.is_overdue == True:
             if self.overdue <= 0:
                 self.is_overdue = False
+                self.save()
+        # DUE DATE
+        if self.is_due_today == True:
+            if self.due_amount <= 0:
+                self.is_due_today = False
                 self.save()
 
     # def save(self, *args, **kwargs):
@@ -105,6 +112,17 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
                 # calculate the installment balance
                 total=Sum(total_amount - paid_amount))['total'] or 0
             return overdue_amount
+
+    # due amount
+    @property
+    def due_amount(self):
+        if self.status in [ACTIVE]:
+            total_amount = F('principal') + F('interest')
+            paid_amount = F('paid_amount')
+            due_amount = self.installments.filter(status=DUE_TODAY).aggregate(
+                # calculate the installment balance
+                total=Sum(total_amount - paid_amount))['total'] or 0
+            return due_amount
 
     @property
     def progress(self):

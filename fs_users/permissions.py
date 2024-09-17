@@ -17,12 +17,17 @@ from fs_utils.constants import CAN_ADMIN
 
 
 class IsAuthenticatedStaff(BasePermission):
+    """
+    Allows all users to perform any action if special fields 
+    havent been passed.
+    """
+
     def has_permission(self, request, view):
 
         has_staff_fields = 'role' not in request.data
         # and 'is_staff' not in request.data
 
-        # Allow any request, but with restrictions
+        # Allow any request (unauthenticated), but with restrictions
         if not request.user.is_authenticated:
             return has_staff_fields
 
@@ -63,3 +68,25 @@ class IsStaffOrReadOnly(BasePermission):
 
         # Non-staff users can only read
         return request.method in ['GET', 'OPTIONS']
+
+
+class IsAuthorisedUser(BasePermission):
+    """
+    Allows all users to perform any action if special fields 
+    havent been passed.
+    """
+
+    def has_permission(self, request, view):
+
+        has_staff_fields = 'role' not in request.data and 'is_staff' not in request.data
+
+        has_permissions = request.user.role.permissions.filter(
+            codename=CAN_ADMIN).exists()
+
+        # Authenticated user with permissions
+        if has_permissions:
+            return True
+
+        # Authenticated without permissions
+        if request.user.is_authenticated:
+            return has_staff_fields

@@ -5,7 +5,7 @@ from fs_charges.models import ChargePenalty
 from fs_installments.models import Installment
 from fs_transactions.filters import TransactionFilterSet
 from fs_transactions.permissions import TransactionPermission
-from fs_utils.constants import MISSED, NOT_PAID, OVERDUE, PAID, PARTIALLY_PAID
+from fs_utils.constants import DUE_TODAY, MISSED, NOT_PAID, OVERDUE, PAID, PARTIALLY_PAID
 from .serializers import *
 from .models import *
 from rest_framework.permissions import IsAuthenticated
@@ -61,14 +61,14 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 # filter installments by status
                 installments = Installment.objects.filter(
                     loan=loan,
-                    status__in=[MISSED, OVERDUE, PARTIALLY_PAID]).order_by('id')
+                    status__in=[MISSED, OVERDUE, DUE_TODAY, PARTIALLY_PAID]).order_by('due_date')
                 # print('RUN INSTALLMENTS')
                 # allocate payment to missed and partial paid
                 for installment in installments:
                     if amount <= 0:
                         break
 
-                    if installment.status in [MISSED, OVERDUE, PARTIALLY_PAID]:
+                    if installment.status in [MISSED, OVERDUE, DUE_TODAY, PARTIALLY_PAID]:
                         balance = installment.balance
 
                         if amount >= balance:  # if payment covers full balance
@@ -91,7 +91,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 if amount > 0:
                     future_installments = Installment.objects.filter(
                         loan=loan,
-                        status=NOT_PAID).order_by('id')
+                        status=NOT_PAID).order_by('due_date')
                     for installment in future_installments:
                         if amount <= 0:
                             break

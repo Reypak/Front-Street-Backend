@@ -69,7 +69,7 @@ class LoanListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Loan
         fields = ('id', 'ref_number',
-                  'amount', 'status', 'created_at', 'category_name', 'client_name', 'is_overdue')
+                  'amount', 'status', 'created_at', 'category_name', 'client_name', 'is_overdue', 'is_due_today', 'progress', 'next_payment_date')
 
 
 class LoanViewSerializer(BaseSerializer):
@@ -81,6 +81,7 @@ class LoanViewSerializer(BaseSerializer):
     attachments = DocumentSerializer(many=True, required=False)
     client_details = ClientSerializer(source="client")
     overdue = serializers.IntegerField()
+    due_amount = serializers.IntegerField()
     interest_amount = serializers.IntegerField()
     outstanding_balance = serializers.IntegerField()
     payment_amount = serializers.IntegerField()

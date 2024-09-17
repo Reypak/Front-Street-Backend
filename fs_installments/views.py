@@ -11,13 +11,10 @@ from fs_installments.filters import InstallmentFilterSet
 from fs_installments.models import Installment
 from fs_installments.serializers import InstallmentSerializer, RescheduleSerializer
 from fs_loans.models import Loan
-from fs_utils.constants import ACTIVE, DAILY, DATE_FORMAT, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
+from fs_utils.constants import ACTIVE, DAILY, DATE_FORMAT, DUE_TODAY, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import calculate_loan_interest_rate, format_number
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import generics
-
-# Create your views here.
 
 
 class InstallmentViewSet(viewsets.ModelViewSet):
@@ -209,7 +206,7 @@ class RescheduleInstallmentView(APIView):
         # remaining_balance = loan.remaining_balance
 
         # Remove existing unpaid installments
-        loan.installments.filter(status=NOT_PAID).delete()
+        # loan.installments.filter(status=NOT_PAID).delete()
 
         # Calculate the new installment amount
         new_installment_amount = amount / loan_term
@@ -226,6 +223,10 @@ class RescheduleInstallmentView(APIView):
                 'principal': new_installment_amount,
             }
             new_installments.append(new_installment)
+
+        # return Response({
+        #     'installments': new_installments,
+        # })
 
         serializer = InstallmentSerializer(
             data=new_installments, many=True, context={'request': request})
@@ -270,10 +271,27 @@ def check_installments(request):
         if auth_header == f'Bearer {SECRET_TOKEN}':
             today = timezone.now().date().today()
 
-            # OVERDUE
-            overdue_installments = Installment.objects.filter(
+            # handle_due_today
+            # DUE DATE
+            due_installments = Installment.objects.filter(
                 due_date=today,
                 status__in=[NOT_PAID, PARTIALLY_PAID],
+                loan__status=ACTIVE)
+
+            # Get the related loans
+            due_loans = Loan.objects.filter(
+                id__in=due_installments.values_list('loan_id', flat=True))
+
+            # Update related loans
+            due_loans.update(is_due_today=True)
+
+            # Update installments
+            due_installments.update(status=DUE_TODAY)
+
+            # OVERDUE
+            overdue_installments = Installment.objects.filter(
+                due_date=today - timedelta(days=1),  # due date exceeded 1 day
+                status__in=[NOT_PAID, PARTIALLY_PAID, DUE_TODAY],
                 loan__status=ACTIVE)
 
             # Get the related loans
@@ -281,17 +299,17 @@ def check_installments(request):
                 id__in=overdue_installments.values_list('loan_id', flat=True)
             )
             # Update the related loans
-            overdue_loans.update(is_overdue=True)
+            overdue_loans.update(is_overdue=True, is_due_today=False)
 
             # Update installment status to OVERDUE
             overdue_installments.update(status=OVERDUE)
 
             # MISSED
             missed_installments = Installment.objects.filter(
-                due_date__lt=today,
+                # due date exceeded 2 days
+                due_date__lte=today - timedelta(days=2),
                 status__in=[NOT_PAID, OVERDUE],
                 loan__status=ACTIVE)
-            missed_installments.update(status=MISSED)
 
             # Get the related loans
             missed_loans = Loan.objects.filter(
@@ -299,6 +317,8 @@ def check_installments(request):
             )
             # Update the related loans
             missed_loans.update(is_overdue=True)
+            # Update installments
+            missed_installments.update(status=MISSED)
 
             return JsonResponse({'status': 'success'}, status=200)
         return JsonResponse({'error': 'Unauthorized'}, status=401)
