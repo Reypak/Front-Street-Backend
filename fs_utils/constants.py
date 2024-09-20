@@ -170,6 +170,9 @@ SITE_URL = 'http://localhost:3200/'
 CAN_ADMIN = 'can_admin'
 CAN_VIEW_TRANSACTION = 'view_transaction'
 CAN_ADD_TRANSACTION = 'add_transaction'
+CAN_CHANGE_APPLICATION_STATUS = "change_application_status"
+CAN_CHANGE_LOAN_STATUS = "change_loan_status"
+
 
 COMPLETED = 'completed'
 # IN_PROGRESS = 'in_progress'

@@ -12,13 +12,11 @@ router.register(r'installments', InstallmentViewSet, basename="Installments")
 urlpatterns = [
     path('', include(router.urls)),
 
-    path('schedule/', PaymentScheduleCreateView.as_view(), name='payment_schedule'),
+    path('schedule/', PaymentScheduleCreateView.as_view(),
+         name='payment_schedule_create'),
 
     path('schedule/<int:loan_id>/',
-         PaymentScheduleView.as_view(), name='payment_schedule'),
-
-    #     path('installments/loan/<int:loan_id>/', LoanInstallmentList.as_view(),
-    #          name='loan_installment_list'),
+         PaymentScheduleView.as_view(), name='payment_schedule_preview'),
 
     path('check_installments/', check_installments, name='check_installments'),
 

@@ -9,9 +9,9 @@ from rest_framework import status
 from fs_audits.models import AuditTrail
 from fs_installments.filters import InstallmentFilterSet
 from fs_installments.models import Installment
-from fs_installments.serializers import InstallmentSerializer, RescheduleSerializer
+from fs_installments.serializers import *
 from fs_loans.models import Loan
-from fs_utils.constants import ACTIVE, DAILY, DATE_FORMAT, DUE_TODAY, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
+from fs_utils.constants import ACTIVE, DAILY, DATE_FORMAT, DUE_TODAY, INTEREST_ONLY, LOAN, MISSED, MONTH_DAYS, MONTHLY, NOT_PAID, OVERDUE, PAID, PARTIALLY_PAID, REMINDER, SCHEDULE, SECRET_TOKEN
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import calculate_loan_interest_rate, format_number
 from rest_framework.permissions import IsAuthenticated
@@ -82,27 +82,23 @@ class PaymentScheduleView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        # loan_id = request.data.get('loan_id')
+        serializer = ScheduleSerializer(data=request.GET)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         loan_id = self.kwargs['loan_id']
 
-        if loan_id is None:
-            return Response({'error': 'Missing loan_id'}, status=status.HTTP_400_BAD_REQUEST)
+        # Fetch the loan object
+        loan = get_object_or_404(Loan, pk=loan_id)
 
-        try:
-            loan = Loan.objects.get(pk=loan_id)
-        except Loan.DoesNotExist:
-            return Response({'error': 'Loan not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        principal = loan.amount
-        interest_rate = loan.interest_rate
-
-        start_date = handle_date(request)  # get start date
-
-        repayment_type = request.GET.get('repayment_type', loan.repayment_type)
-
-        loan_term = int(request.GET.get('loan_term', loan.loan_term))
-
-        payment_frequency = request.GET.get(
+        validated_data = serializer.validated_data
+        principal = validated_data.get('principal', loan.amount)
+        interest_rate = validated_data.get('interest_rate', loan.interest_rate)
+        start_date = validated_data.get('start_date', date.today())
+        repayment_type = validated_data.get(
+            'repayment_type', loan.repayment_type)
+        loan_term = validated_data.get('loan_term', loan.loan_term)
+        payment_frequency = validated_data.get(
             'payment_frequency', loan.payment_frequency)
 
         interest_amount = interest_rate / 100 * principal
@@ -207,6 +203,7 @@ class RescheduleInstallmentView(APIView):
 
         # Remove existing unpaid installments
         # loan.installments.filter(status=NOT_PAID).delete()
+        loan.installments.exclude(status=PAID).delete()
 
         # Calculate the new installment amount
         new_installment_amount = amount / loan_term

@@ -3,7 +3,7 @@ from fs_audits.mixins import AuditTrailMixin
 from fs_categories.models import Category
 from fs_documents.models import Document
 from fs_users.models import CustomUser
-from fs_utils.constants import APPLICATION_STATUS_CHOICES, MONTHLY, PAYMENT_FREQUENCY_CHOICES, PENDING
+from fs_utils.constants import APPLICATION_STATUS_CHOICES, CAN_CHANGE_APPLICATION_STATUS, MONTHLY, PAYMENT_FREQUENCY_CHOICES, PENDING
 from fs_utils.models import BaseModel
 
 # Create your models here.
@@ -47,6 +47,9 @@ class Application(AuditTrailMixin, LoanApplicationBaseModel):
 
     class Meta:
         ordering = ['-created_at']
+        permissions = (
+            (CAN_CHANGE_APPLICATION_STATUS, "Can change application status"),
+        )
 
     def __str__(self):
         return f'{self.ref_number}'

@@ -19,7 +19,14 @@ class InstallmentSerializer(BaseSerializer):
 class RescheduleSerializer(serializers.Serializer):
     loan = serializers.IntegerField(required=True)
     loan_term = serializers.IntegerField(min_value=1, required=True)
-    # interest_rate = serializers.DecimalField(
-    #     max_digits=5, decimal_places=2, required=True)
     amount = serializers.IntegerField(required=True)
     start_date = serializers.DateField(required=True)
+
+
+class ScheduleSerializer(serializers.Serializer):
+    principal = serializers.IntegerField(required=False)
+    interest_rate = serializers.FloatField(required=False)
+    start_date = serializers.DateField(required=False)
+    repayment_type = serializers.CharField(required=False)
+    loan_term = serializers.IntegerField(required=False)
+    payment_frequency = serializers.CharField(required=False)

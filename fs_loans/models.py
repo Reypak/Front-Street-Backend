@@ -4,7 +4,7 @@ from fs_applications.models import Application, LoanApplicationBaseModel
 from fs_audits.mixins import AuditTrailMixin
 from fs_documents.models import Document
 from django.utils.timezone import now
-from fs_utils.constants import ACTIVE, CANCELLED, DUE_TODAY, FIXED_INTEREST, LOAN_STATUSES, MISSED, NOT_PAID, OVERDUE, PARTIALLY_PAID, PENDING, REPAYMENT, REPAYMENT_TYPES
+from fs_utils.constants import ACTIVE, CAN_CHANGE_LOAN_STATUS, CANCELLED, DUE_TODAY, FIXED_INTEREST, LOAN_STATUSES, MISSED, NOT_PAID, OVERDUE, PARTIALLY_PAID, PENDING, REPAYMENT, REPAYMENT_TYPES
 
 
 class Loan(AuditTrailMixin, LoanApplicationBaseModel):
@@ -156,7 +156,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     class Meta:
         ordering = ['-created_at']
         permissions = (
-            ("can_change_loan_status", "Can change loan status"),
+            (CAN_CHANGE_LOAN_STATUS, "Can change loan status"),
         )
 
     def __str__(self):
