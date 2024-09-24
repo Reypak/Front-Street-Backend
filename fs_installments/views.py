@@ -48,11 +48,27 @@ class PaymentScheduleCreateView(APIView):
         if not isinstance(installments, list):
             return Response({"installments": "Expected a list of objects"}, status=status.HTTP_400_BAD_REQUEST)
 
+        loan_id = installments[0]['loan']
+
         # Pass installments to serializer
         serializer = InstallmentSerializer(
             data=installments, many=True, context={'request': request})
 
         if serializer.is_valid():
+
+            action = 'created'  # for audit
+
+            # Rescheduled loan
+            is_rescheduled = request.data.get('is_rescheduled')
+
+            if is_rescheduled is True:
+                # Fetch the loan object
+                loan = get_object_or_404(Loan, id=loan_id)
+                # Remove existing unpaid installments
+                loan.installments.exclude(status=PAID).delete()
+
+                action = 'rescheduled'  # for audit
+
             serializer.save()
 
             # Update loan status
@@ -65,9 +81,10 @@ class PaymentScheduleCreateView(APIView):
             AuditTrail.objects.create(
                 action=SCHEDULE,
                 model_name=LOAN,
-                object_id=installments[0]['loan'],
+                object_id=loan_id,
                 actor=request.user,
-                changes={'schedule': 'created'}
+                changes={'action': action,
+                         'total_installments': len(installments)}
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -87,12 +104,17 @@ class PaymentScheduleView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         loan_id = self.kwargs['loan_id']
+        is_rescheduled = request.GET.get('is_rescheduled')
 
         # Fetch the loan object
         loan = get_object_or_404(Loan, pk=loan_id)
 
+        principal_amount = loan.amount
+        if is_rescheduled == "true":
+            principal_amount = loan.outstanding_balance or loan.amount or 0
+
         validated_data = serializer.validated_data
-        principal = validated_data.get('principal', loan.amount)
+        principal = validated_data.get('principal', principal_amount)
         interest_rate = validated_data.get('interest_rate', loan.interest_rate)
         start_date = validated_data.get('start_date', date.today())
         repayment_type = validated_data.get(
@@ -180,64 +202,64 @@ class PaymentScheduleView(APIView):
         })
 
 
-class RescheduleInstallmentView(APIView):
-    def post(self, request):
-        # Validate the request data
-        serializer = RescheduleSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class RescheduleInstallmentView(APIView):
+#     def post(self, request):
+#         # Validate the request data
+#         serializer = RescheduleSerializer(data=request.data)
+#         if not serializer.is_valid():
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Extract validated data
-        loan_id = serializer.validated_data['loan']
-        loan_term = serializer.validated_data['loan_term']
-        start_date = serializer.validated_data['start_date']
-        # interest_rate = serializer.validated_data['interest_rate']
-        amount = serializer.validated_data['amount']
+#         # Extract validated data
+#         loan_id = serializer.validated_data['loan']
+#         loan_term = serializer.validated_data['loan_term']
+#         start_date = serializer.validated_data['start_date']
+#         # interest_rate = serializer.validated_data['interest_rate']
+#         amount = serializer.validated_data['amount']
 
-        # Fetch the loan object
-        loan = get_object_or_404(Loan, id=loan_id)
+#         # Fetch the loan object
+#         loan = get_object_or_404(Loan, id=loan_id)
 
-        # Rescheduling logic
-        # loan.update_remaining_balance()
-        # remaining_balance = loan.remaining_balance
+#         # Rescheduling logic
+#         # loan.update_remaining_balance()
+#         # remaining_balance = loan.remaining_balance
 
-        # Remove existing unpaid installments
-        # loan.installments.filter(status=NOT_PAID).delete()
-        loan.installments.exclude(status=PAID).delete()
+#         # Remove existing unpaid installments
+#         # loan.installments.filter(status=NOT_PAID).delete()
+#         loan.installments.exclude(status=PAID).delete()
 
-        # Calculate the new installment amount
-        new_installment_amount = amount / loan_term
-        # current_date = timezone.now().date()
+#         # Calculate the new installment amount
+#         new_installment_amount = amount / loan_term
+#         # current_date = timezone.now().date()
 
-        # Create new installments
-        new_installments = []
-        for i in range(loan_term):
-            # Assume each month is roughly 30 days
-            due_date = start_date + timedelta(days=(i * MONTH_DAYS))
-            new_installment = {
-                'loan': loan.id,
-                'due_date': due_date,
-                'principal': new_installment_amount,
-            }
-            new_installments.append(new_installment)
+#         # Create new installments
+#         new_installments = []
+#         for i in range(loan_term):
+#             # Assume each month is roughly 30 days
+#             due_date = start_date + timedelta(days=(i * MONTH_DAYS))
+#             new_installment = {
+#                 'loan': loan.id,
+#                 'due_date': due_date,
+#                 'principal': new_installment_amount,
+#             }
+#             new_installments.append(new_installment)
 
-        # return Response({
-        #     'installments': new_installments,
-        # })
+#         # return Response({
+#         #     'installments': new_installments,
+#         # })
 
-        serializer = InstallmentSerializer(
-            data=new_installments, many=True, context={'request': request})
+#         serializer = InstallmentSerializer(
+#             data=new_installments, many=True, context={'request': request})
 
-        if serializer.is_valid():
-            serializer.save()
+#         if serializer.is_valid():
+#             serializer.save()
 
-        # Assign the new installments to the loan
-        # loan.installments.add(*new_installments)
-        # loan.duration_in_months = new_duration_in_months
-        # loan.num_of_installments = new_duration_in_months
-        # loan.save()
+#         # Assign the new installments to the loan
+#         # loan.installments.add(*new_installments)
+#         # loan.duration_in_months = new_duration_in_months
+#         # loan.num_of_installments = new_duration_in_months
+#         # loan.save()
 
-        return Response({"message": "Loan installments have been rescheduled successfully."}, status=status.HTTP_200_OK)
+#         return Response({"message": "Loan installments have been rescheduled successfully."}, status=status.HTTP_200_OK)
 
 
 def handle_date(request):

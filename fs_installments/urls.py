@@ -22,6 +22,4 @@ urlpatterns = [
 
     path('send-reminders/', send_reminders, name='send-reminders'),
 
-    path('reschedule/', RescheduleInstallmentView.as_view(),
-         name='reschedule-installment'),
 ]
