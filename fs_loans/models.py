@@ -131,7 +131,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
             return int(completion)
 
     @property
-    def next_payment_date(self):
+    def next_payment(self):
         # Filter installments to get those that are pending or not paid
         next_installment = self.installments.filter(
             # Adjust status field names as per your model
@@ -139,7 +139,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
             due_date__gt=now()  # Filter installments with due dates in the future
         ).order_by('due_date').first()
 
-        return next_installment.due_date if next_installment else None
+        return next_installment
 
     # mapping for the importer
 

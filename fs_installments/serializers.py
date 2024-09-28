@@ -16,6 +16,11 @@ class InstallmentSerializer(BaseSerializer):
         fields = '__all__'
 
 
+class SimpleInstallmentSerializer(serializers.Serializer):
+    balance = serializers.IntegerField(read_only=True)
+    due_date = serializers.DateField(read_only=True)
+
+
 class RescheduleSerializer(serializers.Serializer):
     loan = serializers.IntegerField(required=True)
     loan_term = serializers.IntegerField(min_value=1, required=True)

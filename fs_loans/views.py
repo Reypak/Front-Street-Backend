@@ -1,6 +1,13 @@
 from rest_framework import viewsets
+from weasyprint import HTML
+from fs_installments.models import Installment
 from fs_loans.filters import LoanFilterSet
 from fs_loans.permissions import LoanPermission
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from datetime import datetime
+
+from fs_utils.constants import ADDRESS_DETAILS, APP_NAME
 
 # from utils.constants import CustomPagination
 
@@ -50,3 +57,45 @@ class LoanViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         return serializer.save(updated_by=self.request.user)
+
+
+def download_loan_statement(request, loan_id):
+    # Get the loan and its installments
+    loan = Loan.objects.get(id=loan_id)
+    installments = Installment.objects.filter(loan=loan)
+
+    context = {
+        'loan': loan,
+        'installments': installments,
+        'current_date': datetime.now().strftime('%Y-%m-%d'),
+        'year': datetime.now().year,
+        'app_name': APP_NAME,
+        'address': ADDRESS_DETAILS,
+        'payments': {
+            'reference_number':  loan.ref_number,
+            'disbursement_date': loan.disbursement_date,
+            'end_date': loan.end_date,
+            'overdue_amount': loan.overdue,
+            'principal': loan.amount,
+            'charges': loan.charges,
+            'paid_amount': loan.amount_paid,
+            'outstanding_balance': loan.outstanding_balance,
+        },
+        'accounts': {
+            'interest_rate': loan.interest_rate,
+            'interest_amount': loan.interest_amount,
+            'loan_term': loan.loan_term,
+            'status': loan.status,
+        }
+    }
+
+    # Render the loan statement template
+    html_string = render_to_string('loan_statement.html', context)
+
+    # Convert the HTML to a PDF
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Return the response
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="loan_statement_{loan.ref_number}.pdf"'
+    return response

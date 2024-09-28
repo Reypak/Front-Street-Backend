@@ -8,6 +8,7 @@ class CustomPagination(PageNumberPagination):
 
 # App name
 APP_NAME = 'Front Street Lender'
+ADDRESS_DETAILS = 'Namugongo Opp. Protestant Shrine +(256) 775 806 688'
 
 # filter expressions
 ICONTAINS = "icontains"
@@ -68,7 +69,8 @@ LOAN_STATUSES = (
     (APPROVED, 'Approved'),
     (ACTIVE, 'Active'),
     (CANCELLED, 'Cancelled'),
-    (CLOSED, 'Closed')
+    (CLOSED, 'Closed'),
+    (WRITTEN_OFF, WRITTEN_OFF)
 )
 
 INSTALLMENT_CHOICES = (

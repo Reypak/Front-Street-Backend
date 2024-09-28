@@ -40,4 +40,5 @@ class LoanFilterSet(BaseLoanFilterSet):
                   'category',
                   'category_name',
                   'is_overdue',
+                  'is_due_today',
                   'ref_number']

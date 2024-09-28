@@ -4,6 +4,7 @@ from fs_comments.serializers import create_comment
 from fs_documents.helpers import save_attachments
 from fs_documents.models import Document
 from fs_documents.serializers import DocumentSerializer
+from fs_installments.serializers import SimpleInstallmentSerializer
 from fs_transactions.serializers import create_transaction
 from .models import Loan
 from fs_utils.serializers import BaseSerializer, ClientSerializer
@@ -66,6 +67,9 @@ class LoanListSerializer(serializers.ModelSerializer):
     client_name = serializers.CharField(
         source="client.display_name", read_only=True)
 
+    next_payment_date = serializers.DateField(
+        source="next_payment.due_date", read_only=True)
+
     class Meta:
         model = Loan
         fields = ('id', 'ref_number',
@@ -90,7 +94,7 @@ class LoanViewSerializer(BaseSerializer):
     category_details = CategoryDetailsSerializer(source="category")
     application_number = serializers.CharField(source="application")
     progress = serializers.IntegerField()
-    next_payment_date = serializers.DateField()
+    next_payment = SimpleInstallmentSerializer()
 
     class Meta:
         model = Loan

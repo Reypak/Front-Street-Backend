@@ -8,7 +8,7 @@ from fs_applications.models import Application
 from fs_loans.models import Loan
 from fs_transactions.models import Transaction
 from fs_users.models import CustomUser
-from fs_utils.constants import ACCEPTED, ACTIVE, APPROVED, CANCELLED, CLOSED, DISBURSED, DISBURSEMENT, MISSED, OVERDUE, PENDING, REJECTED, REPAYMENT
+from fs_utils.constants import ACCEPTED, ACTIVE, APPROVED, CANCELLED, CLOSED, DISBURSED, DISBURSEMENT, MISSED, OVERDUE, PENDING, REJECTED, REPAYMENT, WRITTEN_OFF
 
 
 def get_overdue():
@@ -87,6 +87,7 @@ def get_loan_counts(start_date, end_date):
         cancelled=Count('id', filter=Q(status=CANCELLED)),
         closed=Count('id', filter=Q(status=CLOSED)),
         overdue=Count('id', filter=Q(is_overdue=True)),
+        written_off=Count('id', filter=Q(status=WRITTEN_OFF)),
         total=Count('id')
     )
     return loan_counts

@@ -1,6 +1,16 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.11-slim
 
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libgirepository1.0-dev \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libgdk-pixbuf2.0-dev \
+    libglib2.0-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

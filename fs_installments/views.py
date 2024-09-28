@@ -327,7 +327,7 @@ def check_installments(request):
             missed_installments = Installment.objects.filter(
                 # due date exceeded 2 days
                 due_date__lte=today - timedelta(days=2),
-                status__in=[NOT_PAID, OVERDUE],
+                status__in=[NOT_PAID, OVERDUE, DUE_TODAY],
                 loan__status=ACTIVE)
 
             # Get the related loans
@@ -335,7 +335,7 @@ def check_installments(request):
                 id__in=missed_installments.values_list('loan_id', flat=True)
             )
             # Update the related loans
-            missed_loans.update(is_overdue=True)
+            missed_loans.update(is_overdue=True, is_due_today=False)
             # Update installments
             missed_installments.update(status=MISSED)
 
