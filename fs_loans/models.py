@@ -99,8 +99,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     @property
     def outstanding_balance(self):
         # set outstanding_balance
-        if self.status in [ACTIVE, CANCELLED]:
-            return self.payment_amount - self.amount_paid
+        return self.payment_amount - self.amount_paid
 
     # overdue_amount
     @property
@@ -112,6 +111,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
                 # calculate the installment balance
                 total=Sum(total_amount - paid_amount))['total'] or 0
             return overdue_amount
+        return 0
 
     # due amount
     @property
@@ -123,6 +123,12 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
                 # calculate the installment balance
                 total=Sum(total_amount - paid_amount))['total'] or 0
             return due_amount
+
+    # total due amount
+    @property
+    def total_due_amount(self):
+        balance = self.next_payment.balance or 0
+        return balance + self.overdue
 
     @property
     def progress(self):

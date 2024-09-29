@@ -17,3 +17,7 @@ push:
 
 check-db:
 	python manage.py check --database default
+
+save-statement:
+	$(info (API) Save sample statement pdf)
+	curl http://127.0.0.1:8000/api/loans/1/statement/ > pdfs/sample.pdf

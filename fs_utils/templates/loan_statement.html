@@ -5,11 +5,31 @@
   <head>
     <meta charset="UTF-8" />
     <style>
+      @page {
+        size: A4;
+        margin: 20mm 10mm;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        color: #555;
+
+        @bottom-right {
+          content: "Page " counter(page);
+        }
+        @bottom-center {
+          content: "{{app_name}} © {{ year }}";
+        }
+      }
       body {
         font-family: Arial, sans-serif;
       }
+      footer {
+        text-align: center;
+        font-size: 12px;
+        color: #555;
+        padding: 10px;
+      }
       .titleHeader {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
       }
@@ -33,13 +53,9 @@
       .statement {
         width: 100%;
         border-collapse: collapse;
-        font-size: 14px;
+        font-size: 13px;
       }
-      /* .statement,
-      .statement th,
-      .statement td {
-        border: 1px solid #ccc;
-      } */
+
       .statement th,
       .statement td {
         padding: 8px;
@@ -50,30 +66,15 @@
         color: white;
         height: 23px;
       }
+      th:first-child {
+        border-top-left-radius: 5px;
+      }
+
+      th:last-child {
+        border-top-right-radius: 5px;
+      }
       tr:nth-child(even) {
         background-color: #f2f2f2;
-      }
-
-      /* Define footer position and content */
-      @page {
-        size: A4;
-        margin: 10mm;
-        @bottom-right {
-          content: "Page " counter(page);
-          font-family: Arial, sans-serif;
-          font-size: 12px;
-        }
-      }
-
-      footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        text-align: center;
-        font-size: 12px;
-        background-color: #f1f1f1;
-        padding: 10px;
       }
 
       .section-header {
@@ -81,11 +82,13 @@
         color: white;
         padding: 10px;
         margin-bottom: 10px;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
         font-weight: bold;
       }
 
       .titleText {
-        border-bottom: 2px solid #ddd;
+        border-bottom: 1.5px solid #ddd;
         padding: 8px;
         margin-block: 5px;
         font-weight: bold;
@@ -108,11 +111,12 @@
         text-transform: capitalize;
       }
       .borderTop {
-        border-top: 1px solid black;
+        border-top: 1.5px solid black;
       }
     </style>
   </head>
   <body>
+    <!-- SECTION 1 -->
     <div class="titleHeader">
       <div class="left">
         <p>{{ app_name }}</p>
@@ -120,10 +124,36 @@
       </div>
       <div class="right">
         <h2 style="margin: 0">Loan Statement</h2>
-        <p>Statement date: {{ current_date }}</p>
+        <p style="color: grey">Statement date: {{ current_date }}</p>
       </div>
     </div>
 
+    <!-- SECTION 2 -->
+    <div class="titleHeader">
+      <div class="left">
+        <p>{{ loan.client.display_name }}</p>
+        <p style="width: 200px">{{ loan.client.profile.address }},</p>
+        <p>{{ loan.client.phone_number }}</p>
+      </div>
+      <div style="min-width: 250px">
+        <table class="sectionTable">
+          <tr>
+            <td>Loan number</td>
+            <td>{{loan.ref_number}}</td>
+          </tr>
+          <tr>
+            <td>Payment due date</td>
+            <td><strong>{{loan.next_payment.due_date}}</strong></td>
+          </tr>
+          <tr>
+            <td>Total Payment due</td>
+            <td><strong>{{loan.total_due_amount|intcomma}}/=</strong></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- DETAILS -->
     <div class="section-header">Loan Particulars</div>
 
     <div class="container">
@@ -131,7 +161,7 @@
         <div class="titleText">Payment Overview</div>
         <table class="sectionTable">
           <tr>
-            <td>principal</td>
+            <td>principal amount</td>
             <td>{{ loan.amount|intcomma }}</td>
           </tr>
           <tr>
@@ -142,10 +172,7 @@
             <td>charges</td>
             <td>{{ loan.charges|intcomma }}</td>
           </tr>
-          <tr>
-            <td>overdue amount</td>
-            <td>{{ loan.overdue|intcomma }}</td>
-          </tr>
+
           <tr class="borderTop">
             <td><strong>Total amount payable</strong></td>
             <td><strong>{{ loan.payment_amount|intcomma }}</strong></td>
@@ -158,27 +185,56 @@
             <td><strong>outstanding balance</strong></td>
             <td><strong>{{ loan.outstanding_balance|intcomma }}</strong></td>
           </tr>
+          <tr>
+            <td>overdue amount</td>
+            <td>{{ loan.overdue|intcomma }}</td>
+          </tr>
         </table>
       </div>
       <div>
         <div class="titleText">Account Information</div>
         <table class="sectionTable">
-          {% for key, value in accounts.items %}
+          <!-- {% for key, value in accounts.items %}
           <tr>
             <td>{{ key|stringify }}</td>
             <td>{{ value }}</td>
           </tr>
-          {% endfor %}
+          {% endfor %} -->
+          <tr>
+            <td>loan category</td>
+            <td>{{ loan.category.name }}</td>
+          </tr>
+
+          <tr>
+            <td>payment frequency</td>
+            <td>{{ loan.payment_frequency }}</td>
+          </tr>
+          <tr>
+            <td>interest rate</td>
+            <td>{{ loan.interest_rate }}%</td>
+          </tr>
+          <tr>
+            <td>loan term</td>
+            <td>{{ loan.loan_term }} Month</td>
+          </tr>
+          <tr>
+            <td>loan status</td>
+            <td>{{ loan.status|stringify }}</td>
+          </tr>
+          <tr>
+            <td>disbursement date</td>
+            <td>{{ loan.disbursement_date }}</td>
+          </tr>
+          <tr>
+            <td>end date</td>
+            <td>{{ loan.end_date }}</td>
+          </tr>
         </table>
       </div>
     </div>
 
-    <!-- <p><strong>Reference Number:</strong> {{ loan.ref_number }}</p>
-    <p><strong>Customer Name:</strong> {{ loan.client.display_name }}</p>
-    <p><strong>Loan Amount:</strong> {{ loan.amount|intcomma }}/=</p>
-    <p><strong>Disbursed Date:</strong> {{ loan.disbursement_date }}</p> -->
-
-    <h3>Installments</h3>
+    <!-- INSTALLMENTS -->
+    <h3>Payment Schedule</h3>
 
     <table class="statement">
       <thead>
@@ -204,10 +260,9 @@
         {% endfor %}
       </tbody>
     </table>
-    <!-- Footer content -->
-    <footer>
-      <p>This document was generated on {{ current_date }}</p>
-      <p>{{app_name}} © {{ year }}</p>
-    </footer>
   </body>
+  <!-- Footer content -->
+  <footer>
+    <p>This document was generated on {{ current_date }}</p>
+  </footer>
 </html>
