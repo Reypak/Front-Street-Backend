@@ -11,6 +11,6 @@ router.register(r'loans', LoanViewSet, basename="Loans")
 # specify URL Path for rest_framework
 urlpatterns = [
     path('', include(router.urls)),
-    path('loans/<int:loan_id>/statement/',
-         download_loan_statement, name='loan_statement'),
+    path('loans/statement/<int:loan_id>/',
+         DownloadLoanStatement.as_view(), name='loan_statement'),
 ]

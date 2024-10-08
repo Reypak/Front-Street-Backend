@@ -1,14 +1,18 @@
-{% load humanize %} {% load custom_filters %}
+{% load static %} {% load humanize %} {% load custom_filters %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       @page {
         size: A4;
         margin: 20mm 10mm;
-        font-family: Arial, sans-serif;
+        font-family: "Roboto", sans-serif;
         font-size: 12px;
         color: #555;
 
@@ -20,7 +24,7 @@
         }
       }
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Roboto", sans-serif;
       }
       footer {
         text-align: center;
@@ -241,7 +245,9 @@
         <tr>
           <th>#</th>
           <th>Due Date</th>
-          <th>Amount</th>
+          <th>Principal</th>
+          <th>Interest</th>
+          <th>Total</th>
           <th>Paid</th>
           <th>Balance</th>
           <th>Status</th>
@@ -252,6 +258,8 @@
         <tr>
           <td>{{ forloop.counter }}</td>
           <td>{{ installment.due_date }}</td>
+          <td>{{ installment.principal|intcomma }}</td>
+          <td>{{ installment.interest|intcomma }}</td>
           <td>{{ installment.total_amount|intcomma }}</td>
           <td>{{ installment.paid_amount|intcomma }}</td>
           <td>{{ installment.balance|intcomma }}</td>
@@ -264,5 +272,8 @@
   <!-- Footer content -->
   <footer>
     <p>This document was generated on {{ current_date }}</p>
+    <p>Powered by <strong>Credtics</strong></p>
+    <!-- <img src="{% static 'svg/credtics_logo.svg' %}" alt="Creditics Logo" />
+    <img src="{% static 'logo.png' %}" alt="PNG" /> -->
   </footer>
 </html>

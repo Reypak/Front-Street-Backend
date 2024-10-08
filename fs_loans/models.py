@@ -127,7 +127,7 @@ class Loan(AuditTrailMixin, LoanApplicationBaseModel):
     # total due amount
     @property
     def total_due_amount(self):
-        balance = self.next_payment.balance or 0
+        balance = self.next_payment.balance if self.next_payment else 0
         return balance + self.overdue
 
     @property
