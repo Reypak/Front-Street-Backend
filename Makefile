@@ -20,4 +20,4 @@ check-db:
 
 save-statement:
 	$(info (API) Save sample statement pdf)
-	curl http://127.0.0.1:8000/api/loans/1/statement/ > pdfs/sample.pdf
+	curl http://127.0.0.1:8000/api/loans/statement/1/ > pdfs/sample.pdf

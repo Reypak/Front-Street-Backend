@@ -117,6 +117,13 @@
       .borderTop {
         border-top: 1.5px solid black;
       }
+      .poweredSection {
+        margin-top: 30px;
+        font-size: 11px;
+      }
+      .poweredSection img {
+        height: 30px;
+      }
     </style>
   </head>
   <body>
@@ -272,8 +279,10 @@
   <!-- Footer content -->
   <footer>
     <p>This document was generated on {{ current_date }}</p>
-    <p>Powered by <strong>Credtics</strong></p>
-    <!-- <img src="{% static 'svg/credtics_logo.svg' %}" alt="Creditics Logo" />
-    <img src="{% static 'logo.png' %}" alt="PNG" /> -->
+    <div class="poweredSection">
+      <div>Powered by</div>
+      <img src="{% static 'svg/credtics_logo.svg' %}" alt="Creditics Logo" />
+    </div>
   </footer>
 </html>
+<!-- src="{% static 'svg/credtics_logo.svg' %}" -->

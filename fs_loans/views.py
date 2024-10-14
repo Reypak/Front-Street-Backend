@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from datetime import datetime
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from fs_utils.constants import ADDRESS_DETAILS, APP_NAME
 from .serializers import *
 from .models import Loan
@@ -74,7 +74,8 @@ class DownloadLoanStatement(APIView):
         html_string = render_to_string('loan_statement.html', context)
 
         # Convert the HTML to a PDF
-        pdf_file = HTML(string=html_string).write_pdf()
+        pdf_file = HTML(string=html_string,
+                        base_url=request.build_absolute_uri()).write_pdf()
 
         # Return the response
         response = HttpResponse(pdf_file, content_type='application/pdf')
