@@ -50,8 +50,21 @@ Docker image has to be build using linux. Cloud Run specifically supports the Li
 
 ### Edit and Redeploy Cloud
 
-`gcloud run deploy fsapi --image us-east1-docker.pkg.dev/front-street-ug/app/fs_api:latest --platform managed`
+`gcloud run deploy fs-api --image us-east1-docker.pkg.dev/front-street-ug/app/fs_api:latest --platform managed`
 
 ### Set default region
 
 `gcloud config set run/region us-east1`
+
+# Note
+
+## Docker Errors
+
+Encountered error when deploying
+
+```
+At least one invalid signature was encountered
+```
+
+Run:
+`docker system prune`

@@ -32,7 +32,7 @@ def send_test_email(request):
         subject = subject or APP_NAME
         message = message or "This is a test email."
 
-        sender_name = "DevSystems"
+        sender_name = APP_NAME
         sender_email = settings.EMAIL_HOST_USER
 
         recipient_list = [email]

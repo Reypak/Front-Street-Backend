@@ -4,7 +4,9 @@ from .views import *
 
 router = SimpleRouter()
 router.register(r'roles', RoleViewSet)
-router.register(r'permissions', PermissionViewSet)
+# router.register(r'permissions', PermissionViewSet)
+router.register(r'permissions', CategorizedPermissionViewSet,
+                basename='categorized-permissions')
 
 urlpatterns = [
     path('', include(router.urls)),

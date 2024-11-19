@@ -45,9 +45,22 @@ class RoleViewSet(viewsets.ModelViewSet):
         role.permissions.set(permissions)
 
 
-class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Permission.objects.all()
-    serializer_class = PermissionSerializer
+# class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = Permission.objects.all()
+#     serializer_class = PermissionSerializer
+#     permission_classes = [IsAuthenticated]
+#     pagination_class = None  # Disable pagination for this viewset
+
+#     def get_queryset(self):
+#         # Get content types for admin, sessions, contenttypes, and auth
+#         excluded_apps = ['admin', 'sessions', 'contenttypes', 'auth']
+#         excluded_content_types = ContentType.objects.filter(
+#             app_label__in=excluded_apps)
+#         return Permission.objects.exclude(content_type__in=excluded_content_types)
+
+
+class CategorizedPermissionViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = CategorizedPermissionsSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = None  # Disable pagination for this viewset
 
@@ -56,4 +69,19 @@ class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
         excluded_apps = ['admin', 'sessions', 'contenttypes', 'auth']
         excluded_content_types = ContentType.objects.filter(
             app_label__in=excluded_apps)
-        return Permission.objects.exclude(content_type__in=excluded_content_types)
+        permissions = Permission.objects.exclude(
+            content_type__in=excluded_content_types)
+
+        # Categorize permissions by app name
+        categorized_permissions = {}
+        for permission in permissions:
+            app_name = permission.content_type.app_label
+            if app_name not in categorized_permissions:
+                categorized_permissions[app_name] = []
+            categorized_permissions[app_name].append(permission)
+
+        # Convert to a list of dictionaries for serialization
+        return [
+            {'app_name': app_name, 'permissions': perms}
+            for app_name, perms in categorized_permissions.items()
+        ]

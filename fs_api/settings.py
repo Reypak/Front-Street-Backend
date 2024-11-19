@@ -24,7 +24,9 @@ SECRET_KEY = 'django-insecure-k-@d@qr+9-5lntm=dt!!mrs3tqa8@%%))lg+@311gvg&v8!rnq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "fsapi-32ygwzcnka-ue.a.run.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost",
+                 "fs-api-32ygwzcnka-ue.a.run.app",
+                 "fs-api-staging-32ygwzcnka-ue.a.run.app",]
 
 LOCAL_APPS = [
     'fs_api',
@@ -64,8 +66,8 @@ INSTALLED_APPS = [
 ] + LOCAL_APPS
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=100),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'UPDATE_LAST_LOGIN': True,
 }
 
@@ -202,7 +204,8 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-CSRF_TRUSTED_ORIGINS = ['https://fsapi-32ygwzcnka-ue.a.run.app']
+CSRF_TRUSTED_ORIGINS = ['https://fs-api-32ygwzcnka-ue.a.run.app',
+                        'https://fs-api-staging-32ygwzcnka-ue.a.run.app']
 
 CORS_EXPOSE_HEADERS = ['Content-Disposition']
 

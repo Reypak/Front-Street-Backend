@@ -32,3 +32,8 @@ class RoleListSerializer(BaseSerializer):
     class Meta:
         model = Role
         fields = ['id', 'name', 'created_at',]
+
+
+class CategorizedPermissionsSerializer(serializers.Serializer):
+    app_name = serializers.CharField()
+    permissions = PermissionSerializer(many=True)
