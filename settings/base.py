@@ -22,11 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-k-@d@qr+9-5lntm=dt!!mrs3tqa8@%%))lg+@311gvg&v8!rnq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost",
-                 "fs-api-32ygwzcnka-ue.a.run.app",
-                 "fs-api-staging-32ygwzcnka-ue.a.run.app",]
+# ALLOWED_HOSTS = ["127.0.0.1", "localhost",
+#                  "fs-api-32ygwzcnka-ue.a.run.app",
+#                  "fs-api-staging-32ygwzcnka-ue.a.run.app",]
 
 LOCAL_APPS = [
     'fs_api',
@@ -107,19 +107,19 @@ WSGI_APPLICATION = 'fs_api.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # PRODUCTION
-DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOST'),
-        'PORT': os.getenv('DATABASE_PORT'),
-        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", "use_pure": True},
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': os.getenv('DATABASE_NAME'),
+#         'USER': os.getenv('DATABASE_USER'),
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+#         'HOST': os.getenv('DATABASE_HOST'),
+#         'PORT': os.getenv('DATABASE_PORT'),
+#         'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", "use_pure": True},
+#     }
+# }
 
-SITE_URL = 'https://staging-front-street-ug.web.app/'
+# SITE_URL = 'https://staging-front-street-ug.web.app/'
 
 # STAGING
 # DATABASES = {
@@ -172,14 +172,15 @@ TIME_ZONE = 'Africa/Kampala'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -238,3 +239,7 @@ GS_AUTO_CREATE_BUCKET = True
 GS_DEFAULT_ACL = 'publicRead'
 
 STATIC_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+
+# EMAIL SITE URL
+# SITE_URL = 'https://front-street-ug.web.app/'
+SITE_URL = 'https://staging-front-street-ug.web.app/'

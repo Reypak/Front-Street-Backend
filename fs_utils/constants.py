@@ -166,7 +166,6 @@ CHARGE_PENALTY_CHOICES = [
 CORE = 'system-core'
 DATE_FORMAT = '%Y-%m-%d'
 DATETIME_FORMAT = '%Y-%m-%d(%H-%M)'
-SITE_URL = 'http://localhost:3200/'
 
 # PERMISSIONS
 CAN_ADMIN = 'can_admin'

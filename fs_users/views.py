@@ -8,6 +8,7 @@ from fs_users.models import CustomUser
 from fs_users.permissions import *
 from fs_utils.notifications.emails import send_templated_email
 from fs_utils.utils import get_public_user_role
+from settings.base import SITE_URL
 from .serializers import *
 
 import random
@@ -27,7 +28,9 @@ def create_user_and_send_password_email(email, first_name=None, last_name=None, 
 
     # Sending email
     subject = 'Your account details'
-    context = {'user': user, 'password': password}
+    context = {'user': user, 'password': password,
+               'reset_link': f'{SITE_URL}login/'
+               }
 
     send_templated_email(subject, 'account_creation.html',
                          context, [email])

@@ -18,9 +18,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_decode
-
+from settings.base import SITE_URL
 from fs_users.models import CustomUser
-from fs_utils.constants import FROM_EMAIL, SITE_URL
 from fs_utils.notifications.emails import send_templated_email
 
 
